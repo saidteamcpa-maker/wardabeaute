@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-label="Warda Beauté hero">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F7DEE6"/>
+      <stop offset="0.55" stop-color="#FBE6EC"/>
+      <stop offset="1" stop-color="#FBF6F2"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.42" r="0.55">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="rose" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E8A9C0"/>
+      <stop offset="1" stop-color="#C75B8A"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="800" height="800" fill="url(#bg)"/>
+  <circle cx="400" cy="330" r="280" fill="url(#glow)"/>
+
+  <!-- decorative petals -->
+  <g fill="#E8A9C0" opacity="0.35">
+    <circle cx="150" cy="170" r="60"/>
+    <circle cx="660" cy="220" r="80"/>
+    <circle cx="640" cy="620" r="55"/>
+    <circle cx="170" cy="640" r="70"/>
+  </g>
+  <g fill="#C75B8A" opacity="0.18">
+    <circle cx="250" cy="120" r="28"/>
+    <circle cx="560" cy="140" r="34"/>
+    <circle cx="720" cy="470" r="30"/>
+    <circle cx="90" cy="430" r="36"/>
+  </g>
+
+  <!-- center emblem: stylized rose -->
+  <g transform="translate(400 360)">
+    <circle r="120" fill="#FFFFFF" opacity="0.55"/>
+    <g fill="url(#rose)">
+      <path d="M0,-95 C55,-95 95,-55 95,0 C95,55 55,95 0,95 C-55,95 -95,55 -95,0 C-95,-55 -55,-95 0,-95 Z" opacity="0.25"/>
+      <path d="M0,-70 C40,-70 70,-40 70,0 C70,40 40,70 0,70 C-40,70 -70,40 -70,0 C-70,-40 -40,-70 0,-70 Z" fill="#C75B8A"/>
+      <path d="M0,-40 C24,-40 40,-24 40,0 C40,24 24,40 0,40 C-24,40 -40,24 -40,0 C-40,-24 -24,-40 0,-40 Z" fill="#E8A9C0"/>
+      <circle r="12" fill="#7A2E4E"/>
+    </g>
+  </g>
+
+  <text x="400" y="640" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="58" font-weight="700" fill="#7A2E4E">Warda Beauté</text>
+  <text x="400" y="685" text-anchor="middle" font-family="Georgia, serif" font-size="24" fill="#C75B8A" letter-spacing="2">LA BEAUTÉ NATURELLE · فردا بيوتي</text>
+</svg>

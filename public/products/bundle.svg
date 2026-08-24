@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 750" role="img" aria-label="Body Confidence Kit">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F7DEE6"/><stop offset="1" stop-color="#FBE6EC"/>
+    </linearGradient>
+    <linearGradient id="box" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#C75B8A"/><stop offset="1" stop-color="#7A2E4E"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="600" height="750" fill="url(#bg)"/>
+  <circle cx="300" cy="330" r="230" fill="#FFFFFF" opacity="0.5"/>
+  <circle cx="120" cy="180" r="50" fill="#E8A9C0" opacity="0.3"/>
+  <circle cx="480" cy="200" r="42" fill="#C9A24B" opacity="0.3"/>
+
+  <!-- two bottles + ribbon (kit) -->
+  <g transform="translate(300 400)">
+    <!-- left bottle -->
+    <g transform="translate(-70 10)">
+      <rect x="-30" y="-120" width="60" height="190" rx="18" fill="url(#box)"/>
+      <rect x="-20" y="-135" width="40" height="22" rx="6" fill="#5a2139"/>
+    </g>
+    <!-- right bottle -->
+    <g transform="translate(70 10)">
+      <rect x="-30" y="-120" width="60" height="190" rx="18" fill="#E8A9C0"/>
+      <rect x="-20" y="-135" width="40" height="22" rx="6" fill="#C75B8A"/>
+    </g>
+    <!-- ribbon -->
+    <path d="M0,-130 C40,-100 40,-40 0,-10 C-40,-40 -40,-100 0,-130 Z" fill="#C9A24B"/>
+    <circle cx="0" cy="-70" r="10" fill="#a8842f"/>
+    <!-- label -->
+    <rect x="-110" y="100" width="220" height="64" rx="14" fill="#FFFFFF" opacity="0.94"/>
+    <text x="0" y="132" text-anchor="middle" font-family="Georgia, serif" font-size="22" font-weight="700" fill="#7A2E4E">Body Confidence</text>
+    <text x="0" y="154" text-anchor="middle" font-family="Georgia, serif" font-size="16" fill="#C75B8A">باقة الثقة بالجسم</text>
+  </g>
+
+  <text x="300" y="700" text-anchor="middle" font-family="Georgia, serif" font-size="22" fill="#7A2E4E">Warda Beauté</text>
+</svg>

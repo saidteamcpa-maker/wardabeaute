@@ -1,0 +1,137 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --petal: #fbf2ef;
+  --brume: #edd5cd;
+  --warda: #c17a82;
+  --profond: #8a3d52;
+  --champagne: #c4993a;
+  --or-doux: #ead9a6;
+  --brun: #3c2128;
+  --gris: #8a6e72;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--petal);
+  color: var(--brun);
+  font-family: "DM Sans", system-ui, sans-serif;
+  line-height: 1.75;
+}
+
+h1,
+h2 {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-weight: 300;
+}
+
+/* Tap target + input size rules for Morocco mobile */
+button,
+a,
+input,
+select,
+textarea {
+  min-height: 44px;
+}
+input,
+select,
+textarea {
+  font-size: 16px;
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-full bg-profond px-7 py-3 font-body font-medium text-white transition hover:brightness-95 min-h-[48px];
+  }
+  .btn-outline {
+    @apply inline-flex items-center justify-center rounded-full border border-warda px-7 py-3 font-body font-medium text-warda transition hover:bg-warda hover:text-white min-h-[48px];
+  }
+  .container-page {
+    @apply mx-auto w-full max-w-[1200px] px-4 md:px-8;
+  }
+  .section {
+    @apply py-12 md:py-24;
+  }
+  .badge-pill {
+    @apply inline-block rounded-full bg-ordoux px-3 py-1 text-sm font-body font-medium text-brun;
+  }
+}
+
+/* ===== Motion / brand dynamism ===== */
+@keyframes float {
+  0% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(40px) rotate(8deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+.animate-float {
+  animation: float 12s ease-in-out infinite;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee linear infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes pulseSoft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+.animate-pulseSoft { animation: pulseSoft 2.4s ease-in-out infinite; }
+
+@layer components {
+  .text-gradient {
+    background: linear-gradient(120deg, #8a3d52 0%, #c17a82 45%, #c4993a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .glass {
+    background: rgba(251, 242, 239, 0.72);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .btn-glow {
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s ease, filter 0.2s ease;
+  }
+  .btn-glow:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.05);
+  }
+  .btn-glow::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      110deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.45) 50%,
+      transparent 70%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2.8s linear infinite;
+    opacity: 0;
+  }
+  .btn-glow:hover::after { opacity: 1; }
+  .card-hover {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .card-hover:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 22px 45px -18px rgba(138, 61, 82, 0.35);
+  }
+}

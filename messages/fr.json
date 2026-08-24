@@ -1,0 +1,170 @@
+{
+  "Meta": {
+    "siteName": "Warda Beauté",
+    "tagline": "La beauté naturelle, fabriquée au Maroc"
+  },
+  "Nav": {
+    "home": "Accueil",
+    "products": "Produits",
+    "velvastretch": "VelvaStretch™",
+    "silkstop": "SilkStop™",
+    "collaglow": "CollaGlow™",
+    "bundle": "Body Confidence Kit",
+    "story": "Notre histoire",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "track": "Suivi commande",
+    "menu": "Menu",
+    "close": "Fermer",
+    "collection": "Tous les produits"
+  },
+  "Announcement": {
+    "msg1": "Livraison gratuite partout au Maroc 🌿",
+    "msg2": "Paiement à la livraison — zéro risque",
+    "msg3": "Fabriqué au Maroc avec amour 🇲🇦"
+  },
+  "Home": {
+    "heroH1": "Votre éclat naturel, garanti 30 jours",
+    "heroSub": "Trois soins botaniques conçus pour la peau maghrébine — vergetures, repousse et teint. Fabriqués au Maroc, livrés chez vous, payés à la livraison.",
+    "heroReassurance": "Satisfait ou remboursé 30 jours · Livraison gratuite partout au Maroc",
+    "heroBadges": ["Fabriqué au Maroc", "Naturel 100%", "Sans paraben", "Paiement à la livraison"],
+    "heroCta": "Découvrir nos soins",
+    "heroSecondary": "Voir le Body Confidence Kit",
+    "trioHeading": "Trois soins. Trois besoins. Une seule routine.",
+    "trioSub": "Chaque soin Warda cible un besoin précis. Choisissez le vôtre, ou combinez-les pour un rituel complet.",
+    "bundleCta": "Découvrir le kit",
+    "testimonialsTitle": "Elles témoignent",
+    "pillarsHeading": "Une maison de beauté, pas une simple boutique",
+    "pillarsSub": "Warda repose sur quatre piliers sur lesquels nous ne transigeons pas : l'origine, la nature, l'efficacité et la sérénité de la cliente marocaine.",
+    "pillars": [
+      { "icon": "🇲🇦", "title": "Fabriqué au Maroc", "body": "Formulé et assemblé au Maroc avec des ingrédients locaux : argan, figue de barbarie, safran." },
+      { "icon": "🌿", "title": "Naturel 100% · Végane", "body": "Sans paraben, sans sulfates, testé dermatologiquement. Respecte votre peau." },
+      { "icon": "🔬", "title": "Formules éprouvées", "body": "Des actifs dosés selon des études publiées, pas des promesses vides." },
+      { "icon": "💳", "title": "Paiement à la livraison · 30 jours", "body": "Commandez sans avancer un centime. Satisfait ou remboursé sous 30 jours." }
+    ],
+    "howTitle": "De la commande à votre porte en 3 étapes",
+    "howSub": "Sans paiement en ligne. Sans risque.",
+    "how1Title": "Choisissez votre rituel",
+    "how1Body": "Trois soins ciblent trois besoins : vergetures, repousse ou éclat. Choisissez l'un ou le rituel complet.",
+    "how2Title": "Confirmez sans payer",
+    "how2Body": "Nom et téléphone uniquement. Paiement à la livraison, notre équipe confirme votre adresse.",
+    "how3Title": "Recevez et payez",
+    "how3Body": "Livraison en 24-48h partout au Maroc. Vous payez en cash à la réception.",
+    "faqHeading": "Avant de commander",
+    "faqs": [
+      { "q": "Les produits sont-ils naturels et fabriqués au Maroc ?", "a": "Oui. Tous nos soins sont formulés à partir d'ingrédients marocains (argan, figue de barbarie, safran), sans paraben ni sulfates." },
+      { "q": "Le paiement à la livraison est-il disponible partout ?", "a": "Oui. Le paiement à la livraison (cash) est disponible dans toutes les villes du Maroc, avec livraison gratuite." },
+      { "q": "Combien de temps pour voir un résultat ?", "a": "Premiers signes dès 7 à 14 jours, amélioration nette sous 4 semaines, résultat complet après 1 à 2 mois d'utilisation régulière." },
+      { "q": "Quelle est la garantie satisfaction ?", "a": "Garantie satisfait ou remboursé 30 jours. Si vous ne voyez pas de différence, nous remboursons votre commande." },
+      { "q": "Puis-je suivre ma commande ?", "a": "Oui, via la page Suivi de commande avec votre numéro de commande et votre téléphone." }
+    ],
+    "finalHeading": "Votre beauté mérite le meilleur, pas des promesses",
+    "finalSub": "Commencez votre rituel naturel dès aujourd'hui. Livraison gratuite, paiement à la livraison et garantie 30 jours — une expérience sans risque.",
+    "finalBadges": ["🌿 Naturel 100%", "🇲🇦 Fabriqué au Maroc", "💳 Paiement à la livraison", "↩️ Satisfait ou remboursé 30j"],
+    "finalCtaButton": "Je commande maintenant"
+  },
+  "Product": {
+    "addToCart": "Ajouter au panier",
+    "buyNow": "Commander",
+    "freeShipping": "Livraison gratuite",
+    "cashOnDelivery": "Paiement à la livraison",
+    "ingredients": "Ingrédients clés",
+    "howTo": "Mode d'emploi",
+    "reviews": "Avis clients",
+    "faq": "Questions fréquentes",
+    "upsellTitle": "Complétez votre rituel",
+    "inStock": "En stock",
+    "lowStock": "Stock limité",
+    "reviews": "avis",
+    "guarantee": "Satisfait ou remboursé 30 jours",
+    "madeInMorocco": "Fabriqué au Maroc"
+  },
+  "Checkout": {
+    "title": "Finaliser la commande",
+    "name": "Prénom et nom",
+    "phone": "Téléphone",
+    "city": "Ville",
+    "address": "Adresse complète",
+    "postal": "Code postal (optionnel)",
+    "orderBump": "Ajoutez CollaGlow™ et économisez 15%",
+    "submit": "Confirmer ma commande",
+    "submitting": "Envoi en cours…",
+    "success": "Commande confirmée !",
+    "selectCity": "Choisissez votre ville"
+  },
+  "Track": {
+    "title": "Suivi de commande",
+    "phone": "Votre numéro de téléphone",
+    "orderNumber": "Numéro de commande",
+    "lookup": "Suivre",
+    "notFound": "Commande introuvable. Vérifiez vos informations."
+  },
+  "Admin": {
+    "loginTitle": "Accès admin",
+    "password": "Mot de passe",
+    "login": "Se connecter",
+    "logout": "Déconnexion",
+    "orders": "Commandes",
+    "stats": "Statistiques",
+    "stock": "Stock",
+    "customers": "Clientes",
+    "revenue": "Revenus",
+    "today": "Aujourd'hui",
+    "thisWeek": "Cette semaine",
+    "thisMonth": "Ce mois",
+    "confirm": "Confirmer",
+    "ship": "Expédier",
+    "deliver": "Livrer",
+    "cancel": "Annuler",
+    "search": "Rechercher…",
+    "status": "Statut"
+  },
+  "Cart": {
+    "complete": "Complétez votre rituel"
+  },
+  "Popup": {
+    "liveBuyers": "{{n}} personnes viennent d'acheter il y a quelques minutes",
+    "title": "Finalisez votre commande",
+    "summary": "Récapitulatif",
+    "total": "Total",
+    "namePlaceholder": "Fatima Zahra",
+    "phonePlaceholder": "06 12 34 56 78",
+    "nameRequired": "Indiquez votre nom.",
+    "invalidPhone": "Numéro marocain invalide. Exemple : 06 12 34 56 78",
+    "submit": "Confirmer la commande",
+    "submitting": "Envoi en cours…",
+    "secure": "🔒 Commande sécurisée · Paiement à la livraison",
+    "socialProof": "Rejointes par 12 000+ Marocaines",
+    "upsellTitle": "Offre exclusive 🎁",
+    "upsellBody": "Ajoutez-le à seulement 99 MAD",
+    "upsellAdd": "Oui, j'ajoute (+99 MAD)",
+    "upsellSkip": "Non merci",
+    "upsellTimer": "Cette offre disparaît dans {{s}}s",
+    "thanks": "Merci ! Commande confirmée",
+    "thanksBody": "Vous recevrez un message WhatsApp pour confirmer votre adresse de livraison.",
+    "orderNumber": "N° de commande",
+    "viewOrder": "Voir ma commande",
+    "whatsapp": "Suivre sur WhatsApp",
+    "error": "Une erreur est survenue. Réessayez."
+  },
+  "Common": {
+    "from": "Dès",
+    "mad": "MAD",
+    "viewAll": "Tout voir",
+    "backHome": "Retour à l'accueil",
+    "language": "Langue"
+  },
+  "Footer": {
+    "tagline": "La beauté naturelle, fabriquée au Maroc.",
+    "shop": "Boutique",
+    "company": "Société",
+    "help": "Aide",
+    "legal": "Légal",
+    "rights": "Tous droits réservés.",
+    "madeInMorocco": "Fabriqué au Maroc 🇲🇦",
+    "legal": "Légal"
+  },
+  "SocialProof": {
+    "justOrdered": "vient de commander"
+  }
+}
