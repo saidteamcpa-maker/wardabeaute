@@ -12,9 +12,8 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
       args:
-        # Must be the PUBLIC URL the browser uses to reach the backend service.
-        # In EasyPanel set this to your backend domain (e.g. https://api.wardabeaute.com).
-        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://backend:8000}
+        # Public URL the browser uses to reach the backend service.
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://api.wardabeaute.com}
     ports:
       - "3000:3000"
     depends_on:
@@ -27,7 +26,7 @@ services:
       dockerfile: Dockerfile
     environment:
       DATABASE_URL: postgres://wardabeaute:wardabeaute324@wardabeaute_database:5432/wardabeaute?sslmode=disable
-      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000,https://wardabeaute.com}
+      CORS_ORIGINS: ${CORS_ORIGINS:-https://wardabeaute.com,https://www.wardabeaute.com,http://localhost:3000}
       SHEETS_WEBHOOK_URL: ${SHEETS_WEBHOOK_URL:-}
       MAXMIND_DB_PATH: ${MAXMIND_DB_PATH:-}
       MAXMIND_ENABLED: ${MAXMIND_ENABLED:-false}
