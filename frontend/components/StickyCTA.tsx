@@ -1,30 +1,96 @@
 "use client";
 
 import { useCart } from "@/lib/cart";
-import { products } from "@/content/products";
+import { unitPrice, localize } from "@/content/products";
+import { useLang } from "@/components/LangProvider";
+import { useCatalog } from "@/lib/catalog-context";
 import { track } from "@/lib/pixels";
 
-// Sticky mobile CTA for product pages.
+const COD_MARKERS = [
+  "— الدفع عند الاستلام",
+  "الدفع عند الاستلام",
+  "— الخلاص عند الاستلام",
+  "الخلاص عند الاستلام",
+  "— خلصي كيف يوصلك",
+  "خلصي كيف يوصلك",
+  "— paiement à la livraison",
+  "— Paiement à la livraison",
+  "paiement à la livraison",
+  "Paiement à la livraison",
+];
+
 export function StickyCTA({ slug }: { slug: string }) {
+  const { lang } = useLang();
   const add = useCart((s) => s.add);
   const openCart = useCart((s) => s.openCart);
-  const p = products[slug];
+  const selectedTier = useCart((s) => s.selectedTier);
+  const catalog = useCatalog();
+  const p = localize(catalog[slug], lang);
+  let ctaLabel = p.hero.cta;
+  for (const m of COD_MARKERS) ctaLabel = ctaLabel.replace(m, "");
+  ctaLabel = ctaLabel.replace(/—\s*$/, "").replace(/\s+/g, " ").trim() || p.hero.cta;
+  if (lang === "fr") ctaLabel = "Commander maintenant";
+  if (lang === "ar") ctaLabel = "اطلبي دابا";
+  const qty = selectedTier?.[slug] || 1;
+  const price = unitPrice(slug, qty, catalog);
+  const bundleLabel =
+    qty === 1
+      ? lang === "ar"
+        ? "وحدة"
+        : "Produit seul"
+      : lang === "ar"
+        ? `باك ${qty}`
+        : `Pack de ${qty}`;
+
+  const handleAdd = () => {
+    add({ slug, qty });
+    track("AddToCart", { content_ids: [slug], value: price, currency: "MAD" });
+    openCart();
+  };
+
   return (
-    <div className="md:hidden fixed bottom-0 inset-x-0 z-40 bg-profond text-white px-4 py-3 flex items-center justify-between">
-      <div>
-        <div className="text-sm font-body">{p.name}</div>
-        <div className="text-xs">{p.price} MAD</div>
+    <div
+      role="button"
+      tabIndex={0}
+      aria-label={ctaLabel}
+      onClick={handleAdd}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handleAdd();
+        }
+      }}
+      className="md:hidden fixed bottom-0 inset-x-0 z-40 cursor-pointer group select-none"
+      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+    >
+      <div className="bg-profond/95 backdrop-blur-md border-t border-white/10 shadow-[0_-10px_30px_rgba(0,0,0,0.28)] px-4 pt-3 pb-3">
+        <div className="flex items-center gap-3">
+          <img
+            src={p.image}
+            alt={p.name}
+            className="w-12 h-12 rounded-xl object-cover border border-white/10 shrink-0"
+          />
+            <div className="min-w-0 flex-1 leading-tight">
+              <div className="text-white text-sm font-body truncate">{p.name}</div>
+              <div className="text-white/90 text-xs">
+                {bundleLabel} · {price} MAD
+              </div>
+            </div>
+          <div
+            className="btn-sticky-cta shrink-0 rounded-full px-5 py-3 text-sm font-body font-semibold text-white"
+          >
+            {ctaLabel}
+            <span
+              className={`ml-1.5 inline-block transition-transform duration-200 ${
+                lang === "ar" ? "group-hover:-translate-x-1" : "group-hover:translate-x-1"
+              }`}
+              aria-hidden="true"
+            >
+              {lang === "ar" ? "←" : "→"}
+            </span>
+          </div>
+        </div>
       </div>
-      <button
-        onClick={() => {
-          add({ slug, qty: 1 });
-          track("AddToCart", { content_ids: [slug], value: p.price, currency: "MAD" });
-          openCart();
-        }}
-        className="bg-white text-profond rounded-full px-5 py-2 font-body font-medium"
-      >
-        {p.hero.cta}
-      </button>
     </div>
   );
 }

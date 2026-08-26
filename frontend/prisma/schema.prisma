@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model AdminSession {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  username  String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([token])
+}
+
+model Order {
+  id                String         @id @default(cuid())
+  reference         String         @unique
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  customerName      String
+  phone             String
+  city              String
+  address           String?
+  postal            String?
+  status            String         @default("new")
+  confirmationStatus String?
+  deliveryStatus    String?
+  paymentStatus     String         @default("unpaid")
+  source            String?
+  utmSource         String?
+  utmMedium         String?
+  utmCampaign       String?
+  utmContent        String?
+  utmTerm           String?
+  referrer          String?
+  device            String?
+  browser           String?
+  country           String?
+  visitorId         String?
+  sessionId         String?
+  total             Int
+  discount          Int            @default(0)
+  shippingFee       Int            @default(0)
+  notes             String?
+
+  items             OrderItem[]
+  activities        OrderActivity[]
+
+  @@index([createdAt])
+  @@index([status])
+  @@index([city])
+  @@index([source])
+  @@index([phone])
+  @@index([customerName])
+}
+
+model OrderItem {
+  id        String @id @default(cuid())
+  orderId   String
+  order     Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  slug      String
+  name      String
+  qty       Int
+  unitPrice Int
+
+  @@index([slug])
+}
+
+model OrderActivity {
+  id        String   @id @default(cuid())
+  orderId   String
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  type      String
+  message   String
+  adminUser String?
+  createdAt DateTime @default(now())
+
+  @@index([orderId])
+}
+
+model AnalyticsEvent {
+  id          String   @id @default(cuid())
+  eventType   String
+  timestamp   DateTime @default(now())
+  sessionId   String?
+  visitorId   String?
+  page        String?
+  productId   String?
+  orderId     String?
+  country     String?
+  referrer    String?
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  utmContent  String?
+  utmTerm     String?
+  device      String?
+  browser     String?
+
+  @@index([timestamp])
+  @@index([eventType])
+  @@index([country])
+}
+
+model Product {
+  slug             String   @id
+  name             String
+  price            Int
+  oldPrice         Int?
+  image            String?
+  active           Boolean  @default(true)
+  stockCount       Int?
+  badge            String?
+  shortDescription String?
+  offers           String? // JSON string of Offer[] (qty/price/save)
+  isBundle         Boolean  @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([active])
+}
+
+model PixelConfig {
+  id            Int      @id @default(1)
+  metaPixelId   String   @default("")
+  tiktokPixelId String   @default("")
+  gtmId         String   @default("")
+  enabled       Boolean  @default(true)
+  updatedAt     DateTime @updatedAt
+}

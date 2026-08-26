@@ -8,19 +8,28 @@ import { Marquee } from "@/components/ui/Marquee";
 import { FloatingPetals } from "@/components/ui/FloatingPetals";
 import { IconBadge } from "@/components/ui/IconBadge";
 import { LogoImage } from "@/components/LogoImage";
+import { AssuranceBlock } from "@/components/AssuranceBlock";
 import { Leaf, MapPin, CreditCard, ShieldCheck, Truck, RotateCcw } from "lucide-react";
-import { products, bundle } from "@/content/products";
+import { bundle, localize } from "@/content/products";
+import { getLangServer } from "@/lib/lang-server";
+import { getCatalog, getBundleFromCatalog } from "@/lib/catalog";
+import { t } from "@/content/ui";
 
-export default function HomePage() {
-  const featured = Object.keys(products);
-  const allTestimonials = Object.values(products).flatMap((p) => p.testimonials).slice(0, 8);
+export default async function HomePage() {
+  const lang = getLangServer();
+  const catalog = await getCatalog();
+  const { price: bundlePrice, oldPrice: bundleOld, save: bundleSave } = getBundleFromCatalog(catalog);
+  const featured = Object.keys(catalog).filter((s) => s !== "kit-collagene");
+  const allTestimonials = Object.values(catalog)
+    .flatMap((p) => localize(p, lang).testimonials)
+    .slice(0, 8);
   const why = [
-    { i: Leaf, t: "100% Ingrédients Naturels", d: "Chaque formule est construite autour d'ingrédients que tu connais." },
-    { i: MapPin, t: "Fabriqué au Maroc", d: "Formulé et fabriqué au Maroc. Aucun intermédiaire." },
-    { i: ShieldCheck, t: "Testé Dermatologiquement", d: "Formules testées sur peau sensible marocaine." },
-    { i: CreditCard, t: "الدفع عند الاستلام", d: "Tu ne paies qu'à la livraison. Aucun risque." },
-    { i: Truck, t: "Livraison 24–48h", d: "On livre partout au Maroc." },
-    { i: RotateCcw, t: "Garantie 4 semaines", d: "Résultats pas visibles? On rembourse." },
+    { i: Leaf, t: t(lang, "home.why1t"), d: t(lang, "home.why1d") },
+    { i: MapPin, t: t(lang, "home.why2t"), d: t(lang, "home.why2d") },
+    { i: ShieldCheck, t: t(lang, "home.why3t"), d: t(lang, "home.why3d") },
+    { i: CreditCard, t: t(lang, "home.why4t"), d: t(lang, "home.why4d") },
+    { i: Truck, t: t(lang, "home.why5t"), d: t(lang, "home.why5d") },
+    { i: RotateCcw, t: t(lang, "home.why6t"), d: t(lang, "home.why6d") },
   ];
 
   return (
@@ -34,17 +43,17 @@ export default function HomePage() {
           </Reveal>
           <Reveal className="md:order-1">
             <div>
-              <p className="text-champagne text-sm font-body mb-2">✦ ماركة مغربية · 100% طبيعي · الدفع عند الاستلام ✦</p>
+              <p className="text-champagne text-sm font-body mb-2">{t(lang, "home.heroEyebrow")}</p>
               <h1 className="text-5xl md:text-6xl leading-tight">
-                La beauté authentique, <span className="text-gradient">née au Maroc</span>
+                {t(lang, "home.heroH1")}
               </h1>
-              <p className="font-arabic text-2xl text-warda mt-3">جمالك يستاهل الأحسن — مصنوعة هنا، لبشرتك أنتِ</p>
+              {lang === "ar" && <p className="font-arabic text-2xl text-warda mt-3">{t(lang, "home.heroAr")}</p>}
               <div className="mt-6 flex gap-3 flex-wrap">
-                <Link href="/collection" className="btn-primary btn-glow">Découvrir nos produits</Link>
-                <Link href="/notre-histoire" className="btn-outline">Notre histoire</Link>
+                <Link href="/collection" className="btn-primary btn-glow">{t(lang, "home.discover")}</Link>
+                <Link href="/notre-histoire" className="btn-outline">{t(lang, "home.story")}</Link>
               </div>
               <p className="text-sm text-gris mt-3 flex items-center gap-2">
-                🚚 Livraison gratuite · 💳 Paiement à la livraison · ↩️ Retour 30 jours
+                {t(lang, "home.heroFooter")}
               </p>
             </div>
           </Reveal>
@@ -58,19 +67,30 @@ export default function HomePage() {
         </Reveal>
       </section>
 
+      {/* PROBLEM / EMPATHY */}
+      <section className="container-page pt-16 md:pt-24">
+        <Reveal>
+          <div className="bg-profond text-petal rounded-3xl p-8 md:p-12 text-center">
+            <p className="font-display text-3xl mb-4">{t(lang, "home.problemTitle")}</p>
+            <p className="font-body text-petal/90 max-w-2xl mx-auto">{t(lang, "home.problemBody")}</p>
+            {lang === "ar" && <p className="font-arabic text-2xl text-or-doux mt-4">{t(lang, "home.problemMicro")}</p>}
+          </div>
+        </Reveal>
+      </section>
+
       {/* BRAND STORY */}
-      <Section eyebrow="Notre Histoire" title="Née d'une conviction marocaine" imageLabel="Cuisine Casablanca" imageSrc="/logo.png" imageSide="left">
-        <p>Warda Beauté est née dans une cuisine à Casablanca. Sa fondatrice cherchait une solution aux vergetures après sa grossesse et ne trouvait que des produits importés chers ou sans transparence.</p>
-        <p>Elle a formulé ses propres solutions — avec des ingrédients sourcés au Maroc, testés sur sa peau, sur celle de ses amies, de sa sœur, de sa mère.</p>
-        <p className="font-arabic text-warda text-xl">"هدفنا واحد — كل امرأة مغربية تحس بجمالها بدون ما تخبي جسمها"</p>
+      <Section eyebrow={t(lang, "home.storyEyebrow")} title={t(lang, "home.storyTitle")} imageLabel="Cuisine Casablanca" imageSrc="/logo.png" imageSide="left">
+        <p>{t(lang, "home.story1")}</p>
+        <p>{t(lang, "home.story2")}</p>
+        {lang === "ar" && <p className="font-arabic text-warda text-xl">{t(lang, "home.storyQuote")}</p>}
       </Section>
 
       {/* FEATURED */}
       <section className="section">
         <div className="container-page">
           <Reveal>
-            <p className="text-champagne text-sm font-body uppercase">Nos Produits</p>
-            <h2 className="text-4xl text-profond mb-6">Trois solutions. Un seul objectif : te sentir belle.</h2>
+            <p className="text-champagne text-sm font-body uppercase">{t(lang, "home.featuredEyebrow")}</p>
+            <h2 className="text-4xl text-profond mb-6">{t(lang, "home.featuredTitle")}</h2>
           </Reveal>
           <div className="grid md:grid-cols-3 gap-6">
             {featured.map((s, idx) => (
@@ -82,17 +102,65 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* SCIENCE / WHY OUR ACTIVES WORK */}
+      <section className="section bg-white">
+        <div className="container-page">
+          <Reveal>
+            <p className="text-champagne text-sm font-body uppercase text-center">{t(lang, "home.scienceEyebrow")}</p>
+            <h2 className="text-4xl text-profond mb-8 text-center">{t(lang, "home.scienceTitle")}</h2>
+          </Reveal>
+          <div className="grid md:grid-cols-3 gap-5">
+            {[
+              { i: "🌿", t: t(lang, "home.sci1t"), d: t(lang, "home.sci1d") },
+              { i: "🌊", t: t(lang, "home.sci2t"), d: t(lang, "home.sci2d") },
+              { i: "🍊", t: t(lang, "home.sci3t"), d: t(lang, "home.sci3d") },
+            ].map((s, idx) => (
+              <Reveal key={s.t} delay={idx * 0.1}>
+                <div className="rounded-2xl border border-brume p-6 card-hover h-full">
+                  <div className="text-4xl mb-3">{s.i}</div>
+                  <h3 className="font-display text-xl text-profond mb-2">{s.t}</h3>
+                  <p className="font-body text-brun text-sm">{s.d}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* BUNDLE */}
+      <section className="section">
+        <Reveal>
+          <div className="container-page text-center">
+            <h2 className="text-4xl text-profond mb-2">{t(lang, "home.bundleTitle")}</h2>
+            <p className="font-body text-brun mb-4">{t(lang, "home.bundleSub")}</p>
+            <Link href="/kit-collagene" className="block max-w-md mx-auto mb-6 overflow-hidden rounded-3xl card-hover shadow-lg">
+              <img
+                src="/kit-collagene-hero.png"
+                alt="Kit Collagène Inside & Outside — VelvaStretch™ + CollaGlow™"
+                className="w-full aspect-[4/5] object-cover"
+              />
+            </Link>
+            <div className="inline-flex flex-wrap justify-center gap-3 mb-4">
+              {bundle.contents.map((s) => <span key={s} className="badge-pill">{catalog[s].name}</span>)}
+            </div>
+            <div className="text-2xl font-display text-profond mb-2">{bundlePrice} MAD <span className="line-through text-gris text-base">{bundleOld} MAD</span></div>
+            <p className="text-champagne text-sm mb-4">{t(lang, "kit.save")} {bundleSave} MAD · {t(lang, "kit.urgency")}</p>
+            <Link href="/kit-collagene" className="btn-primary btn-glow">{t(lang, "home.bundleCta")}</Link>
+          </div>
+        </Reveal>
+      </section>
+
       {/* HOW IT WORKS */}
       <section className="section bg-white">
         <div className="container-page">
           <Reveal>
-            <h2 className="text-4xl text-profond mb-8 text-center">Comment commander? C'est simple.</h2>
+            <h2 className="text-4xl text-profond mb-8 text-center">{t(lang, "home.howTitle")}</h2>
           </Reveal>
           <div className="grid md:grid-cols-3 gap-6 text-center">
             {[
-              { i: "📱", t: "Choisis ton produit", d: "Sélectionne ton produit. Pas de compte, pas de carte." },
-              { i: "📝", t: "Laisse tes coordonnées", d: "Nom + téléphone. On t'appelle pour confirmer." },
-              { i: "📦", t: "Reçois et paie", d: "Tu reçois en 24–48h. Tu paies cash au livreur." },
+              { i: "📱", t: t(lang, "home.how1t"), d: t(lang, "home.how1d") },
+              { i: "📝", t: t(lang, "home.how2t"), d: t(lang, "home.how2d") },
+              { i: "📦", t: t(lang, "home.how3t"), d: t(lang, "home.how3d") },
             ].map((s, idx) => (
               <Reveal key={s.t} delay={idx * 0.1}>
                 <div className="rounded-2xl border border-brume p-6 card-hover">
@@ -103,7 +171,9 @@ export default function HomePage() {
               </Reveal>
             ))}
           </div>
-          <p className="text-center font-arabic text-gris mt-6">الدفع عند الاستلام — مكتعطيش درهم حتى توصلك السلعة في يديك</p>
+          {lang === "ar" && (
+            <p className="text-center font-arabic text-gris mt-6">الدفع عند الاستلام — مكتعطيش درهم حتى توصلك السلعة في يديك</p>
+          )}
         </div>
       </section>
 
@@ -112,20 +182,37 @@ export default function HomePage() {
         <div className="container-page">
           <Reveal>
             <h2 className="text-4xl text-profond mb-2 text-center">
-              Plus de <CountUp to={2400} suffix=" femmes marocaines" className="text-gradient font-display" /> satisfaites
+              Plus de <CountUp to={2400} suffix={t(lang, "home.socialSuffix")} className="text-gradient font-display" /> satisfaites
             </h2>
+            <div className="flex flex-wrap justify-center gap-2 mt-3">
+              {["Casablanca", "Rabat", "Marrakech", "Agadir", "Fès", "Tanger"].map((c) => (
+                <span key={c} className="badge-pill">📍 {c}</span>
+              ))}
+            </div>
           </Reveal>
         </div>
         <div className="mt-6">
-          <Marquee speed={38}>
-            {allTestimonials.map((t, i) => (
-              <div key={i} className="w-80 shrink-0 rounded-2xl bg-white border border-brume p-5 shadow-soft">
-                <div className="text-champagne text-sm mb-2">{"★".repeat(t.stars)}</div>
-                <p className="font-body text-brun text-sm">“{t.text}”</p>
-                <p className="font-body text-gris text-xs mt-3">— {t.name}</p>
-              </div>
-            ))}
-          </Marquee>
+          {lang === "ar" ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 px-2">
+              {allTestimonials.slice(0, 4).map((tm, i) => (
+                <div key={i} dir="rtl" className="w-full rounded-2xl bg-white border border-brume p-5 shadow-soft">
+                  <div className="text-champagne text-sm mb-2">{"★".repeat(tm.stars)}</div>
+                  <p className="font-body text-brun text-sm">“{tm.text}”</p>
+                  <p className="font-body text-gris text-xs mt-3">— {tm.name}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <Marquee speed={38}>
+              {allTestimonials.map((tm, i) => (
+                <div key={i} className="w-80 shrink-0 rounded-2xl bg-white border border-brume p-5 shadow-soft">
+                  <div className="text-champagne text-sm mb-2">{"★".repeat(tm.stars)}</div>
+                  <p className="font-body text-brun text-sm">“{tm.text}”</p>
+                  <p className="font-body text-gris text-xs mt-3">— {tm.name}</p>
+                </div>
+              ))}
+            </Marquee>
+          )}
         </div>
       </section>
 
@@ -133,7 +220,7 @@ export default function HomePage() {
       <section className="section bg-white">
         <div className="container-page">
           <Reveal>
-            <h2 className="text-4xl text-profond mb-8 text-center">Pourquoi des milliers de Marocaines nous font confiance?</h2>
+            <h2 className="text-4xl text-profond mb-8 text-center">{t(lang, "home.whyTitle")}</h2>
           </Reveal>
           <div className="grid md:grid-cols-3 gap-5">
             {why.map((w, idx) => (
@@ -151,32 +238,18 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* BUNDLE */}
-      <section className="section">
-        <Reveal>
-          <div className="container-page text-center">
-            <h2 className="text-4xl text-profond mb-2">Le Kit Complet — <span className="text-gradient">Body Confidence Kit</span></h2>
-            <p className="font-body text-brun mb-4">Les 3 produits ensemble — parce que ta beauté mérite tout.</p>
-            <div className="inline-flex flex-wrap justify-center gap-3 mb-4">
-              {bundle.contents.map((s) => <span key={s} className="badge-pill">{products[s].name}</span>)}
-            </div>
-            <div className="text-2xl font-display text-profond mb-2">{bundle.price} MAD <span className="line-through text-gris text-base">{bundle.oldPrice} MAD</span></div>
-            <p className="text-champagne text-sm mb-4">Vous économisez {bundle.save} MAD (21%) · {bundle.urgency}</p>
-            <Link href="/collection" className="btn-primary btn-glow">Commander le Kit Complet</Link>
-          </div>
-        </Reveal>
-      </section>
+      <AssuranceBlock />
 
       {/* FINAL CTA */}
       <section className="section bg-gradient-to-br from-profond to-warda text-petal text-center relative overflow-hidden">
         <FloatingPetals count={8} />
         <div className="container-page relative">
           <Reveal>
-            <h2 className="text-4xl font-display">أنتِ تستحقي — ابدأي اليوم</h2>
-            <p className="font-body mt-3 max-w-xl mx-auto">Chaque jour que tu attends est un jour de plus à cacher ton corps. Warda Beauté est là, formulée pour toi, livrée chez toi, payée à la livraison.</p>
+            <h2 className="text-4xl font-display">{t(lang, "home.finalTitle")}</h2>
+            <p className="font-body mt-3 max-w-xl mx-auto">{t(lang, "home.finalBody")}</p>
             <div className="mt-5 flex gap-3 justify-center flex-wrap">
-              <Link href="/collection" className="btn-primary btn-glow">Découvrir nos produits</Link>
-              <Link href="/collection" className="btn-outline !text-petal !border-petal">Voir le Kit Complet</Link>
+              <Link href="/collection" className="btn-primary btn-glow">{t(lang, "home.finalCta1")}</Link>
+              <Link href="/kit-collagene" className="btn-outline !text-petal !border-petal">{t(lang, "home.finalCta2")}</Link>
             </div>
           </Reveal>
         </div>

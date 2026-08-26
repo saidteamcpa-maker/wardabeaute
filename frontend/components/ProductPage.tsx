@@ -5,19 +5,27 @@ import { IngredientTable } from "@/components/IngredientTable";
 import { Faq } from "@/components/Faq";
 import { AddToCartButton } from "@/components/AddToCartButton";
 import { StickyCTA } from "@/components/StickyCTA";
-import { SampleImage } from "@/components/SampleImage";
+import { AssuranceBlock } from "@/components/AssuranceBlock";
+import { ComparisonTable } from "@/components/ComparisonTable";
 import { Reveal } from "@/components/ui/Reveal";
 import { FloatingPetals } from "@/components/ui/FloatingPetals";
 import { IconBadge } from "@/components/ui/IconBadge";
 import { Check, Sparkles, FlaskConical, Truck, ShieldCheck } from "lucide-react";
-import { products } from "@/content/products";
+import { localize, unitPrice } from "@/content/products";
+import { getLangServer } from "@/lib/lang-server";
+import { getCatalog } from "@/lib/catalog";
+import { t } from "@/content/ui";
+import { ProductViewPixel } from "@/components/pixels/ProductViewPixel";
 
 const BENEFIT_ICONS = [Check, Sparkles, FlaskConical, Truck, ShieldCheck, Check];
 
-export function ProductPage({ slug }: { slug: string }) {
-  const p = products[slug];
+export async function ProductPage({ slug }: { slug: string }) {
+  const lang = getLangServer();
+  const catalog = await getCatalog();
+  const p = localize(catalog[slug], lang);
   return (
     <div className="pb-24 md:pb-0">
+      <ProductViewPixel slug={slug} value={unitPrice(slug, 1, catalog)} />
       {/* HERO */}
       <section className="section relative overflow-hidden">
         <FloatingPetals />
@@ -28,14 +36,14 @@ export function ProductPage({ slug }: { slug: string }) {
               <h1 className="text-4xl md:text-5xl leading-tight">
                 <span className="text-gradient">{p.hero.h1}</span>
               </h1>
-              <p className="font-arabic text-2xl text-warda mt-2">{p.hero.h1Ar}</p>
+              {lang === "ar" && <p className="font-arabic text-2xl text-warda mt-2">{p.hero.h1Ar}</p>}
               <p className="font-body text-brun mt-4">{p.hero.sub}</p>
-              <p className="font-arabic text-gris mt-1">{p.hero.subAr}</p>
+              {lang === "ar" && <p className="font-arabic text-gris mt-1">{p.hero.subAr}</p>}
 
               <div className="my-4 flex items-center gap-3">
                 <span className="text-2xl font-display text-profond">{p.price} MAD</span>
                 <span className="line-through text-gris">{p.oldPrice} MAD</span>
-                <span className="text-champagne text-sm">★ {p.stars} ({p.reviews})</span>
+                <span className="text-champagne text-sm">★ {p.stars} ({p.reviews} {t(lang, "reviews")})</span>
               </div>
 
               <TrustBadges />
@@ -46,18 +54,20 @@ export function ProductPage({ slug }: { slug: string }) {
             </div>
           </Reveal>
           <Reveal delay={0.15} className="order-first md:order-2">
-            <SampleImage label={`${p.name} — ${p.arSub}`} className="card-hover" />
+            <div className="overflow-hidden rounded-2xl card-hover">
+              <img src={p.image} alt={p.name} className="w-full aspect-[4/5] object-cover" />
+            </div>
           </Reveal>
         </div>
       </section>
 
       {/* HOOK */}
       <section className="container-page">
-        <p className="font-body text-brun text-lg italic border-r-4 border-warda pr-4">{p.hook}</p>
+        <p className="font-body text-brun text-lg italic border-s-4 border-warda ps-4">{p.hook}</p>
       </section>
 
       {/* DESCRIPTION */}
-      <Section eyebrow="Ce que ça fait" title={`${p.name} pour toi`} imageLabel="Texture / Lifestyle" imageSide="right">
+      <Section eyebrow={t(lang, "pp.ceLabel")} title={`${p.name} pour toi`} imageLabel="Texture / Lifestyle" imageSide="right">
         {p.description.map((d, i) => <p key={i}>{d}</p>)}
       </Section>
 
@@ -65,7 +75,7 @@ export function ProductPage({ slug }: { slug: string }) {
       <section className="section bg-white">
         <div className="container-page">
           <Reveal>
-            <h2 className="text-3xl text-profond mb-6">Pourquoi tu vas l'aimer</h2>
+            <h2 className="text-3xl text-profond mb-6">{t(lang, "pp.whyLove")}</h2>
           </Reveal>
           <ul className="grid md:grid-cols-2 gap-3 font-body text-brun">
             {p.benefits.map((b, i) => (
@@ -80,22 +90,32 @@ export function ProductPage({ slug }: { slug: string }) {
         </div>
       </section>
 
+      {/* COMPARISON */}
+      <section className="section bg-petal/40">
+        <div className="container-page">
+          <Reveal>
+            <h2 className="text-3xl text-profond mb-4">{t(lang, "pp.comparisonTitle")}</h2>
+          </Reveal>
+          <ComparisonTable slug={slug} />
+        </div>
+      </section>
+
       {/* INGREDIENTS */}
-      <Section eyebrow="La science" title="Les ingrédients" imageLabel="Ingrédients" imageSide="left">
+      <Section eyebrow={t(lang, "pp.science")} title={t(lang, "pp.ingredients")} imageLabel="Ingrédients" imageSide="left">
         <IngredientTable items={p.ingredients} />
         <details className="mt-3">
-          <summary className="font-body text-warda cursor-pointer">Voir la liste INCI complète</summary>
+          <summary className="font-body text-warda cursor-pointer">{t(lang, "pp.viewInci")}</summary>
           <p className="text-sm text-gris mt-2">{p.inci}</p>
         </details>
       </Section>
 
       {/* HOW TO */}
-      <Section eyebrow="Comment utiliser" title="En 5 étapes" imageLabel="Application" imageSide="right">
+      <Section eyebrow={t(lang, "pp.howTo")} title={t(lang, "pp.steps")} imageLabel="Application" imageSide="right">
         <ol className="list-decimal list-inside space-y-1">
           {p.howTo.map((h, i) => <li key={i}>{h}</li>)}
         </ol>
         <div className="mt-3">
-          <p className="font-medium text-profond">Pour toi si :</p>
+          <p className="font-medium text-profond">{t(lang, "pp.forYouIf")}</p>
           <ul>{p.whoFor.map((w, i) => <li key={i}>• {w}</li>)}</ul>
         </div>
       </Section>
@@ -104,7 +124,7 @@ export function ProductPage({ slug }: { slug: string }) {
       <section className="section">
         <div className="container-page">
           <Reveal>
-            <h2 className="text-3xl text-profond mb-6">Elles témoignent</h2>
+            <h2 className="text-3xl text-profond mb-6">{t(lang, "pp.testimonials")}</h2>
           </Reveal>
           <TestimonialGrid items={p.testimonials} />
         </div>
@@ -114,10 +134,14 @@ export function ProductPage({ slug }: { slug: string }) {
       <section className="section bg-white">
         <Reveal>
           <div className="container-page text-center">
-            <h2 className="text-3xl text-profond mb-3">Encore plus de résultats</h2>
+            <h2 className="text-3xl text-profond mb-3">{t(lang, "pp.moreResults")}</h2>
             <p className="font-body text-brun mb-4">{p.upsellCopy}</p>
             <div className="max-w-xs mx-auto">
-              <AddToCartButton slug={p.crossSell.slug} />
+              {p.upsellSlugs ? (
+                <AddToCartButton slug={p.upsellSlugs[0]} bundleSlugs={p.upsellSlugs} ctaLabel={t(lang, "addToCart")} />
+              ) : (
+                <AddToCartButton slug={p.upsellSlug ?? p.crossSell.slug} defaultQty={p.upsellQty} />
+              )}
             </div>
           </div>
         </Reveal>
@@ -127,11 +151,15 @@ export function ProductPage({ slug }: { slug: string }) {
       <section className="section">
         <Reveal>
           <div className="container-page">
-            <h2 className="text-3xl text-profond mb-3">Les femmes qui ont pris {p.name} ont aussi pris</h2>
+            <h2 className="text-3xl text-profond mb-3">{t(lang, "pp.alsoBought").replace("{name}", p.name)}</h2>
             <div className="rounded-2xl border border-brume p-4 flex flex-col sm:flex-row items-center justify-between gap-4 card-hover">
               <div>
-                <p className="font-display text-xl text-profond">{products[p.crossSell.slug].name}</p>
-                <p className="font-arabic text-gris text-sm">{products[p.crossSell.slug].arSub}</p>
+                <p className="font-display text-xl text-profond">{localize(catalog[p.crossSell.slug], lang).name}</p>
+                {lang === "ar" ? (
+                  <p className="font-arabic text-gris text-sm">{localize(catalog[p.crossSell.slug], lang).arSub}</p>
+                ) : (
+                  <p className="text-gris text-sm">{localize(catalog[p.crossSell.slug], lang).hero.sub}</p>
+                )}
                 <p className="text-sm text-gris mt-1">{p.crossSell.copy}</p>
               </div>
               <div className="min-w-[200px]">
@@ -142,11 +170,13 @@ export function ProductPage({ slug }: { slug: string }) {
         </Reveal>
       </section>
 
+      <AssuranceBlock />
+
       {/* FAQ */}
       <section className="section bg-white">
         <div className="container-page">
           <Reveal>
-            <h2 className="text-3xl text-profond mb-6">Questions fréquentes</h2>
+            <h2 className="text-3xl text-profond mb-6">{t(lang, "pp.faq")}</h2>
           </Reveal>
           <Faq items={p.faq} />
         </div>

@@ -1,23 +1,54 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { ShoppingCart, Menu, X, Flower2 } from "lucide-react";
+import { useEffect, useState, type ComponentType } from "react";
+import { createPortal } from "react-dom";
+import { ShoppingCart, Menu, X, ChevronDown } from "lucide-react";
+import { FaWhatsapp, FaInstagram, FaTiktok, FaEnvelope } from "react-icons/fa";
 import { useCart } from "@/lib/cart";
+import { useLang } from "@/components/LangProvider";
+import { LangToggle } from "@/components/LangToggle";
+import { t } from "@/content/ui";
 
-const NAV = [
-  { href: "/collection", label: "Produits" },
-  { href: "/notre-histoire", label: "Notre Histoire" },
-  { href: "/faq", label: "FAQ" },
-  { href: "/contact", label: "Contact" },
+type MenuChild = { label: string; key?: string; href: string; icon?: ComponentType<{ className?: string }> };
+type MenuItem = { label: string; key?: string; href?: string; children?: MenuChild[] };
+
+const MENU: MenuItem[] = [
+  { label: "Notre Histoire", key: "nav.notreHistoire", href: "/notre-histoire" },
+  {
+    label: "Nos Produits",
+    key: "nav.products",
+    children: [
+      { label: "VelvaStretch™", href: "/velvastretch" },
+      { label: "SilkStop™", href: "/silkstop" },
+      { label: "CollaGlow™", href: "/collaglow" },
+      { label: "Kit Collagène Inside & Outside", href: "/kit-collagene" },
+    ],
+  },
+  {
+    label: "Nous contacter",
+    key: "nav.contact",
+    children: [
+      { label: "WhatsApp", key: "nav.whatsapp", href: "/contact", icon: FaWhatsapp },
+      { label: "Email", key: "nav.email", href: "/contact", icon: FaEnvelope },
+      { label: "Instagram", key: "nav.instagram", href: "/contact", icon: FaInstagram },
+      { label: "TikTok", key: "nav.tiktok", href: "/contact", icon: FaTiktok },
+    ],
+  },
+  { label: "Politique de retour", key: "nav.retour", href: "/politique-de-retour" },
+  { label: "Suivi commande", key: "nav.suivi", href: "/suivi-commande" },
+  { label: "Livraison", key: "nav.livraison", href: "/politique-de-retour" },
+  { label: "Conditions d'utilisation", key: "nav.conditions", href: "/politique-de-confidentialite" },
 ];
 
 export function Header() {
+  const { lang } = useLang();
   const items = useCart((s) => s.items);
   const openCart = useCart((s) => s.openCart);
   const count = items.reduce((n, i) => n + i.qty, 0);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -33,39 +64,27 @@ export function Header() {
       }`}
     >
       <div className="container-page flex items-center justify-between h-16 gap-2">
-        {/* Left: hamburger (mobile only) */}
         <button
-          className="md:hidden order-1 text-2xl text-profond"
-          aria-label="Menu"
+          className="order-1 text-2xl text-profond"
+          aria-label={t(lang, "menu")}
           onClick={() => setMenuOpen(true)}
         >
           <Menu className="w-7 h-7" strokeWidth={1.6} />
         </button>
 
-        {/* Logo: center on mobile, left on desktop */}
         <Link
           href="/"
-          className="order-2 md:order-1 mx-auto md:mx-0 flex items-center gap-2 font-display text-2xl text-profond"
+          dir="ltr"
+          style={{ fontFamily: '"Cairo", "Playfair Display", Georgia, serif' }}
+          className="order-2 mx-auto flex items-center gap-2 font-display text-2xl text-profond"
         >
-          <Flower2 className="w-6 h-6 text-warda" strokeWidth={1.5} />
+          <img src="/header-logo.png" alt="Warda Beauté" className="w-7 h-7 object-contain" />
           Warda Beauté
         </Link>
 
-        {/* Nav (desktop) */}
-        <nav className="hidden md:flex gap-7 order-3 md:order-2 font-body text-brun">
-          {NAV.map((n) => (
-            <Link key={n.href} href={n.href} className="hover:text-warda transition relative after:absolute after:-bottom-1 after:left-0 after:h-px after:w-0 hover:after:w-full after:bg-warda after:transition-all">
-              {n.label}
-            </Link>
-          ))}
-        </nav>
-
-        {/* Right: CTA + cart */}
-        <div className="flex items-center gap-3 order-4 md:order-3">
-          <Link href="/collection" className="btn-primary !px-4 !py-2 text-sm hidden md:inline-flex btn-glow">
-            🌸 Commander — 279 MAD
-          </Link>
-          <button onClick={openCart} aria-label="Panier" className="relative text-2xl text-profond hover:scale-110 transition">
+        <div className="flex items-center gap-2 order-3">
+          <LangToggle />
+          <button onClick={openCart} aria-label={t(lang, "cartAria")} className="relative text-2xl text-profond hover:scale-110 transition">
             <ShoppingCart className="w-7 h-7" strokeWidth={1.6} />
             {count > 0 && (
               <span className="absolute -top-2 -right-2 bg-profond text-white text-xs rounded-full w-5 h-5 grid place-items-center animate-pulseSoft">
@@ -76,28 +95,64 @@ export function Header() {
         </div>
       </div>
 
-      {menuOpen && (
-        <div className="fixed inset-0 z-50 md:hidden">
-          <div className="absolute inset-0 bg-brun/40" onClick={() => setMenuOpen(false)} />
-          <div className="absolute right-0 top-0 h-full w-72 bg-petal p-6 shadow-soft">
-            <div className="flex justify-end">
-              <button onClick={() => setMenuOpen(false)} aria-label="Fermer">
-                <X className="w-7 h-7 text-profond" />
-              </button>
+      {menuOpen &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div className="fixed inset-0 z-50">
+            <div className="absolute inset-0 bg-brun/40" onClick={() => setMenuOpen(false)} />
+            <div className="absolute left-0 top-0 h-full w-72 bg-petal p-6 shadow-soft overflow-y-auto">
+              <div className="flex justify-end">
+                <button onClick={() => setMenuOpen(false)} aria-label={t(lang, "close")}>
+                  <X className="w-7 h-7 text-profond" />
+                </button>
+              </div>
+              <nav className="flex flex-col mt-4 font-body text-lg text-brun">
+                {MENU.map((m) =>
+                  m.children ? (
+                    <div key={m.label} className="border-b border-brume/60">
+                      <button
+                        type="button"
+                        onClick={() => setOpenMenus((s) => ({ ...s, [m.label]: !s[m.label] }))}
+                        className="flex w-full items-center justify-between py-3 hover:text-warda"
+                        aria-expanded={!!openMenus[m.label]}
+                      >
+                        <span>{m.key ? t(lang, m.key!) : m.label}</span>
+                        <ChevronDown
+                          className={`w-5 h-5 transition-transform ${openMenus[m.label] ? "rotate-180" : ""}`}
+                        />
+                      </button>
+                      {openMenus[m.label] && (
+                        <div className="flex flex-col gap-2 pb-3 pl-3 text-base">
+                          {m.children.map((c) => (
+                            <Link
+                              key={c.label}
+                              href={c.href}
+                              onClick={() => setMenuOpen(false)}
+                              className="flex items-center gap-2 hover:text-warda"
+                            >
+                              {c.icon && <c.icon className="w-4 h-4" aria-hidden />}
+                              <span>{c.key ? t(lang, c.key!) : c.label}</span>
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <Link
+                      key={m.label}
+                      href={m.href!}
+                      onClick={() => setMenuOpen(false)}
+                      className="py-3 border-b border-brume/60 hover:text-warda"
+                    >
+                      {m.key ? t(lang, m.key!) : m.label}
+                    </Link>
+                  )
+                )}
+              </nav>
             </div>
-            <nav className="flex flex-col gap-5 mt-6 font-body text-lg text-brun">
-              {NAV.map((n) => (
-                <Link key={n.href} href={n.href} onClick={() => setMenuOpen(false)} className="hover:text-warda">
-                  {n.label}
-                </Link>
-              ))}
-              <Link href="/collection" onClick={() => setMenuOpen(false)} className="btn-primary mt-2">
-                🌸 Commander
-              </Link>
-            </nav>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body
+        )}
     </header>
   );
 }

@@ -1,45 +1,69 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { AnnouncementBar } from "@/components/AnnouncementBar";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { CartDrawer } from "@/components/CartDrawer";
-import { CheckoutPopup } from "@/components/CheckoutPopup";
-import { WhatsAppButton } from "@/components/WhatsAppButton";
-import { SocialProofToast } from "@/components/SocialProofToast";
+import { StorefrontHeader, StorefrontFooterArea } from "@/components/StorefrontChrome";
 import { MetaPixel } from "@/components/pixels/MetaPixel";
 import { TikTokPixel } from "@/components/pixels/TikTokPixel";
+import { GoogleTag } from "@/components/pixels/GoogleTag";
 import { Toaster } from "react-hot-toast";
+import { LangProvider } from "@/components/LangProvider";
+import { getLangServer } from "@/lib/lang-server";
+import { dirFor } from "@/lib/i18n-shared";
+import { getCatalog } from "@/lib/catalog";
+import { CatalogProvider } from "@/lib/catalog-context";
+import { getPixelConfig } from "@/lib/pixel-config";
+import { PixelsConfig } from "@/components/pixels/PixelsConfig";
+import { PixelDebug } from "@/components/pixels/PixelDebug";
 
-export const metadata: Metadata = {
-  title: "Warda Beauté | وردة بيوتي — Produits Beauté Naturels au Maroc | Paiement à la Livraison",
-  description:
-    "Warda Beauté — سيروم علامات التمدد، زيت إيقاف نمو الشعر، وعلكات الكولاجين. مصنوع في المغرب. الدفع عند الاستلام. توصيل 24-48 ساعة.",
+const META = {
+  fr: {
+    title: "Warda Beauté | Soins beauté naturels au Maroc | Paiement à la livraison",
+    description:
+      "Warda Beauté — sérums anti-vergetures, huile ralentisseuse de repousse et gummies au collagène. Fabriqué au Maroc. Livraison 24-48h, paiement à la livraison.",
+  },
+  ar: {
+    title: "Warda Beauté | دوايات تجميل طبيعية فالمغرب | الخلاص عند الاستلام",
+    description:
+      "Warda Beauté — سيروم لعلامات التمدد، وزيت بغي بطّأ رجوع الشعر، وعلكات الكولاجين. مصنوعة فالمغرب. التوصيل 24-48 ساعة، والخلاص عند الاستلام.",
+  },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export function generateMetadata(): Metadata {
+  const lang = getLangServer();
+  const m = META[lang];
+  return {
+    title: m.title,
+    description: m.description,
+  };
+}
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const lang = getLangServer();
+  const catalog = await getCatalog();
+  const pixelConfig = await getPixelConfig();
   return (
-    <html lang="fr">
+    <html lang={lang === "ar" ? "ar-MA" : "fr"} dir={dirFor(lang)}>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Cairo:wght@400;600&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Cairo:wght@400;600;700&family=Amiri:wght@400;700&display=swap"
           rel="stylesheet"
         />
       </head>
       <body className="font-body">
-        <MetaPixel />
-        <TikTokPixel />
-        <AnnouncementBar />
-        <Header />
-        <main>{children}</main>
-        <Footer />
-        <WhatsAppButton />
-        <CartDrawer />
-        <CheckoutPopup />
-        <SocialProofToast />
+        <GoogleTag id={pixelConfig.gtmId} enabled={pixelConfig.enabled} />
+        <MetaPixel id={pixelConfig.metaPixelId} enabled={pixelConfig.enabled} />
+        <TikTokPixel id={pixelConfig.tiktokPixelId} enabled={pixelConfig.enabled} />
+        <PixelsConfig enabled={pixelConfig.enabled} />
+        <LangProvider initialLang={lang}>
+          <CatalogProvider catalog={catalog}>
+            <StorefrontHeader />
+            <main>{children}</main>
+            <StorefrontFooterArea />
+          </CatalogProvider>
+        </LangProvider>
         <Toaster />
+        <PixelDebug />
       </body>
     </html>
   );

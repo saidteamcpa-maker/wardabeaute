@@ -1,53 +1,428 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import { FaWhatsapp, FaPhoneAlt, FaShieldAlt, FaTruck } from "react-icons/fa";
+import {
+  PhoneCall,
+  Package,
+  Sparkles,
+  Clock,
+} from "lucide-react";
 import { ProductCard } from "@/components/ProductCard";
-import { products } from "@/content/products";
+import { productList, bundle } from "@/content/products";
+import { useLang } from "@/components/LangProvider";
+import { useCatalog } from "@/lib/catalog-context";
 
-function ConfirmationInner() {
-  const params = useSearchParams();
-  const id = params.get("id") || "";
-  const upsell = params.get("upsell") === "1";
-  const cross = Object.keys(products).slice(0, 3);
-
+function Stars({ value }: { value: number }) {
   return (
-    <div className="section">
-      <div className="container-page max-w-2xl text-center">
-        <h1 className="text-4xl text-profond mb-2">شكراً! طلبيتك مسجلة 🌹</h1>
-        {id && <p className="font-body text-brun">رقم طلبيتك: <span className="font-medium text-profond">#{id}</span></p>}
-        <p className="font-body text-brun mt-3">
-          غادي نتصلو بيك خلال ساعة واحدة باش نأكدو طلبيتك. التوصيل: 24–48 ساعة بعد التأكيد.
-        </p>
-        <div className="rounded-2xl bg-white border border-brume p-5 mt-5 text-left font-body text-brun">
-          <p>💳 الدفع عند الاستلام</p>
-          <p>🚚 التوصيل خلال 24–48 ساعة (86% de nos clientes confirment sous 4h)</p>
-          <p>↩️ Garantie 4 semaines ou remboursé</p>
-          {upsell && <p className="text-champagne mt-2">🎁 Mini Soin Warda ajouté à votre commande (+99 MAD)</p>}
-        </div>
-        <a
-          href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "212600000000"}?text=${encodeURIComponent("سلام 🌹 تأكيد الطلبية #" + id)}`}
-          target="_blank"
-          className="btn-primary mt-5 inline-flex"
-        >
-          مراسلتنا على واتساب
-        </a>
-
-        <h2 className="text-2xl text-profond mt-10 mb-4">النساء اللي شراو هاد المنتج شراو أيضاً</h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-left">
-          {cross.map((s) => <ProductCard key={s} slug={s} />)}
-        </div>
-        <Link href="/collection" className="btn-outline mt-8 inline-flex">Retour à la boutique</Link>
-      </div>
-    </div>
+    <span className="text-champagne">
+      {"★".repeat(5)}
+      <span className="sr-only">{value}</span>
+    </span>
   );
 }
 
 export default function ConfirmationPage() {
+  const params = useSearchParams();
+  const id = params.get("id") || "";
+  const upsell = params.get("upsell") === "1";
+  const { lang } = useLang();
+  const catalog = useCatalog();
+  const A = (ar: string, fr: string) => (lang === "ar" ? ar : fr);
+  const kitCat: any = catalog["kit-collagene"];
+  const kitPrice = kitCat?.price ?? bundle.price;
+  const kitOld = kitCat?.oldPrice ?? bundle.oldPrice;
+  const kitSave = Math.max(0, (kitOld as number) - (kitPrice as number));
+
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  const lastOrder: any = mounted
+    ? (() => {
+        try {
+          return JSON.parse(sessionStorage.getItem("warda-last-order") || "null");
+        } catch {
+          return null;
+        }
+      })()
+    : null;
+
+  const orderedSlugs: string[] = (lastOrder?.items || [])
+    .map((i: any) => {
+      const p =
+        (i.slug && catalog[i.slug]) ||
+        productList.find((x) => x.name === i.name) ||
+        null;
+      return p?.slug;
+    })
+    .filter(Boolean) as string[];
+
+  const firstName =
+    (lastOrder?.customer_name && lastOrder.customer_name.split(" ")[0]) ||
+    (lang === "ar" ? "زبونة زوينة" : "belle cliente");
+  const phone = lastOrder?.phone || "";
+
+  const withinWindow = (() => {
+    if (!mounted) return true;
+    const hour = new Date().getHours();
+    return hour >= 9 && hour < 22;
+  })();
+
+  const waNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "212600000000";
+
+  const buildMsg = () => {
+    const lines = [A("🌹 سلام Warda Beauté، هادا متابعة لكوماندة ديالي", "🌹 Bonjour Warda Beauté, c'est suite à ma commande")];
+    if (lastOrder?.id) lines.push(`🆔 ${A("الكوماندة","Commande")} #${lastOrder.id}`);
+    else if (id) lines.push(`🆔 ${A("الكوماندة","Commande")} #${id}`);
+    if (lastOrder) {
+      lines.push(`👤 ${A("السمية","Nom")}: ${lastOrder.customer_name}`);
+      lines.push(`📱 ${A("تليفون","Téléphone")}: ${lastOrder.phone}`);
+      lines.push(`🏙️ ${A("المدينة","Ville")}: ${lastOrder.city}`);
+      lines.push(`📍 ${A("العنوان","Adresse")}: ${lastOrder.address}`);
+      lines.push(`🛒 ${A("المنتوجات","Articles")}:`);
+      lastOrder.items.forEach((it: any) =>
+        lines.push(`- ${it.name} × ${it.qty} — ${it.price} MAD`)
+      );
+      lines.push(`💰 ${A("المجموع","Total")}: ${lastOrder.total} MAD`);
+    }
+    if (upsell) lines.push("🎁 Kit Collagène Inside & Outside ajouté (−49 MAD)");
+    return lines.join("\n");
+  };
+
+  const waHref = `https://wa.me/${waNumber}?text=${encodeURIComponent(buildMsg())}`;
+
+  if (!mounted) {
+    return (
+      <div className="section container-page text-center font-body text-brun">
+        {A("جاري تحميل التأكيد ديالك…", "Chargement de votre confirmation…")}
+      </div>
+    );
+  }
+
+  const suggestions = productList.filter((p) => !orderedSlugs.includes(p.slug));
+  const testimonials = orderedSlugs
+    .flatMap((s) => catalog[s]?.testimonials || [])
+    .slice(0, 3);
+  const social =
+    testimonials.length > 0 ? testimonials : productList[0].testimonials;
+
   return (
-    <Suspense fallback={<div className="section container-page text-center">Chargement...</div>}>
-      <ConfirmationInner />
-    </Suspense>
+    <div className="section font-body text-brun">
+      <div className="container-page max-w-3xl">
+        {/* 1. BANNER — confirmation call promise */}
+        <div className="rounded-2xl bg-profond text-white p-5 shadow-soft animate-pulseSoft">
+          <p className="font-display text-2xl mb-1">
+            {withinWindow ? (
+              <>
+                📞 {firstName}, {A("كنعيطو ليك فأقل من 10 دقايق !", "on vous appelle sous 10 minutes !")}
+              </>
+            ) : (
+              <>{A("🌙 الكوماندة وصلات — غدا من 9h كنعيطو نأكدو", "🌙 Commande reçue — appel de confirmation demain dès 9h !")}</>
+            )}
+          </p>
+          <p className="text-sm text-petal/90">
+            {withinWindow
+              ? A(
+                  `كنعيطو ليك على ${phone} باش نأكدو العنوان ديالك مع بعض.`,
+                  `On vous appelle au ${phone} pour confirmer votre adresse ensemble.`
+                )
+              : A(
+                  `غادي تستناو عينة من ${phone} غدا فالصباح باش نأكدو العنوان.`,
+                  `Vous recevrez un appel au ${phone} demain matin pour confirmer votre adresse.`
+                )}{" "}
+            {A(
+              "خلي تليفونك قريب من يدك 📱 · الجواب على العينة = الشحن فوراً.",
+              "Gardez votre téléphone à portée de main 📱 · Répondre à l'appel = expédition immédiate."
+            )}
+          </p>
+        </div>
+
+        {/* 2. HERO */}
+        <div className="text-center mt-8">
+          <h1 className="font-display text-5xl text-profond mb-2">
+            {A("مرسي", "Merci")} {firstName} ! 🌹
+          </h1>
+          <p className="text-lg">
+            {A("الكوماندة ديالك", "Votre commande")}{" "}
+            <span className="font-medium text-profond">
+              #{lastOrder?.id || id || "—"}
+            </span>{" "}
+            {A("تسجلات مزيان.", "est bien enregistrée.")}
+          </p>
+          <p className="text-gris mt-1">
+            📱 {A(`كنعيطو ليك على ${phone} باش نأكدو العنوان قبل ما نشحنو.`, `On vous appelle au ${phone} pour confirmer l'adresse avant l'expédition.`)}
+          </p>
+        </div>
+
+        {/* 3. ORDER SUMMARY */}
+        <div className="rounded-2xl bg-white border border-brume p-5 mt-6">
+          <h2 className="font-display text-2xl text-profond mb-3">
+            {A("الكوماندة ديالك", "Votre commande")}
+          </h2>
+          <div className="divide-y divide-brume">
+            {(lastOrder?.items || []).map((it: any, idx: number) => {
+              const p =
+                (it.slug && catalog[it.slug]) ||
+                productList.find((x) => x.name === it.name) ||
+                null;
+              return (
+                <div key={idx} className="flex items-center gap-3 py-3">
+                  <div className="w-14 h-14 rounded-lg overflow-hidden bg-brume shrink-0">
+                    {p ? (
+                      <img
+                        src={p.image}
+                        alt={it.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : null}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-profond truncate">{it.name}</p>
+                    <p className="text-sm text-gris">{A("الكمية :", "Quantité :")} {it.qty}</p>
+                  </div>
+                  <div className="text-right whitespace-nowrap">
+                    <p className="text-profond font-medium">{it.price} MAD</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          {(() => {
+            const items = lastOrder?.items || [];
+            const subtotalCalc = items.reduce(
+              (s: number, it: any) => s + (it.price || 0),
+              0
+            );
+            const discount = lastOrder?.upsellDiscount || 0;
+            const totalCalc = subtotalCalc - discount;
+            return (
+              <div className="mt-3 pt-3 border-t border-brume space-y-1 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-gris">{A("المجموع الفرعي", "Sous-total")}</span>
+                  <span>{subtotalCalc} MAD</span>
+                </div>
+                {discount > 0 && (
+                  <div className="flex justify-between text-warda">
+                    <span>Kit Collagène Inside &amp; Outside (−{discount} MAD)</span>
+                    <span>−{discount} MAD</span>
+                  </div>
+                )}
+                <div className="flex justify-between">
+                  <span className="text-gris">{A("التوصيل", "Livraison")}</span>
+                  <span className="text-warda font-medium">{A("مجانية 🚚", "Offerte 🚚")}</span>
+                </div>
+                <div className="flex justify-between text-lg font-medium text-profond pt-1">
+                  <span>{A("المجموع اللي تخلصيه عند الاستلام", "Total à payer à la livraison")}</span>
+                  <span>{totalCalc} MAD</span>
+                </div>
+              </div>
+            );
+          })()}
+          <p className="text-xs text-gris mt-3 text-center">
+            {A("💳 ما كتخلصي غير كيف توصلك السلعة.", "💳 Vous ne payez que lorsque le colis arrive chez vous.")}
+          </p>
+        </div>
+
+        {/* 4. TIMELINE — what happens now */}
+        <div className="mt-8">
+          <h2 className="font-display text-2xl text-profond text-center mb-4">
+            {A("شنو كيطرا دابا ✨", "Ce qui se passe maintenant ✨")}
+          </h2>
+          <ol className="space-y-3">
+            <li className="flex items-start gap-3">
+              <span className="w-10 h-10 rounded-full grid place-items-center shrink-0 bg-warda text-white">
+                <PhoneCall className="w-5 h-5" />
+              </span>
+              <div>
+                <p className="font-medium text-profond">
+                  {withinWindow
+                    ? A("عينة ديال التأكيد فأقل من 10 دقايق", "Appel de confirmation sous 10 minutes")
+                    : A("عينة ديال التأكيد غدا من 9h", "Appel de confirmation demain dès 9h")}
+                </p>
+                <p className="text-sm text-gris">
+                  {A(
+                    "كنتحققو من العنوان ديالك مع بعض، كنجاوبو على الأسئلة ديالك. بلا سبام — غير باش نوصّلو بلا غلط.",
+                    "On vérifie votre adresse ensemble, on répond à vos questions. Pas de démarchage — juste pour livrer sans erreur."
+                  )}
+                </p>
+              </div>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="w-10 h-10 rounded-full grid place-items-center shrink-0 bg-warda text-white">
+                <Package className="w-5 h-5" />
+              </span>
+              <div>
+                <p className="font-medium text-profond">
+                  {A("التحضير فاللابو ديالنا فالدار البيضاء", "Préparation dans notre labo à Casablanca")}
+                </p>
+                <p className="text-sm text-gris">
+                  {A(
+                    "الكوماندة ديالك مغلفة بكل العناية، جاهزة للخروج.",
+                    "Votre commande est emballée avec soin, prête à partir."
+                  )}
+                </p>
+              </div>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="w-10 h-10 rounded-full grid place-items-center shrink-0 bg-warda text-white">
+                <FaTruck className="w-4 h-4" />
+              </span>
+              <div>
+                <p className="font-medium text-profond">
+                  {A("التوصيل 24 لـ 48 ساعة فكل المغرب", "Livraison 24–48h partout au Maroc")}
+                </p>
+                <p className="text-sm text-gris">
+                  {A(
+                    "كتخلصي للبوستا كيف توصلك. ساهل وبلا خطر.",
+                    "Vous payez le livreur à la réception. Simple et sans risque."
+                  )}
+                </p>
+              </div>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="w-10 h-10 rounded-full grid place-items-center shrink-0 bg-champagne text-white">
+                <Sparkles className="w-5 h-5" />
+              </span>
+              <div>
+                <p className="font-medium text-profond">
+                  {A("أول النتائج ديالك من 2 لـ 3 سيمان", "Vos premiers résultats dès 2–3 semaines")}
+                </p>
+                <p className="text-sm text-gris">
+                  {A(
+                    "سيمانا 2 لـ 3 : الجلد كيولي مرن. سيمانا 4 : التبديل كيولي باين. 🌹 كنشوقو نشوفوك تلمعي !",
+                    "Semaine 2–3 : la peau s'assouplit. Semaine 4 : le changement devient visible. 🌹 On hâte de vous revoir rayonnante !"
+                  )}
+                </p>
+              </div>
+            </li>
+          </ol>
+        </div>
+
+        {/* 5. REASSURANCE TRIO */}
+        <div className="grid sm:grid-cols-3 gap-3 mt-8">
+          <div className="rounded-2xl bg-petal border border-brume p-4 text-center">
+            <FaPhoneAlt className="w-6 h-6 text-warda mx-auto mb-2" />
+            <p className="font-medium text-profond text-sm">{A("علاش كنعيطو ؟", "Pourquoi on appelle ?")}</p>
+            <p className="text-xs text-gris mt-1">
+              {A(
+                "باش نأكدو العنوان ديالك ونحيدو أي تأخير. بلا سبام.",
+                "Pour confirmer votre adresse et éviter tout retard. Zéro spam."
+              )}
+            </p>
+          </div>
+          <div className="rounded-2xl bg-petal border border-brume p-4 text-center">
+            <FaShieldAlt className="w-6 h-6 text-warda mx-auto mb-2" />
+            <p className="font-medium text-profond text-sm">{A("الخلاص عند الاستلام", "Paiement à la livraison")}</p>
+            <p className="text-xs text-gris mt-1">
+              {A(
+                "ما كتخلصي غير كيف توصلك السلعة.",
+                "Vous ne payez que quand le colis arrive chez vous."
+              )}
+            </p>
+          </div>
+          <div className="rounded-2xl bg-petal border border-brume p-4 text-center">
+            <Clock className="w-6 h-6 text-warda mx-auto mb-2" />
+            <p className="font-medium text-profond text-sm">{A("ضمان 4 سيمان", "Garantie 4 semaines")}</p>
+            <p className="text-xs text-gris mt-1">
+              {A(
+                "ما عجبكش؟ كنرجعو الفلوس بلا نقاش.",
+                "Pas convaincue ? On rembourse, sans discussion."
+              )}
+            </p>
+          </div>
+        </div>
+
+        {/* 6. SOCIAL PROOF */}
+        <div className="mt-10">
+          <h2 className="font-display text-2xl text-profond text-center mb-2">
+            {A("هوما قالو ولة لـ Warda 🌹", "Elles ont dit oui à Warda 🌹")}
+          </h2>
+          <div className="flex flex-wrap justify-center gap-2 mb-4">
+            <span className="badge-pill">{A("⭐ 4.9/5 على 2662 رأي", "⭐ 4.9/5 sur 2 662 avis")}</span>
+            <span className="badge-pill">{A("🇲🇦 كثر من 12 000 زبونة", "🇲🇦 +12 000 clientes")}</span>
+            <span className="badge-pill">{A("🚚 94% توصّل فـ 48 ساعة", "🚚 94% livré en 48h")}</span>
+          </div>
+          <div className="grid sm:grid-cols-3 gap-3">
+            {social.map((t: any, i: number) => (
+              <div key={i} className="rounded-2xl bg-white border border-brume p-4">
+                <Stars value={t.stars} />
+                <p className="text-sm text-brun mt-2 italic">"{t.text}"</p>
+                <p className="text-xs text-gris mt-2">— {t.name}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 7. CROSS-SELL — exclude ordered products */}
+        {suggestions.length > 0 && (
+          <div className="mt-10">
+            <h2 className="font-display text-2xl text-profond text-center mb-1">
+              {A("كمّلي الروتين ديالك 🌿", "Complétez votre rituel 🌿")}
+            </h2>
+            <p className="text-center text-gris text-sm mb-4">
+              {A(
+                "الزبونات اللي شراو هادو زادوه للروتين ديالهم.",
+                "Les clientes qui ont pris ça l'ont ajouté à leur routine."
+              )}
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+              {suggestions.map((p) => (
+                <ProductCard key={p.slug} slug={p.slug} />
+              ))}
+            </div>
+          </div>
+        )}
+
+        {suggestions.length === 0 && (
+          <div className="mt-10 rounded-2xl bg-or-doux p-5 text-center">
+            <h2 className="font-display text-2xl text-profond mb-2">
+              {A("الروتين الكامل : ", "Le rituel complet : ")}
+              {bundle.name}
+            </h2>
+            {lang === "ar" && <p className="text-sm text-brun mb-3">{bundle.arSub}</p>}
+            <p className="text-champagne font-medium mb-3">
+              {kitPrice} MAD{" "}
+              <span className="line-through text-gris text-sm">
+                {kitOld} MAD
+              </span>{" "}
+              · {A("وفرتي", "économie")} {kitSave} MAD
+            </p>
+            <Link href="/kit-collagene" className="btn-primary inline-flex">
+              {A("اكتشري الكيت", "Découvrir le kit")}
+            </Link>
+          </div>
+        )}
+
+        {/* 8. WHATSAPP CTA */}
+        <div className="text-center mt-10">
+          <a
+            href={waHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-primary inline-flex items-center gap-2"
+          >
+            <FaWhatsapp className="w-5 h-5" /> {A("سؤال؟ واتساب", "Une question ? WhatsApp")}
+          </a>
+          <div className="mt-4">
+            <Link href="/collection" className="btn-outline inline-flex">
+              {A("رجعي للبوطيك", "Retour à la boutique")}
+            </Link>
+          </div>
+        </div>
+      </div>
+
+      {/* Sticky WhatsApp */}
+      <a
+        href={waHref}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="WhatsApp"
+        className="fixed bottom-4 left-4 z-[9999] bg-[#25D366] text-white w-14 h-14 rounded-full grid place-items-center shadow-soft hover:scale-105 transition"
+      >
+        <FaWhatsapp className="w-7 h-7" />
+      </a>
+    </div>
   );
 }

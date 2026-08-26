@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { FaWhatsapp } from "react-icons/fa";
 
 export function WhatsAppButton() {
   const number = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "212600000000";
@@ -14,7 +15,7 @@ export function WhatsAppButton() {
       aria-label="WhatsApp"
       className="fixed bottom-4 left-4 z-[9999] bg-[#25D366] text-white w-14 h-14 rounded-full grid place-items-center text-2xl shadow-soft hover:scale-105 transition"
     >
-      💬
+      <FaWhatsapp className="w-7 h-7" />
     </a>
   );
 }

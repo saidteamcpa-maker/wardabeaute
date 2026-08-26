@@ -2,9 +2,9 @@
 
 import Script from "next/script";
 
-export function TikTokPixel() {
-  const id = process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID;
-  if (!id) return null;
+export function TikTokPixel({ id, enabled }: { id?: string; enabled?: boolean }) {
+  const finalId = id || process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID;
+  if (enabled === false || !finalId) return null;
   return (
     <Script id="tt-pixel" strategy="afterInteractive">
       {`
@@ -13,7 +13,7 @@ export function TikTokPixel() {
         ttq.methods.forEach(function(m){ttq[m]=function(){ttq.push([m].concat(
         Array.prototype.slice.call(arguments)))}});
         ttq.load=function(i){ttq._i=ttq._i||{};ttq._i[i]={};ttq.loaded=1};
-        ttq.init('${id}');ttq.page();}(window,document,'ttq');
+        ttq.init('${finalId}');ttq.page();}(window,document,'ttq');
       `}
     </Script>
   );

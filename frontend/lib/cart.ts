@@ -12,9 +12,11 @@ interface CartState {
   items: CartItem[];
   isCartOpen: boolean;
   isCheckoutOpen: boolean;
+  selectedTier: Record<string, number>;
   add: (item: CartItem) => void;
   remove: (slug: string) => void;
   setQty: (slug: string, qty: number) => void;
+  setTier: (slug: string, qty: number) => void;
   openCart: () => void;
   closeCart: () => void;
   openCheckout: () => void;
@@ -28,6 +30,7 @@ export const useCart = create<CartState>()(
       items: [],
       isCartOpen: false,
       isCheckoutOpen: false,
+      selectedTier: {},
       add: (item) =>
         set((s) => {
           const existing = s.items.find((i) => i.slug === item.slug);
@@ -46,6 +49,8 @@ export const useCart = create<CartState>()(
         set((s) => ({
           items: s.items.map((i) => (i.slug === slug ? { ...i, qty } : i)),
         })),
+      setTier: (slug, qty) =>
+        set((s) => ({ selectedTier: { ...s.selectedTier, [slug]: qty } })),
       openCart: () => set({ isCartOpen: true }),
       closeCart: () => set({ isCartOpen: false }),
       openCheckout: () => set({ isCheckoutOpen: true, isCartOpen: false }),
