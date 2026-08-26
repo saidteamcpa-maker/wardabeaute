@@ -1,4 +1,6 @@
 # Frontend (Next.js) Dockerfile
+# NOTE: EasyPanel uses the REPO ROOT as the Docker build context, so all
+# source COPYs must be prefixed with "frontend/".
 # syntax=docker/dockerfile:1
 
 FROM node:20-alpine AS base
@@ -6,14 +8,32 @@ RUN corepack enable
 
 FROM base AS deps
 WORKDIR /app
-COPY package.json package-lock.json* ./
+COPY frontend/package.json frontend/package-lock.json* ./
 RUN npm install --no-audit --no-fund
 
 FROM base AS builder
 WORKDIR /app
+
+# Build-time public env vars (Next.js inlines these into the client bundle).
+# Defaults match production; override via EasyPanel "Build Environment" if needed.
+ARG NEXT_PUBLIC_API_URL=https://api.wardabeaute.com
+ARG NEXT_PUBLIC_SITE_URL=https://wardabeaute.com
+ARG NEXT_PUBLIC_WHATSAPP_NUMBER=212600000000
+ARG NEXT_PUBLIC_FB_PIXEL_ID=
+ARG NEXT_PUBLIC_TIKTOK_PIXEL_ID=
+ARG NEXT_PUBLIC_GTM_ID=
+ARG NEXT_PUBLIC_PIXELS_ENABLED=true
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL
+ENV NEXT_PUBLIC_WHATSAPP_NUMBER=$NEXT_PUBLIC_WHATSAPP_NUMBER
+ENV NEXT_PUBLIC_FB_PIXEL_ID=$NEXT_PUBLIC_FB_PIXEL_ID
+ENV NEXT_PUBLIC_TIKTOK_PIXEL_ID=$NEXT_PUBLIC_TIKTOK_PIXEL_ID
+ENV NEXT_PUBLIC_GTM_ID=$NEXT_PUBLIC_GTM_ID
+ENV NEXT_PUBLIC_PIXELS_ENABLED=$NEXT_PUBLIC_PIXELS_ENABLED
+
 COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-RUN npm exec prisma -- generate
+COPY frontend/ ./
+RUN ./node_modules/.bin/prisma generate
 RUN npm run build
 
 FROM base AS runner
@@ -30,4 +50,4 @@ COPY --from=builder /app/prisma ./prisma
 
 USER nextjs
 EXPOSE 3000
-CMD ["sh", "-c", "npm exec prisma -- db push --skip-generate && npm run start"]
+CMD ["sh", "-c", "./node_modules/.bin/prisma db push --skip-generate && npm run start"]
