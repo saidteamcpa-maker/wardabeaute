@@ -6,12 +6,12 @@ import { STATUS_LABELS, STATUS_ORDER, SOURCE_LABELS, type AdminOrder } from "@/l
 import { statusBadge } from "@/components/admin/OrdersTable";
 
 const STEPS = [
-  { key: "created", label: "Commande créée" },
+  { key: "created", label: "Order Created" },
   { key: "confirmed", label: "Confirmation" },
-  { key: "preparing", label: "Préparation" },
-  { key: "shipped", label: "Expédition" },
-  { key: "out_for_delivery", label: "En cours de livraison" },
-  { key: "delivered", label: "Livraison" },
+  { key: "preparing", label: "Preparation" },
+  { key: "shipped", label: "Shipment" },
+  { key: "out_for_delivery", label: "Out for Delivery" },
+  { key: "delivered", label: "Delivered" },
 ];
 
 function stepIndex(status: string): number {
@@ -97,7 +97,7 @@ export function OrderDrawer({
       <div className="relative bg-white w-full max-w-[460px] h-full overflow-y-auto p-5">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-display text-2xl text-profond">
-            {loading ? "Chargement…" : order?.reference}
+            {loading ? "Loading…" : order?.reference}
           </h2>
           <button onClick={onClose} className="text-2xl text-brun">✕</button>
         </div>
@@ -125,7 +125,7 @@ export function OrderDrawer({
                   disabled={saving || statusSelect === order.status}
                   className="btn-primary px-4 disabled:opacity-50"
                 >
-                  {saving ? "…" : "Appliquer"}
+                  {saving ? "…" : "Apply"}
                 </button>
               </div>
             </div>
@@ -152,21 +152,21 @@ export function OrderDrawer({
               </div>
             ) : (
               <div className="text-center text-sm font-medium text-rose-600 bg-rose-50 rounded-xl py-3">
-                Commande {order.status === "cancelled" ? "annulée" : "retournée"}
+                Order {order.status === "cancelled" ? "cancelled" : "returned"}
               </div>
             )}
 
             {/* Customer */}
-            <Section title="Client">
-              <Row label="Nom" value={order.customerName} />
-              <Row label="Téléphone" value={order.phone} />
-              <Row label="Ville" value={order.city} />
-              <Row label="Adresse" value={order.address ?? "—"} />
-              {order.notes && <Row label="Note client" value={order.notes} />}
+            <Section title="Customer">
+              <Row label="Name" value={order.customerName} />
+              <Row label="Phone" value={order.phone} />
+              <Row label="City" value={order.city} />
+              <Row label="Address" value={order.address ?? "—"} />
+              {order.notes && <Row label="Customer Note" value={order.notes} />}
             </Section>
 
             {/* Order */}
-            <Section title="Commande">
+            <Section title="Order">
               {order.items.map((i) => (
                 <div key={i.id} className="flex justify-between py-1 text-sm">
                   <span>{i.name} × {i.qty}</span>
@@ -174,32 +174,32 @@ export function OrderDrawer({
                 </div>
               ))}
               <div className="border-t border-brume my-2" />
-              <Row label="Sous-total" value={`${subtotal} MAD`} />
-              {order.discount > 0 && <Row label="Remise" value={`−${order.discount} MAD`} />}
+              <Row label="Subtotal" value={`${subtotal} MAD`} />
+              {order.discount > 0 && <Row label="Discount" value={`−${order.discount} MAD`} />}
               <Row label="Total" value={`${order.total} MAD`} bold />
             </Section>
 
             {/* COD */}
-            <Section title="Paiement (COD)">
-              <Row label="Méthode" value="Cash on Delivery" />
-              <Row label="Statut" value={order.paymentStatus === "paid" ? "Payé" : order.paymentStatus === "refunded" ? "Remboursé" : "Non payé"} />
+            <Section title="Payment (COD)">
+              <Row label="Method" value="Cash on Delivery" />
+              <Row label="Status" value={order.paymentStatus === "paid" ? "Paid" : order.paymentStatus === "refunded" ? "Refunded" : "Unpaid"} />
             </Section>
 
             {/* Source */}
             <Section title="Source">
               <Row label="Source" value={SOURCE_LABELS[order.source ?? ""] ?? order.source ?? "—"} />
-              {order.utmCampaign && <Row label="Campagne" value={order.utmCampaign} />}
+              {order.utmCampaign && <Row label="Campaign" value={order.utmCampaign} />}
               {order.utmMedium && <Row label="Medium" value={order.utmMedium} />}
-              {order.referrer && <Row label="Référent" value={order.referrer} />}
-              <Row label="Appareil" value={order.device ?? "—"} />
+              {order.referrer && <Row label="Referrer" value={order.referrer} />}
+              <Row label="Device" value={order.device ?? "—"} />
             </Section>
 
             {/* Notes / history */}
-            <Section title="Notes internes & historique">
+            <Section title="Internal Notes & History">
               <textarea
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
-                placeholder="Ajouter une note interne…"
+                placeholder="Add an internal note…"
                 className="w-full rounded-xl border border-brume px-3 py-2 text-sm font-body mb-2"
                 rows={3}
               />
@@ -208,15 +208,15 @@ export function OrderDrawer({
                 disabled={noteSaving || !note.trim()}
                 className="btn-outline w-full disabled:opacity-50"
               >
-                {noteSaving ? "…" : "Ajouter une note"}
+                {noteSaving ? "…" : "Add Note"}
               </button>
               <div className="mt-3 space-y-2">
-                {order.activities.length === 0 && <p className="text-xs text-gris">Aucune activité.</p>}
+                {order.activities.length === 0 && <p className="text-xs text-gris">No activity.</p>}
                 {order.activities.map((a) => (
                   <div key={a.id} className="text-xs border-l-2 border-warda pl-2">
                     <div className="text-profond">{a.message}</div>
                     <div className="text-gris">
-                      {a.adminUser ?? "système"} · {new Date(a.createdAt).toLocaleString("fr-FR")}
+                      {a.adminUser ?? "system"} · {new Date(a.createdAt).toLocaleString("en-US")}
                     </div>
                   </div>
                 ))}

@@ -9,6 +9,7 @@ import { useCart } from "@/lib/cart";
 import { useLang } from "@/components/LangProvider";
 import { LangToggle } from "@/components/LangToggle";
 import { t } from "@/content/ui";
+import { useSiteContent, navOverride } from "@/lib/use-site-content";
 
 type MenuChild = { label: string; key?: string; href: string; icon?: ComponentType<{ className?: string }> };
 type MenuItem = { label: string; key?: string; href?: string; children?: MenuChild[] };
@@ -43,12 +44,16 @@ const MENU: MenuItem[] = [
 
 export function Header() {
   const { lang } = useLang();
+  const site = useSiteContent();
+  const logoUrl = site?.header?.logoUrl;
   const items = useCart((s) => s.items);
   const openCart = useCart((s) => s.openCart);
   const count = items.reduce((n, i) => n + i.qty, 0);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
+  const labelOf = (key?: string, fallback: string = "") =>
+    (key && navOverride(site, key, lang)) || (key ? t(lang, key) : fallback);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -78,7 +83,7 @@ export function Header() {
           style={{ fontFamily: '"Cairo", "Playfair Display", Georgia, serif' }}
           className="order-2 mx-auto flex items-center gap-2 font-display text-2xl text-profond"
         >
-          <img src="/header-logo.png" alt="Warda Beauté" className="w-7 h-7 object-contain" />
+          <img src={logoUrl || "/header-logo.png"} alt="Warda Beauté" className="w-7 h-7 object-contain" />
           Warda Beauté
         </Link>
 
@@ -116,7 +121,7 @@ export function Header() {
                         className="flex w-full items-center justify-between py-3 hover:text-warda"
                         aria-expanded={!!openMenus[m.label]}
                       >
-                        <span>{m.key ? t(lang, m.key!) : m.label}</span>
+                         <span>{labelOf(m.key, m.label)}</span>
                         <ChevronDown
                           className={`w-5 h-5 transition-transform ${openMenus[m.label] ? "rotate-180" : ""}`}
                         />
@@ -131,7 +136,7 @@ export function Header() {
                               className="flex items-center gap-2 hover:text-warda"
                             >
                               {c.icon && <c.icon className="w-4 h-4" aria-hidden />}
-                              <span>{c.key ? t(lang, c.key!) : c.label}</span>
+                               <span>{labelOf(c.key, c.label)}</span>
                             </Link>
                           ))}
                         </div>
@@ -144,7 +149,7 @@ export function Header() {
                       onClick={() => setMenuOpen(false)}
                       className="py-3 border-b border-brume/60 hover:text-warda"
                     >
-                      {m.key ? t(lang, m.key!) : m.label}
+                      {labelOf(m.key, m.label)}
                     </Link>
                   )
                 )}

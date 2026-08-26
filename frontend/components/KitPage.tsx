@@ -14,6 +14,7 @@ import { ComparisonTable } from "@/components/ComparisonTable";
 import { products, localize } from "@/content/products";
 import { getLangServer } from "@/lib/lang-server";
 import { t } from "@/content/ui";
+import { getPageOverride } from "@/lib/store-content";
 import {
   Check,
   Sparkles,
@@ -27,8 +28,10 @@ import {
 
 const BENEFIT_ICONS = [Check, Sparkles, FlaskConical, Truck, ShieldCheck, Heart];
 
-export function KitPage() {
+export async function KitPage({ preview = false }: { preview?: boolean }) {
   const lang = getLangServer();
+  const ov = await getPageOverride("kit-collagene", lang, preview);
+  const T = (k: string) => ov?.[k] ?? t(lang, k);
   const kit = localize(products["kit-collagene"], lang);
   const testimonials = [
     ...localize(products.velvastretch, lang).testimonials,
@@ -60,7 +63,7 @@ export function KitPage() {
                 </span>
               </div>
               <p className="text-warda font-medium text-sm mb-4">
-                {t(lang, "kit.save")} {kit.oldPrice - kit.price} MAD · {t(lang, "kit.urgency")}
+                {T("kit.save")} {kit.oldPrice - kit.price} MAD · {T("kit.urgency")}
               </p>
 
               <TrustBadges />
@@ -74,7 +77,7 @@ export function KitPage() {
           <Reveal delay={0.15} className="order-first md:order-2">
             <div className="overflow-hidden rounded-3xl card-hover shadow-lg">
               <img
-                src="/kit-collagene-hero.png"
+                src={ov?.["kit.heroImage"] || "/kit-collagene-hero.png"}
                 alt="Kit Collagène Inside & Outside — VelvaStretch™ + CollaGlow™"
                 className="w-full aspect-[4/5] object-cover"
               />
@@ -90,37 +93,37 @@ export function KitPage() {
       <section className="container-page">
         <Reveal>
           <div className="bg-profond text-petal rounded-3xl p-8 md:p-12 text-center">
-            <p className="font-display text-3xl mb-4">{t(lang, "kit.problemTitle")}</p>
-            <p className="font-body text-petal/90 max-w-2xl mx-auto">{t(lang, "kit.problemBody")}</p>
-            <p className="font-arabic text-2xl text-or-doux mt-4">{t(lang, "kit.problemMicro")}</p>
+            <p className="font-display text-3xl mb-4">{T("kit.problemTitle")}</p>
+            <p className="font-body text-petal/90 max-w-2xl mx-auto">{T("kit.problemBody")}</p>
+            <p className="font-arabic text-2xl text-or-doux mt-4">{T("kit.problemMicro")}</p>
           </div>
         </Reveal>
       </section>
 
       {/* WHY IT WORKS — SCIENCE + LOGIC */}
-      <Section eyebrow={t(lang, "kit.scienceEyebrow")} title={t(lang, "kit.scienceTitle")} imageLabel="Labo Casablanca" imageSide="right">
-        <p className="font-body text-brun mb-4">{t(lang, "kit.sci1")}</p>
+      <Section eyebrow={T("kit.scienceEyebrow")} title={T("kit.scienceTitle")} imageLabel="Labo Casablanca" imageSrc={ov?.["kit.scienceImage"]} imageSide="right">
+        <p className="font-body text-brun mb-4">{T("kit.sci1")}</p>
         <p className="font-body text-brun mb-4">
-          {t(lang, "kit.sci2")}
+          {T("kit.sci2")}
         </p>
         <div className="grid sm:grid-cols-2 gap-3 mb-4">
           <div className="rounded-2xl border border-brume p-4">
-            <p className="font-display text-xl text-profond mb-1">{t(lang, "kit.extTitle")}</p>
-            <p className="text-sm text-brun">{t(lang, "kit.extBody")}</p>
+            <p className="font-display text-xl text-profond mb-1">{T("kit.extTitle")}</p>
+            <p className="text-sm text-brun">{T("kit.extBody")}</p>
           </div>
           <div className="rounded-2xl border border-brume p-4">
-            <p className="font-display text-xl text-profond mb-1">{t(lang, "kit.intTitle")}</p>
-            <p className="text-sm text-brun">{t(lang, "kit.intBody")}</p>
+            <p className="font-display text-xl text-profond mb-1">{T("kit.intTitle")}</p>
+            <p className="text-sm text-brun">{T("kit.intBody")}</p>
           </div>
         </div>
         <div className="rounded-2xl bg-or-doux p-5">
           <p className="font-body text-brun mb-2">
             <strong className="text-profond">{lang === "ar" ? "البحث واضح :" : "La recherche est claire :"}</strong>{" "}
-            {t(lang, "kit.sci3")}
+            {T("kit.sci3")}
           </p>
           <div className="flex items-start gap-3 mt-3">
             <IconBadge icon={Microscope} tone="warda" />
-            <p className="text-sm text-brun">{t(lang, "kit.synergy")}</p>
+            <p className="text-sm text-brun">{T("kit.synergy")}</p>
           </div>
         </div>
       </Section>
@@ -129,7 +132,7 @@ export function KitPage() {
       <section className="section bg-white">
         <div className="container-page">
           <Reveal>
-            <h2 className="text-3xl text-profond mb-6 text-center">{t(lang, "kit.authorityTitle")}</h2>
+            <h2 className="text-3xl text-profond mb-6 text-center">{T("kit.authorityTitle")}</h2>
           </Reveal>
           <div className="flex flex-wrap justify-center gap-3">
             {[1, 2, 3, 4, 5, 6].map((n) => (
@@ -145,8 +148,8 @@ export function KitPage() {
       </section>
 
       {/* WHAT'S INSIDE */}
-      <Section eyebrow={t(lang, "kit.insideEyebrow")} title={t(lang, "kit.insideTitle")} imageLabel="Ingrédients" imageSide="left">
-        <p className="font-body text-brun mb-3">{t(lang, "kit.insideBody")}</p>
+      <Section eyebrow={T("kit.insideEyebrow")} title={T("kit.insideTitle")} imageLabel="Ingrédients" imageSrc={ov?.["kit.ingredientsImage"]} imageSide="left">
+        <p className="font-body text-brun mb-3">{T("kit.insideBody")}</p>
         <IngredientTable items={kit.ingredients} />
         <details className="mt-3">
           <summary className="font-body text-warda cursor-pointer">{t(lang, "pp.viewInci")}</summary>
@@ -158,7 +161,7 @@ export function KitPage() {
       <section className="section bg-white">
         <div className="container-page">
           <Reveal>
-            <h2 className="text-3xl text-profond mb-6">{t(lang, "kit.benefitsTitle")}</h2>
+            <h2 className="text-3xl text-profond mb-6">{T("kit.benefitsTitle")}</h2>
           </Reveal>
           <ul className="grid md:grid-cols-2 gap-3 font-body text-brun">
             {kit.benefits.map((b, i) => (
@@ -187,7 +190,7 @@ export function KitPage() {
       <section className="section">
         <div className="container-page">
           <Reveal>
-            <h2 className="text-3xl text-profond mb-3 text-center">{t(lang, "kit.socialTitle")}</h2>
+            <h2 className="text-3xl text-profond mb-3 text-center">{T("kit.socialTitle")}</h2>
           </Reveal>
           <div className="flex flex-wrap justify-center gap-2 mb-6">
             {[1, 2, 3].map((n) => (
@@ -199,14 +202,14 @@ export function KitPage() {
       </section>
 
       {/* RITUAL */}
-      <Section eyebrow={t(lang, "kit.ritualEyebrow")} title={t(lang, "kit.ritualTitle")} imageLabel="Application" imageSide="right">
+      <Section eyebrow={T("kit.ritualEyebrow")} title={T("kit.ritualTitle")} imageLabel="Application" imageSrc={ov?.["kit.ritualImage"]} imageSide="right">
         <ol className="list-decimal list-inside space-y-2 font-body text-brun">
           {kit.howTo.map((h, i) => (
             <li key={i}>{h}</li>
           ))}
         </ol>
         <div className="mt-4 rounded-2xl bg-or-doux p-4">
-          <p className="font-body text-profond">{t(lang, "kit.ritualNote")}</p>
+          <p className="font-body text-profond">{T("kit.ritualNote")}</p>
         </div>
       </Section>
 
@@ -214,7 +217,7 @@ export function KitPage() {
       <section className="section bg-white">
         <div className="container-page">
           <Reveal>
-            <h2 className="text-3xl text-profond mb-6">{t(lang, "kit.faqTitle")}</h2>
+            <h2 className="text-3xl text-profond mb-6">{T("kit.faqTitle")}</h2>
           </Reveal>
           <Faq items={kit.faq} />
         </div>
@@ -228,8 +231,8 @@ export function KitPage() {
           <Reveal>
             <div className="rounded-3xl bg-gradient-to-br from-profond to-warda text-petal p-8 max-w-2xl mx-auto">
               <Award className="w-10 h-10 mx-auto mb-3" />
-              <h2 className="font-display text-3xl mb-2">{t(lang, "kit.riskTitle")}</h2>
-              <p className="font-body text-petal/90">{t(lang, "kit.riskBody")}</p>
+              <h2 className="font-display text-3xl mb-2">{T("kit.riskTitle")}</h2>
+              <p className="font-body text-petal/90">{T("kit.riskBody")}</p>
             </div>
           </Reveal>
         </div>
@@ -240,22 +243,22 @@ export function KitPage() {
         <div className="container-page text-center">
           <Reveal>
             <h2 className="text-4xl font-display text-profond mb-2">
-              {t(lang, "kit.finalTitle")} <span className="text-gradient">Inside &amp; Outside</span>
+              {T("kit.finalTitle")} <span className="text-gradient">Inside &amp; Outside</span>
             </h2>
-            <p className="font-body text-brun mb-3">{t(lang, "kit.finalSub")}</p>
+            <p className="font-body text-brun mb-3">{T("kit.finalSub")}</p>
             <div className="text-3xl font-display text-profond mb-1">
               {kit.price} MAD{" "}
               <span className="line-through text-gris text-lg">{kit.oldPrice} MAD</span>
             </div>
             <p className="text-champagne text-sm mb-4">
-              {t(lang, "kit.save")} {kit.oldPrice - kit.price} MAD · {t(lang, "kit.urgency")}
+              {T("kit.save")} {kit.oldPrice - kit.price} MAD · {T("kit.urgency")}
             </p>
             <div className="max-w-xs mx-auto">
               <AddToCartButton slug="kit-collagene" />
             </div>
             <p className="text-xs text-gris mt-2">{kit.hero.micro}</p>
             <Link href="/collection" className="btn-outline mt-4 inline-flex">
-              {t(lang, "kit.viewAll")}
+              {T("kit.viewAll")}
             </Link>
           </Reveal>
         </div>

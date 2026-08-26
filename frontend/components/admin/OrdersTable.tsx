@@ -89,7 +89,7 @@ export function OrdersTable() {
         <input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          placeholder="Rechercher (ID, nom, téléphone, ville)…"
+          placeholder="Search (ID, name, phone, city)…"
           className="flex-1 min-w-[220px] rounded-xl border border-brume px-4 py-2.5 font-body text-sm"
         />
         <select
@@ -97,7 +97,7 @@ export function OrdersTable() {
           onChange={(e) => { setStatus(e.target.value); setPage(1); }}
           className="rounded-xl border border-brume px-3 py-2.5 font-body text-sm"
         >
-          <option value="">Tous les statuts</option>
+          <option value="">All statuses</option>
           {STATUS_ORDER.map((s) => (
             <option key={s} value={s}>{STATUS_LABELS[s]}</option>
           ))}
@@ -107,7 +107,7 @@ export function OrdersTable() {
           onChange={(e) => { setSource(e.target.value); setPage(1); }}
           className="rounded-xl border border-brume px-3 py-2.5 font-body text-sm"
         >
-          <option value="">Toutes les sources</option>
+          <option value="">All sources</option>
           {SOURCES.map((s) => (
             <option key={s} value={s}>{SOURCE_LABELS[s] ?? s}</option>
           ))}
@@ -129,10 +129,10 @@ export function OrdersTable() {
           onChange={(e) => { setSort(e.target.value); setPage(1); }}
           className="rounded-xl border border-brume px-3 py-2.5 font-body text-sm"
         >
-          <option value="newest">Plus récent</option>
-          <option value="oldest">Plus ancien</option>
-          <option value="highest">Montant décroissant</option>
-          <option value="lowest">Montant croissant</option>
+          <option value="newest">Newest</option>
+          <option value="oldest">Oldest</option>
+          <option value="highest">Highest amount</option>
+          <option value="lowest">Lowest amount</option>
         </select>
         <button
           onClick={() => {
@@ -143,7 +143,7 @@ export function OrdersTable() {
           }}
           className="rounded-xl border border-brume px-4 py-2.5 font-body text-sm hover:bg-petal/40"
         >
-          ⬇ Exporter CSV
+          ⬇ Export CSV
         </button>
       </div>
 
@@ -154,23 +154,23 @@ export function OrdersTable() {
               <tr>
                 <th className="px-4 py-3 font-medium">ID</th>
                 <th className="px-4 py-3 font-medium">Date</th>
-                <th className="px-4 py-3 font-medium">Client</th>
-                <th className="px-4 py-3 font-medium">Ville</th>
-                <th className="px-4 py-3 font-medium">Produits</th>
+                <th className="px-4 py-3 font-medium">Customer</th>
+                <th className="px-4 py-3 font-medium">City</th>
+                <th className="px-4 py-3 font-medium">Products</th>
                 <th className="px-4 py-3 font-medium">Total</th>
                 <th className="px-4 py-3 font-medium">Source</th>
-                <th className="px-4 py-3 font-medium">Statut</th>
+                <th className="px-4 py-3 font-medium">Status</th>
               </tr>
             </thead>
             <tbody>
               {loading && (
                 <tr>
-                  <td colSpan={8} className="px-4 py-10 text-center text-gris">Chargement…</td>
+                  <td colSpan={8} className="px-4 py-10 text-center text-gris">Loading…</td>
                 </tr>
               )}
               {!loading && data.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="px-4 py-10 text-center text-gris">Aucune commande trouvée.</td>
+                  <td colSpan={8} className="px-4 py-10 text-center text-gris">No orders found.</td>
                 </tr>
               )}
               {!loading &&
@@ -203,7 +203,7 @@ export function OrdersTable() {
       {/* Pagination */}
       <div className="flex items-center justify-between mt-4 text-sm text-gris">
         <div>
-          {total} commande(s) · page {page} / {totalPages}
+          {total} order(s) · page {page} / {totalPages}
         </div>
         <div className="flex gap-2">
           <button
@@ -211,7 +211,7 @@ export function OrdersTable() {
             onClick={() => setPage((p) => Math.max(1, p - 1))}
             className="px-3 py-1.5 rounded-lg border border-brume disabled:opacity-40 hover:bg-petal/40"
           >
-            Précédent
+            Previous
           </button>
           <select
             value={pageSize}
@@ -227,7 +227,7 @@ export function OrdersTable() {
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             className="px-3 py-1.5 rounded-lg border border-brume disabled:opacity-40 hover:bg-petal/40"
           >
-            Suivant
+            Next
           </button>
         </div>
       </div>

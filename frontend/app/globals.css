@@ -97,6 +97,13 @@ textarea {
 .animate-pulseSoft { animation: pulseSoft 2.4s ease-in-out infinite; }
 
 @layer components {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
   .text-gradient {
     background: linear-gradient(120deg, #8a3d52 0%, #c17a82 45%, #c4993a 100%);
     -webkit-background-clip: text;

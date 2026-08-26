@@ -12,10 +12,11 @@ class OrderCreate(BaseModel):
     customer_name: str
     phone: str
     city: str
-    address: str
+    address: Optional[str] = None
     postal: Optional[str] = None
     items: List[OrderItemIn]
     upsell: bool = False
+    idempotency_key: Optional[str] = None
 
 
 class UpsellIn(BaseModel):
@@ -25,4 +26,5 @@ class UpsellIn(BaseModel):
 class OrderOut(BaseModel):
     id: str
     total: int
+    discount: int = 0
     status: str

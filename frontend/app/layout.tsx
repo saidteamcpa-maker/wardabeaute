@@ -10,8 +10,7 @@ import { getLangServer } from "@/lib/lang-server";
 import { dirFor } from "@/lib/i18n-shared";
 import { getCatalog } from "@/lib/catalog";
 import { CatalogProvider } from "@/lib/catalog-context";
-import { getPixelConfig } from "@/lib/pixel-config";
-import { PixelsConfig } from "@/components/pixels/PixelsConfig";
+import { getEnabledPixels, seedPixelsFromEnv } from "@/lib/pixels";
 import { PixelDebug } from "@/components/pixels/PixelDebug";
 
 const META = {
@@ -39,7 +38,11 @@ export function generateMetadata(): Metadata {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const lang = getLangServer();
   const catalog = await getCatalog();
-  const pixelConfig = await getPixelConfig();
+  await seedPixelsFromEnv();
+  const pixels = await getEnabledPixels();
+  const metaPixels = pixels.filter((p) => p.type === "meta");
+  const tiktokPixels = pixels.filter((p) => p.type === "tiktok");
+  const gtmPixels = pixels.filter((p) => p.type === "gtm");
   return (
     <html lang={lang === "ar" ? "ar-MA" : "fr"} dir={dirFor(lang)}>
       <head>
@@ -51,10 +54,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         />
       </head>
       <body className="font-body">
-        <GoogleTag id={pixelConfig.gtmId} enabled={pixelConfig.enabled} />
-        <MetaPixel id={pixelConfig.metaPixelId} enabled={pixelConfig.enabled} />
-        <TikTokPixel id={pixelConfig.tiktokPixelId} enabled={pixelConfig.enabled} />
-        <PixelsConfig enabled={pixelConfig.enabled} />
+        {gtmPixels.map((p) => (
+          <GoogleTag key={p.id} id={p.pixelId} scriptId={`gtm-${p.id}`} />
+        ))}
+        {metaPixels.map((p) => (
+          <MetaPixel key={p.id} id={p.pixelId} scriptId={`fb-${p.id}`} />
+        ))}
+        {tiktokPixels.map((p) => (
+          <TikTokPixel key={p.id} id={p.pixelId} scriptId={`tt-${p.id}`} />
+        ))}
         <LangProvider initialLang={lang}>
           <CatalogProvider catalog={catalog}>
             <StorefrontHeader />

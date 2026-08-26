@@ -4,17 +4,25 @@ import Link from "next/link";
 import { getLangServer } from "@/lib/lang-server";
 import { getCatalog, getBundleFromCatalog } from "@/lib/catalog";
 import { t } from "@/content/ui";
+import { getPageOverride } from "@/lib/store-content";
 
-export default async function CollectionPage() {
+export default async function CollectionPage({ searchParams }: { searchParams?: { preview?: string } }) {
   const lang = getLangServer();
+  const ov = await getPageOverride("collection", lang, searchParams?.preview === "1");
+  const T = (k: string) => ov?.[k] ?? t(lang, k);
   const catalog = await getCatalog();
   const { price: kitPrice, oldPrice: kitOld } = getBundleFromCatalog(catalog);
   const kit = localize(catalog["kit-collagene"], lang);
   return (
     <div className="section">
+      {ov?.["collection.bannerImage"] && (
+        <div className="container-page mb-6">
+          <img src={ov["collection.bannerImage"]} alt="" className="w-full aspect-[21/9] object-cover rounded-3xl" />
+        </div>
+      )}
       <div className="container-page">
-        <h1 className="text-4xl text-profond mb-2">{t(lang, "collection.title")}</h1>
-        <p className="font-body text-brun mb-6">{t(lang, "collection.sub")}</p>
+        <h1 className="text-4xl text-profond mb-2">{T("collection.title")}</h1>
+        <p className="font-body text-brun mb-6">{T("collection.sub")}</p>
         <div className="grid md:grid-cols-3 gap-6">
           {Object.keys(catalog).map((s) => <ProductCard key={s} slug={s} />)}
         </div>

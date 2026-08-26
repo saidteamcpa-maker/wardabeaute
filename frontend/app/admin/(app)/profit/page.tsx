@@ -39,9 +39,9 @@ export default function ProfitSimulatorPage() {
     <div className="mx-auto max-w-7xl space-y-8 p-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-display text-2xl text-profond">Simulateur de Rentabilité</h1>
+          <h1 className="font-display text-2xl text-profond">Profitability Simulator</h1>
           <p className="mt-1 text-sm text-profond/60">
-            Calculez instantanément vos seuils break-even CPL / CR / DR. Aucune donnée réelle n'est modifiée.
+            Instantly calculate your break-even thresholds for CPL / CR / DR. No real data is modified.
           </p>
         </div>
         <div className="flex gap-2">
@@ -50,51 +50,51 @@ export default function ProfitSimulatorPage() {
             disabled={loadingData}
             className="rounded-lg border border-warda px-3 py-2 text-sm font-medium text-warda hover:bg-warda/10 disabled:opacity-50"
           >
-            {loadingData ? "Chargement…" : "Utiliser les données du store"}
+            {loadingData ? "Loading…" : "Use store data"}
           </button>
           <button
             onClick={() => setInputs({ ...DEFAULT_INPUTS })}
             className="rounded-lg border border-profond/15 px-3 py-2 text-sm font-medium text-profond/70 hover:bg-profond/5"
           >
-            Réinitialiser
+            Reset
           </button>
         </div>
       </div>
 
       {r.impossible && (
         <Banner kind="error" title="BREAK-EVEN IMPOSSIBLE">
-          Prix de vente ≤ Coût produit + Frais service + Autres coûts variables. Aucun CPL/CR/DR ne permet d'être rentable.
+          Selling price ≤ Product cost + Service fees + Other variable costs. No CPL/CR/DR can make this profitable.
         </Banner>
       )}
       {!r.impossible && r.breakEvenCr > 1 && (
-        <Banner kind="warn" title="BREAK-EVEN CR NON ATTEIGNABLE">
-          Le taux de confirmation minimum requis dépasse 100% avec l'économie actuelle.
+        <Banner kind="warn" title="BREAK-EVEN CR UNREACHABLE">
+          The minimum required confirmation rate exceeds 100% with the current economics.
         </Banner>
       )}
       {!r.impossible && r.breakEvenDr > 1 && (
-        <Banner kind="warn" title="BREAK-EVEN DR NON ATTEIGNABLE">
-          Le taux de livraison minimum requis dépasse 100% avec l'économie actuelle.
+        <Banner kind="warn" title="BREAK-EVEN DR UNREACHABLE">
+          The minimum required delivery rate exceeds 100% with the current economics.
         </Banner>
       )}
 
       <div className="grid gap-6 lg:grid-cols-[320px_1fr]">
         <div className="space-y-4 rounded-2xl border border-profond/10 bg-white p-5">
-          <h2 className="text-sm font-semibold text-profond">Paramètres</h2>
-          <Group title="Trafic">
+          <h2 className="text-sm font-semibold text-profond">Parameters</h2>
+          <Group title="Traffic">
             <NumberField label="Leads" value={inputs.leads} onChange={set("leads")} />
             <NumberField label="Ads CPL" value={inputs.adsCpl} onChange={set("adsCpl")} suffix="MAD" />
           </Group>
-          <Group title="Entonnoir COD">
+          <Group title="COD Funnel">
             <NumberField label="Confirmation Rate (CR)" value={Math.round(inputs.cr * 100)} onChange={(v) => set("cr")(v / 100)} suffix="%" />
             <NumberField label="Delivery Rate (DR)" value={Math.round(inputs.dr * 100)} onChange={(v) => set("dr")(v / 100)} suffix="%" />
           </Group>
-          <Group title="Économie produit">
-            <NumberField label="Prix de vente" value={inputs.sellingPrice} onChange={set("sellingPrice")} suffix="MAD" />
-            <NumberField label="Coût produit" value={inputs.productCost} onChange={set("productCost")} suffix="MAD" />
-            <NumberField label="Frais service / livré" value={inputs.serviceFee} onChange={set("serviceFee")} suffix="MAD" />
-            <NumberField label="Frais lead" value={inputs.leadFee} onChange={set("leadFee")} suffix="MAD" />
-            <NumberField label="Autre coût variable / livré" value={inputs.otherVariableCost} onChange={set("otherVariableCost")} suffix="MAD" />
-            <NumberField label="Autres coûts fixes" value={inputs.otherFixedCosts} onChange={set("otherFixedCosts")} suffix="MAD" />
+          <Group title="Product economics">
+            <NumberField label="Selling price" value={inputs.sellingPrice} onChange={set("sellingPrice")} suffix="MAD" />
+            <NumberField label="Product cost" value={inputs.productCost} onChange={set("productCost")} suffix="MAD" />
+            <NumberField label="Service / delivery fee" value={inputs.serviceFee} onChange={set("serviceFee")} suffix="MAD" />
+            <NumberField label="Lead fee" value={inputs.leadFee} onChange={set("leadFee")} suffix="MAD" />
+            <NumberField label="Other variable cost / delivered" value={inputs.otherVariableCost} onChange={set("otherVariableCost")} suffix="MAD" />
+            <NumberField label="Other fixed costs" value={inputs.otherFixedCosts} onChange={set("otherFixedCosts")} suffix="MAD" />
           </Group>
         </div>
 
@@ -105,17 +105,17 @@ export default function ProfitSimulatorPage() {
           </section>
 
           <section>
-            <SectionTitle>Résumé financier & entonnoir</SectionTitle>
+            <SectionTitle>Financial summary & funnel</SectionTitle>
             <FunnelSummary inputs={inputs} r={r} />
           </section>
 
           <section>
-            <SectionTitle>Sensibilités & matrice</SectionTitle>
+            <SectionTitle>Sensitivity & matrix</SectionTitle>
             <Sensitivity inputs={inputs} />
           </section>
 
           <section>
-            <SectionTitle>Comparaison de scénarios</SectionTitle>
+            <SectionTitle>Scenario comparison</SectionTitle>
             <Scenarios current={inputs} />
           </section>
         </div>

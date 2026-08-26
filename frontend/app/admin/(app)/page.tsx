@@ -17,23 +17,23 @@ export default function AdminOverview() {
   return (
     <div className="p-6 max-w-6xl">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-display text-profond">Aperçu</h1>
+        <h1 className="text-2xl font-display text-profond">Overview</h1>
         <RangeSelector value={range} onChange={setRange} />
       </div>
 
-      {loading && <p className="text-gris">Chargement…</p>}
+      {loading && <p className="text-gris">Loading…</p>}
 
       {ov && (
         <>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <KpiCard label="CA généré" value={formatMAD(ov.revenuePotential)} sub="Commandes confirmées+" />
-            <KpiCard label="CA encaissé (livré)" value={formatMAD(ov.revenueCollected)} accent="text-emerald-700" />
-            <KpiCard label="Panier moyen" value={formatMAD(ov.aov)} />
-            <KpiCard label="Commandes" value={formatNumber(ov.totalOrders)} />
-            <KpiCard label="Taux de confirmation" value={formatPct(ov.confirmationRate)} accent="text-emerald-700" />
-            <KpiCard label="Taux de livraison" value={formatPct(ov.deliveryRate)} accent="text-emerald-700" />
-            <KpiCard label="Taux de retour (RTO)" value={formatPct(ov.rtoRate)} accent="text-rose-700" />
-            <KpiCard label="Conversion (cmd / vue)" value={formatPct(ov.conversionRate)} accent="text-violet-700" />
+            <KpiCard label="Revenue Generated" value={formatMAD(ov.revenuePotential)} sub="Confirmed+" />
+            <KpiCard label="Revenue Collected (Delivered)" value={formatMAD(ov.revenueCollected)} accent="text-emerald-700" />
+            <KpiCard label="Average Cart" value={formatMAD(ov.aov)} />
+            <KpiCard label="Orders" value={formatNumber(ov.totalOrders)} />
+            <KpiCard label="Confirmation Rate" value={formatPct(ov.confirmationRate)} accent="text-emerald-700" />
+            <KpiCard label="Delivery Rate" value={formatPct(ov.deliveryRate)} accent="text-emerald-700" />
+            <KpiCard label="Return Rate (RTO)" value={formatPct(ov.rtoRate)} accent="text-rose-700" />
+            <KpiCard label="Conversion (orders / views)" value={formatPct(ov.conversionRate)} accent="text-violet-700" />
           </div>
 
           <div className="grid gap-4 mt-4 lg:grid-cols-3">
@@ -41,7 +41,7 @@ export default function AdminOverview() {
               <RevenueChart data={data!.series} />
             </div>
             <div className="bg-white rounded-2xl border border-brume p-4 sm:p-5">
-              <h3 className="font-display text-profond mb-3">Statuts</h3>
+              <h3 className="font-display text-profond mb-3">Statuses</h3>
               <div className="space-y-1.5 text-sm">
                 {Object.entries(ov.statusCounts).map(([k, v]) => (
                   <div key={k} className="flex justify-between">
@@ -49,13 +49,13 @@ export default function AdminOverview() {
                     <span className="font-medium text-profond">{formatNumber(v as number)}</span>
                   </div>
                 ))}
-                {Object.keys(ov.statusCounts).length === 0 && <p className="text-gris">Aucune commande.</p>}
+                {Object.keys(ov.statusCounts).length === 0 && <p className="text-gris">No orders.</p>}
               </div>
             </div>
           </div>
 
           <div className="bg-white rounded-2xl border border-brume p-4 sm:p-5 mt-4">
-            <h3 className="font-display text-profond mb-3">Top produits</h3>
+            <h3 className="font-display text-profond mb-3">Top Products</h3>
             <ProductTable products={data!.products.slice(0, 6)} />
           </div>
         </>

@@ -6,15 +6,15 @@ import { fmtMAD, fmtMAD2, fmtNum, fmtPct2, fmtPctFrac } from "./fields";
 export function FunnelSummary({ inputs, r }: { inputs: ProfitInputs; r: ProfitResult }) {
   const steps = [
     { label: "Leads", value: r.leads, color: "bg-warda" },
-    { label: "Confirmés (CR)", value: r.confirmed, color: "bg-violet-500" },
-    { label: "Livrés (DR)", value: r.delivered, color: "bg-emerald-500" },
+    { label: "Confirmed (CR)", value: r.confirmed, color: "bg-violet-500" },
+    { label: "Delivered (DR)", value: r.delivered, color: "bg-emerald-500" },
   ];
   const max = Math.max(1, r.leads);
 
   return (
     <div className="space-y-4">
       <div className="rounded-2xl border border-profond/10 bg-white p-5">
-        <div className="text-sm font-semibold text-profond">Entonnoir COD</div>
+        <div className="text-sm font-semibold text-profond">COD Funnel</div>
         <div className="mt-4 space-y-3">
           {steps.map((s, i) => (
             <div key={s.label}>
@@ -39,36 +39,36 @@ export function FunnelSummary({ inputs, r }: { inputs: ProfitInputs; r: ProfitRe
         <table className="w-full text-sm">
           <tbody>
             <SummaryRow label="Leads" value={fmtNum(r.leads)} />
-            <SummaryRow label="Confirmés" value={fmtNum(r.confirmed)} />
-            <SummaryRow label="Livrés" value={fmtNum(r.delivered)} />
+            <SummaryRow label="Confirmed" value={fmtNum(r.confirmed)} />
+            <SummaryRow label="Delivered" value={fmtNum(r.delivered)} />
             <SummaryRow label="CR" value={fmtPctFrac(r.cr)} />
             <SummaryRow label="DR" value={fmtPctFrac(r.dr)} />
-            <SummaryRow label="Coût Ads" value={fmtMAD(r.adsCost)} />
-            <SummaryRow label="Coût Produit" value={fmtMAD(r.productCostTotal)} />
-            <SummaryRow label="Frais Service" value={fmtMAD(r.serviceFees)} />
-            <SummaryRow label="Frais Lead" value={fmtMAD(r.leadFees)} />
-            <SummaryRow label="Autres variables" value={fmtMAD(r.otherVariableTotal)} />
-            <SummaryRow label="Charges Totales" value={fmtMAD(r.totalCharges)} bold />
-            <SummaryRow label="Prix de Vente" value={fmtMAD(inputs.sellingPrice)} />
-            <SummaryRow label="Ventes Totales" value={fmtMAD(r.totalSales)} bold />
+            <SummaryRow label="Ads Cost" value={fmtMAD(r.adsCost)} />
+            <SummaryRow label="Product Cost" value={fmtMAD(r.productCostTotal)} />
+            <SummaryRow label="Service Fees" value={fmtMAD(r.serviceFees)} />
+            <SummaryRow label="Lead Fees" value={fmtMAD(r.leadFees)} />
+            <SummaryRow label="Other variables" value={fmtMAD(r.otherVariableTotal)} />
+            <SummaryRow label="Total charges" value={fmtMAD(r.totalCharges)} bold />
+            <SummaryRow label="Selling price" value={fmtMAD(inputs.sellingPrice)} />
+            <SummaryRow label="Total sales" value={fmtMAD(r.totalSales)} bold />
             <SummaryRow
-              label="Profit Net"
+              label="Net Profit"
               value={fmtMAD(r.netProfit)}
               bold
               accent={r.netProfit >= 0 ? "text-emerald-600" : "text-rose-600"}
             />
             <SummaryRow
-              label="Marge"
+              label="Margin"
               value={isNaN(r.profitMargin) ? "—" : fmtPct2(r.profitMargin)}
               accent={!isNaN(r.profitMargin) && r.profitMargin >= 0 ? "text-emerald-600" : "text-rose-600"}
             />
             <SummaryRow label="Profit / Lead" value={fmtMAD2(r.profitPerLead)} />
-            <SummaryRow label="Profit / Confirmé" value={fmtMAD2(r.profitPerConfirmed)} />
-            <SummaryRow label="Profit / Livré" value={fmtMAD2(r.profitPerDelivered)} />
-            <SummaryRow label="Coût / Confirmé (ads)" value={fmtMAD2(r.costPerConfirmedAds)} />
-            <SummaryRow label="Coût / Livré (total)" value={fmtMAD2(r.costPerDeliveredTotal)} />
+            <SummaryRow label="Profit / Confirmed" value={fmtMAD2(r.profitPerConfirmed)} />
+            <SummaryRow label="Profit / Delivered" value={fmtMAD2(r.profitPerDelivered)} />
+            <SummaryRow label="Cost / Confirmed (ads)" value={fmtMAD2(r.costPerConfirmedAds)} />
+            <SummaryRow label="Cost / Delivered (total)" value={fmtMAD2(r.costPerDeliveredTotal)} />
             <SummaryRow label="Budget Ads Break-Even" value={fmtMAD(r.breakEvenAdsBudget)} />
-            <SummaryRow label="Budget Ads Restant" value={fmtMAD(r.remainingAdsBudget)} />
+            <SummaryRow label="Remaining Ads Budget" value={fmtMAD(r.remainingAdsBudget)} />
           </tbody>
         </table>
       </div>

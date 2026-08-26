@@ -6,3 +6,4 @@ pydantic-settings
 httpx
 maxminddb
 python-dotenv
+psycopg2-binary

@@ -4,6 +4,13 @@ import Link from "next/link";
 import { FaWhatsapp, FaInstagram, FaTiktok, FaEnvelope } from "react-icons/fa";
 import { useLang } from "@/components/LangProvider";
 import { t } from "@/content/ui";
+import { useSiteContent } from "@/lib/use-site-content";
+import type { SiteContentData } from "@/lib/page-schema";
+
+function pick(obj: { fr?: string; ar?: string } | undefined, lang: "fr" | "ar"): string {
+  if (!obj) return "";
+  return (obj[lang] || obj.fr || "").trim();
+}
 
 const COLS = [
   {
@@ -39,12 +46,54 @@ const COLS = [
 
 export function Footer() {
   const { lang } = useLang();
+  const site = useSiteContent();
+  const footer = site?.footer;
   const label = (it: { label?: string; labelKey?: string }) =>
     it.labelKey ? t(lang, it.labelKey) : it.label!;
 
+  const description = pick(footer?.description, lang);
+  const copyright = pick(footer?.copyright, lang) || t(lang, "footer.copy");
+  const email = footer?.email;
+  const phone = footer?.phone;
+  const social = footer?.social || {};
+
   return (
     <footer className="bg-brun text-petal mt-12">
-      <div className="container-page py-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="container-page pt-12">
+        {description && (
+          <div className="max-w-xl mb-10">
+            <p className="font-display text-2xl mb-2">Warda Beauté</p>
+            <p className="font-body text-petal/80 text-sm">{description}</p>
+            {(email || phone) && (
+              <p className="font-body text-petal/70 text-sm mt-3">
+                {email && (
+                  <a href={`mailto:${email}`} className="hover:text-warda mr-4">
+                    {email}
+                  </a>
+                )}
+                {phone && <span>{phone}</span>}
+              </p>
+            )}
+            {(social.instagram || social.facebook || social.tiktok || social.whatsapp) && (
+              <div className="flex gap-4 mt-3 text-petal/80">
+                {social.whatsapp && (
+                  <a href={`https://wa.me/${social.whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer" className="hover:text-warda" aria-label="WhatsApp">💬</a>
+                )}
+                {social.instagram && (
+                  <a href={social.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-warda" aria-label="Instagram">📸</a>
+                )}
+                {social.tiktok && (
+                  <a href={social.tiktok} target="_blank" rel="noopener noreferrer" className="hover:text-warda" aria-label="TikTok">🎵</a>
+                )}
+                {social.facebook && (
+                  <a href={social.facebook} target="_blank" rel="noopener noreferrer" className="hover:text-warda" aria-label="Facebook">📘</a>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+      <div className="container-page pb-12 grid grid-cols-1 md:grid-cols-3 gap-8">
         {COLS.map((c, ci) => {
           const isContact = c.titleKey === "nav.contact";
           return (
@@ -85,7 +134,7 @@ export function Footer() {
         })}
       </div>
       <div className="border-t border-petal/20 text-center text-xs py-4 text-petal/70">
-        {t(lang, "footer.copy")}
+        {copyright}
       </div>
     </footer>
   );

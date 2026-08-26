@@ -1,158 +1,176 @@
-"use client";
+import { prisma } from "./db";
 
-// Browser pixel tracking. Tokens are public (NEXT_PUBLIC_*). The matching
-// server CAPI call uses the SAME event_id for dedup (see docs/07).
-
-// Runtime enable flag, overridable by the admin-configured PixelConfig
-// (see components/pixels/PixelsConfig). Defaults to the env kill-switch.
-let pixelsEnabled = process.env.NEXT_PUBLIC_PIXELS_ENABLED !== "false";
-
-export function setPixelsEnabled(v: boolean) {
-  pixelsEnabled = v;
+export interface Pixel {
+  id: string;
+  pixelId: string;
+  type: string;
+  label: string;
+  enabled: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-function uuid(): string {
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
-    return crypto.randomUUID();
+export interface PixelsResponse {
+  pixels: Pixel[];
+  globalEnabled: boolean;
+}
+
+export type PixelType = "meta" | "tiktok" | "gtm";
+
+// ---------- Global enable/disable ----------
+
+async function getSitePixels(): Promise<{ enabled: boolean }> {
+  const row = await prisma.siteContent.findUnique({ where: { id: 1 } });
+  if (!row) return { enabled: true };
+  try {
+    const parsed = JSON.parse(row.pixels);
+    return { enabled: parsed.enabled !== false };
+  } catch {
+    return { enabled: true };
   }
-  if (typeof crypto !== "undefined" && typeof crypto.getRandomValues === "function") {
-    const b = crypto.getRandomValues(new Uint8Array(16));
-    b[6] = (b[6] & 0x0f) | 0x40;
-    b[8] = (b[8] & 0x3f) | 0x80;
-    const h = Array.from(b).map((x) => x.toString(16).padStart(2, "0"));
-    return `${h.slice(0, 4).join("")}-${h.slice(4, 6).join("")}-${h.slice(6, 8).join("")}-${h.slice(8, 10).join("")}-${h.slice(10, 16).join("")}`;
-  }
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
-    const r = (Math.random() * 16) | 0;
-    const v = c === "x" ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
+}
+
+export async function isPixelsEnabled(): Promise<boolean> {
+  return (await getSitePixels()).enabled;
+}
+
+export async function setGlobalPixelsEnabled(enabled: boolean): Promise<void> {
+  const row = await prisma.siteContent.findUnique({ where: { id: 1 } });
+  const current = row ? JSON.parse(row.pixels || "{}") : {};
+  await prisma.siteContent.upsert({
+    where: { id: 1 },
+    create: { id: 1, pixels: JSON.stringify({ enabled }) },
+    update: { pixels: JSON.stringify({ ...current, enabled }) },
   });
 }
 
-// Map our canonical event names to each network's standard event name.
-const META_EVENTS: Record<string, string> = {
-  PageView: "PageView",
-  ViewContent: "ViewContent",
-  AddToCart: "AddToCart",
-  InitiateCheckout: "InitiateCheckout",
-  Purchase: "Purchase",
-};
+// ---------- CRUD ----------
 
-const TT_EVENTS: Record<string, string> = {
-  PageView: "PageView",
-  ViewContent: "ViewContent",
-  AddToCart: "AddToCart",
-  InitiateCheckout: "InitiateCheckout",
-  Purchase: "CompletePayment",
-};
+export async function getPixels(): Promise<PixelsResponse> {
+  const [pixels, globalEnabled] = await Promise.all([
+    prisma.pixel.findMany({ orderBy: { createdAt: "desc" } }),
+    isPixelsEnabled(),
+  ]);
+  return { pixels, globalEnabled };
+}
 
-function pushGTM(event: string, data: Record<string, unknown>) {
-  if (typeof window === "undefined") return;
-  const dl = ((window as any).dataLayer = (window as any).dataLayer || []);
-  dl.push({
-    event,
-    value: data.value ?? 0,
-    currency: data.currency ?? "MAD",
-    content_ids: data.content_ids,
-    content_type: data.content_type ?? "product",
-    orderId: data.orderId,
+export async function getEnabledPixels(): Promise<Pixel[]> {
+  const enabled = await isPixelsEnabled();
+  if (!enabled) return [];
+  return prisma.pixel.findMany({ where: { enabled: true }, orderBy: { createdAt: "asc" } });
+}
+
+export async function createPixel(data: {
+  pixelId: string;
+  type: PixelType;
+  label: string;
+}): Promise<Pixel> {
+  return prisma.pixel.create({
+    data: {
+      pixelId: data.pixelId.trim(),
+      type: data.type,
+      label: data.label.trim() || `${data.type.toUpperCase()} Pixel`,
+    },
   });
 }
 
-// Forward a subset of pixel events to our own first-party analytics endpoint.
-// Server re-derives source/device/country from headers — never trust the client.
-const ANALYTICS_MAP: Record<string, string> = {
-  PageView: "page_view",
-  AddToCart: "add_to_cart",
-  InitiateCheckout: "begin_checkout",
-  Purchase: "order_success",
-};
+export async function updatePixel(
+  id: string,
+  data: Partial<{ pixelId: string; label: string; enabled: boolean }>
+): Promise<Pixel | null> {
+  const update: Record<string, unknown> = {};
+  if (data.pixelId !== undefined) update.pixelId = data.pixelId.trim();
+  if (data.label !== undefined) update.label = data.label.trim();
+  if (data.enabled !== undefined) update.enabled = data.enabled;
+  if (Object.keys(update).length === 0) return prisma.pixel.findUnique({ where: { id } });
+  return prisma.pixel.update({ where: { id }, data: update });
+}
 
-function getVisitorId(): string {
-  try {
-    let v = localStorage.getItem("warda_visitor_id");
-    if (!v) {
-      v = uuid();
-      localStorage.setItem("warda_visitor_id", v);
-    }
-    return v;
-  } catch {
-    return uuid();
+export async function deletePixel(id: string): Promise<void> {
+  await prisma.pixel.delete({ where: { id } });
+}
+
+// ---------- Env seed (backward compatibility) ----------
+
+export async function seedPixelsFromEnv(): Promise<void> {
+  const count = await prisma.pixel.count();
+  if (count > 0) return; // already seeded
+
+  const envPixels: { pixelId: string; type: PixelType; label: string }[] = [];
+  if (process.env.NEXT_PUBLIC_FB_PIXEL_ID) {
+    envPixels.push({ pixelId: process.env.NEXT_PUBLIC_FB_PIXEL_ID, type: "meta", label: "Facebook Pixel" });
+  }
+  if (process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID) {
+    envPixels.push({ pixelId: process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID, type: "tiktok", label: "TikTok Pixel" });
+  }
+  if (process.env.NEXT_PUBLIC_GTM_ID) {
+    envPixels.push({ pixelId: process.env.NEXT_PUBLIC_GTM_ID, type: "gtm", label: "Google Tag Manager" });
+  }
+
+  for (const p of envPixels) {
+    await prisma.pixel.create({ data: p });
+  }
+
+  // Also seed the global enabled flag
+  const site = await prisma.siteContent.findUnique({ where: { id: 1 } });
+  if (!site) {
+    const enabled = process.env.NEXT_PUBLIC_PIXELS_ENABLED !== "false";
+    await prisma.siteContent.upsert({
+      where: { id: 1 },
+      create: { id: 1, pixels: JSON.stringify({ enabled }) },
+      update: {},
+    });
   }
 }
 
-function getSessionId(): string {
-  try {
-    let s = sessionStorage.getItem("warda_session_id");
-    if (!s) {
-      s = uuid();
-      sessionStorage.setItem("warda_session_id", s);
-    }
-    return s;
-  } catch {
-    return uuid();
-  }
+// ---------- Client-side pixel helpers ----------
+
+let _pixelsEnabled = true;
+
+/** Called by PixelsConfig to enable/disable all client-side pixel tracking. */
+export function setPixelsEnabled(enabled: boolean) {
+  _pixelsEnabled = enabled;
 }
 
-function sendAnalytics(event: string, data: Record<string, unknown>) {
-  if (typeof window === "undefined" || typeof location === "undefined") return;
-  const eventType = ANALYTICS_MAP[event];
-  if (!eventType) return;
-  const qs = new URLSearchParams(location.search);
-  const payload: Record<string, unknown> = {
-    eventType,
-    visitorId: getVisitorId(),
-    sessionId: getSessionId(),
-    page: location.pathname,
-    productId: Array.isArray(data.content_ids) ? (data.content_ids as unknown[])[0] : data.productId,
-    orderId: data.orderId,
-    utm_source: qs.get("utm_source") || undefined,
-    utm_medium: qs.get("utm_medium") || undefined,
-    utm_campaign: qs.get("utm_campaign") || undefined,
-    utm_content: qs.get("utm_content") || undefined,
-    utm_term: qs.get("utm_term") || undefined,
-  };
-  fetch("/api/analytics/track", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-    keepalive: true,
-  }).catch(() => {});
-}
-
+/**
+ * Fire a tracking event to all active client-side pixels (Meta, TikTok, GTM dataLayer).
+ * Safe to call from server components (no-ops).
+ */
 export function track(
   event: string,
-  data: Record<string, unknown> = {},
-  eventId?: string,
-  opts?: { skipPixel?: boolean }
-): string {
-  const eid = eventId || uuid();
-  const enabled = pixelsEnabled;
+  data?: Record<string, unknown>,
+  _pixelIds?: string[],
+  opts?: { skipPixel?: boolean },
+) {
+  if (typeof window === "undefined") return;
+  if (!_pixelsEnabled) return;
+  if (opts?.skipPixel) return;
 
-  if (enabled && typeof window !== "undefined") {
-    // Meta + TikTok (skipped on the very first PageView to avoid double counting
-    // against the pixel's own init-time PageView). GTM has no auto PageView, so it
-    // is always pushed.
-    if (!opts?.skipPixel) {
-      if ((window as any).fbq) {
-        (window as any).fbq(
-          "track",
-          META_EVENTS[event] || event,
-          { ...data, value: data.value || 0, currency: "MAD" },
-          { eventID: eid }
-        );
-      }
-      if ((window as any).ttq) {
-        (window as any).ttq.track(TT_EVENTS[event] || event, {
-          ...data,
-          value: data.value || 0,
-          currency: "MAD",
-          event_id: eid,
-        });
-      }
+  // GTM dataLayer
+  try {
+    const dl = (window as any).dataLayer;
+    if (Array.isArray(dl)) {
+      dl.push({ event, ...data });
     }
-    pushGTM(event, data);
-    sendAnalytics(event, data);
-  }
-  return eid;
+  } catch { /* ignore */ }
+
+  // Meta (Facebook) pixel
+  try {
+    const fbq = (window as any).fbq;
+    if (typeof fbq === "function") {
+      const safeData = Object.fromEntries(
+        Object.entries(data ?? {}).filter(([, v]) => v !== undefined && v !== null)
+      );
+      fbq("track", event, Object.keys(safeData).length ? safeData : undefined);
+    }
+  } catch { /* ignore */ }
+
+  // TikTok pixel
+  try {
+    const win = window as any;
+    const ttq = win.ttq;
+    if (ttq && typeof ttq.track === "function") {
+      ttq.track(event, data);
+    }
+  } catch { /* ignore */ }
 }

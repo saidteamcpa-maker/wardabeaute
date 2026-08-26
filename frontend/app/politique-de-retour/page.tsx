@@ -1,8 +1,13 @@
 import { getLangServer } from "@/lib/lang-server";
 import { t } from "@/content/ui";
+import { getPageOverride } from "@/lib/store-content";
+import { sanitizeHtml } from "@/lib/safe-html";
 
-export default function PolitiqueRetour() {
+export default async function PolitiqueRetour({ searchParams }: { searchParams?: { preview?: string } }) {
   const lang = getLangServer();
+  const ov = await getPageOverride("retour", lang, searchParams?.preview === "1");
+  const T = (k: string, fk?: string) => ov?.[k] ?? t(lang, fk ?? k);
+  const bodyHtml = ov?.["policy.body"];
   const fr = (
     <>
       <p className="mt-2">
@@ -121,10 +126,17 @@ export default function PolitiqueRetour() {
   );
   return (
     <div className="section">
+      {ov?.["policy.bannerImage"] && (
+        <div className="container-page mb-6">
+          <img src={ov["policy.bannerImage"]} alt="" className="w-full aspect-[21/9] object-cover rounded-3xl" />
+        </div>
+      )}
       <div className="container-page max-w-3xl font-body text-brun space-y-6">
         <div>
-          <h1 className="text-4xl text-profond">{t(lang, "returnPage.title")}</h1>
-          {lang === "ar" ? ar : fr}
+          <h1 className="text-4xl text-profond">{T("policy.title", "returnPage.title")}</h1>
+          {bodyHtml ? (
+            <div className="space-y-4" dangerouslySetInnerHTML={{ __html: sanitizeHtml(bodyHtml) }} />
+          ) : lang === "ar" ? ar : fr}
         </div>
       </div>
     </div>

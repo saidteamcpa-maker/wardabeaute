@@ -22,13 +22,13 @@ function Block({
       <div className="text-xs font-semibold uppercase tracking-wide text-profond/50">{title}</div>
       <div className="mt-3 flex items-end justify-between">
         <div>
-          <div className="text-[11px] text-profond/50">Seuil break-even</div>
+          <div className="text-[11px] text-profond/50">Break-even threshold</div>
           <div className="text-2xl font-bold text-profond">{be}</div>
         </div>
         <span className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${badge.cls}`}>{badge.label}</span>
       </div>
       <div className="mt-3 border-t border-profond/10 pt-3 text-sm text-profond/70">
-        Valeur actuelle&nbsp;: <span className="font-semibold text-profond">{current}</span>
+        Current value&nbsp;: <span className="font-semibold text-profond">{current}</span>
       </div>
     </div>
   );
@@ -62,14 +62,14 @@ export function BreakEvenDashboard({ r }: { r: ProfitResult }) {
       </div>
 
       <div className="grid gap-4 md:grid-cols-3">
-        <MarginCard title="Marge CPL" value={fmtMAD2(r.cplSafety)} positive={!isNaN(r.cplSafety) && r.cplSafety >= 0} />
+        <MarginCard title="CPL Margin" value={fmtMAD2(r.cplSafety)} positive={!isNaN(r.cplSafety) && r.cplSafety >= 0} />
         <MarginCard
-          title="Marge CR"
+          title="CR Margin"
           value={isNaN(r.crSafety) ? "—" : `${(r.crSafety * 100).toFixed(2)} pts`}
           positive={!isNaN(r.crSafety) && r.crSafety >= 0}
         />
         <MarginCard
-          title="Marge DR"
+          title="DR Margin"
           value={isNaN(r.drSafety) ? "—" : `${(r.drSafety * 100).toFixed(2)} pts`}
           positive={!isNaN(r.drSafety) && r.drSafety >= 0}
         />

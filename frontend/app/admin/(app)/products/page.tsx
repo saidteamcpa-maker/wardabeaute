@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { UploadCloud } from "lucide-react";
 import { useAnalytics } from "@/lib/useAnalytics";
 import { formatMAD, formatNumber } from "@/lib/format";
 
@@ -24,7 +25,9 @@ export default function AdminProductsEditor() {
   const [editing, setEditing] = useState<string | null>(null);
   const [form, setForm] = useState<any>(null);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [msg, setMsg] = useState("");
+  const fileRef = useRef<HTMLInputElement>(null);
   const { data } = useAnalytics("30d");
   const perf = data?.products || [];
 
@@ -56,6 +59,17 @@ export default function AdminProductsEditor() {
     setForm((f: any) => ({ ...f, [k]: v }));
   }
 
+  async function uploadImage(file: File) {
+    setUploading(true);
+    const fd = new FormData();
+    fd.append("file", file);
+    const r = await fetch("/api/admin/upload", { method: "POST", body: fd });
+    const d = await r.json();
+    setUploading(false);
+    if (d.url) setField("image", d.url);
+    else setMsg("Upload failed: " + (d.error || "error"));
+  }
+
   async function save() {
     setSaving(true);
     setMsg("");
@@ -72,26 +86,26 @@ export default function AdminProductsEditor() {
     });
     setSaving(false);
     if (res.ok) {
-      setMsg("Enregistré ✓");
+      setMsg("Saved ✓");
       setEditing(null);
       await load();
     } else {
       const j = await res.json().catch(() => ({}));
-      setMsg("Erreur: " + (j.detail || res.status));
+      setMsg("Error: " + (j.detail || res.status));
     }
   }
 
   async function reset(slug: string) {
-    if (!confirm("Réinitialiser aux valeurs par défaut du catalogue ?")) return;
+    if (!confirm("Reset to catalog defaults?")) return;
     const res = await fetch(`/api/admin/products/${slug}`, { method: "DELETE" });
-    if (res.ok) { setMsg("Réinitialisé ✓"); await load(); }
+    if (res.ok) { setMsg("Reset ✓"); await load(); }
   }
 
   return (
     <div className="p-6 max-w-6xl">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-display text-profond">Produits</h1>
-        <span className="text-xs text-gris">Les noms sont verrouillés (marque immuable). Prix &amp; offres éditables.</span>
+        <h1 className="text-2xl font-display text-profond">Products</h1>
+        <span className="text-xs text-gris">Names are locked (brand immutable). Prices &amp; offers editable.</span>
       </div>
 
       {msg && <p className="text-sm text-emerald-700 mb-3">{msg}</p>}
@@ -100,13 +114,13 @@ export default function AdminProductsEditor() {
         <table className="w-full text-sm">
           <thead>
             <tr className="text-left text-gris border-b border-brume">
-              <th className="py-2 px-4 font-medium">Produit</th>
-              <th className="py-2 px-4 font-medium text-right">Prix</th>
-              <th className="py-2 px-4 font-medium text-right">Anc. prix</th>
-              <th className="py-2 px-4 font-medium text-center">Actif</th>
-              <th className="py-2 px-4 font-medium text-right">Vendus</th>
-              <th className="py-2 px-4 font-medium text-right">CA</th>
-              <th className="py-2 px-4 font-medium text-right">Commandes</th>
+              <th className="py-2 px-4 font-medium">Product</th>
+              <th className="py-2 px-4 font-medium text-right">Price</th>
+              <th className="py-2 px-4 font-medium text-right">Old price</th>
+              <th className="py-2 px-4 font-medium text-center">Active</th>
+              <th className="py-2 px-4 font-medium text-right">Sold</th>
+              <th className="py-2 px-4 font-medium text-right">Revenue</th>
+              <th className="py-2 px-4 font-medium text-right">Orders</th>
               <th className="py-2 px-4 font-medium"></th>
             </tr>
           </thead>
@@ -126,16 +140,16 @@ export default function AdminProductsEditor() {
                   <td className="py-2 px-4 text-right">{perfRow ? formatMAD(perfRow.revenue) : "—"}</td>
                   <td className="py-2 px-4 text-right">{perfRow ? formatNumber(perfRow.orders) : "—"}</td>
                   <td className="py-2 px-4 text-right whitespace-nowrap">
-                    <button onClick={() => openEdit(p)} className="text-warda underline mr-3">Éditer</button>
+                    <button onClick={() => openEdit(p)} className="text-warda underline mr-3">Edit</button>
                     {p.managed && (
-                      <button onClick={() => reset(p.slug)} className="text-gris underline">Réinit.</button>
+                      <button onClick={() => reset(p.slug)} className="text-gris underline">Reset</button>
                     )}
                   </td>
                 </tr>
               );
             })}
             {products.length === 0 && (
-              <tr><td colSpan={8} className="py-3 px-4 text-gris">Chargement…</td></tr>
+              <tr><td colSpan={8} className="py-3 px-4 text-gris">Loading…</td></tr>
             )}
           </tbody>
         </table>
@@ -143,16 +157,40 @@ export default function AdminProductsEditor() {
 
       {editing && form && (
         <div className="bg-white rounded-2xl border border-brume p-4 sm:p-5 mt-4">
-          <h3 className="font-display text-profond mb-3">Éditer — {form.name}</h3>
+          <h3 className="font-display text-profond mb-3">Edit — {form.name}</h3>
           <div className="grid sm:grid-cols-2 gap-3">
-            <label className="text-sm">Prix (MAD)
+            <label className="text-sm">Price (MAD)
               <input type="number" value={form.price} onChange={(e) => setField("price", e.target.value)} className="w-full rounded-xl border border-brume px-3 py-2 mt-1" />
             </label>
-            <label className="text-sm">Ancien prix (MAD, optionnel)
+            <label className="text-sm">Old price (MAD, optional)
               <input type="number" value={form.oldPrice} onChange={(e) => setField("oldPrice", e.target.value)} className="w-full rounded-xl border border-brume px-3 py-2 mt-1" />
             </label>
-            <label className="text-sm">Image (URL)
-              <input value={form.image} onChange={(e) => setField("image", e.target.value)} className="w-full rounded-xl border border-brume px-3 py-2 mt-1" />
+            <label className="text-sm sm:col-span-2">Product image
+              <div className="flex items-center gap-3 mt-1">
+                <input value={form.image} onChange={(e) => setField("image", e.target.value)} className="w-full rounded-xl border border-brume px-3 py-2" placeholder="/products/... or URL" />
+                <button
+                  type="button"
+                  onClick={() => fileRef.current?.click()}
+                  disabled={uploading}
+                  className="btn-outline min-h-0 px-3 py-2 text-sm inline-flex items-center gap-1 whitespace-nowrap"
+                >
+                  <UploadCloud className="w-4 h-4" /> {uploading ? "Uploading…" : "Upload"}
+                </button>
+              </div>
+              {form.image && (
+                <img src={form.image} alt="" className="h-24 rounded-lg object-contain mt-2 border border-brume" />
+              )}
+              <input
+                ref={fileRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={async (e) => {
+                  const f = e.target.files?.[0];
+                  if (f) await uploadImage(f);
+                  e.target.value = "";
+                }}
+              />
             </label>
             <label className="text-sm">Badge
               <input value={form.badge} onChange={(e) => setField("badge", e.target.value)} className="w-full rounded-xl border border-brume px-3 py-2 mt-1" />
@@ -161,20 +199,20 @@ export default function AdminProductsEditor() {
               <input type="number" value={form.stockCount} onChange={(e) => setField("stockCount", e.target.value)} className="w-full rounded-xl border border-brume px-3 py-2 mt-1" />
             </label>
             <label className="text-sm flex items-center gap-2 mt-6">
-              <input type="checkbox" checked={form.active} onChange={(e) => setField("active", e.target.checked)} /> Actif (visible en vitrine)
+              <input type="checkbox" checked={form.active} onChange={(e) => setField("active", e.target.checked)} /> Active (visible on storefront)
             </label>
-            <label className="text-sm sm:col-span-2">Offres (format JSON : liste d'objets qty / price)
+            <label className="text-sm sm:col-span-2">Offers (JSON format: list of objects with qty / price)
               <textarea value={form.offers} onChange={(e) => setField("offers", e.target.value)} rows={4} className="w-full rounded-xl border border-brume px-3 py-2 mt-1 font-mono text-xs" />
             </label>
-            <label className="text-sm sm:col-span-2">Description courte
+            <label className="text-sm sm:col-span-2">Short description
               <textarea value={form.shortDescription} onChange={(e) => setField("shortDescription", e.target.value)} rows={2} className="w-full rounded-xl border border-brume px-3 py-2 mt-1" />
             </label>
           </div>
           <div className="mt-4 flex gap-3">
             <button onClick={save} disabled={saving} className="btn-primary disabled:opacity-60">
-              {saving ? "…" : "Enregistrer"}
+              {saving ? "…" : "Save"}
             </button>
-            <button onClick={() => setEditing(null)} className="btn-outline">Annuler</button>
+            <button onClick={() => setEditing(null)} className="btn-outline">Cancel</button>
           </div>
         </div>
       )}

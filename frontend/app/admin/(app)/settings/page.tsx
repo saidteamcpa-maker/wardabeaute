@@ -18,34 +18,34 @@ export default function AdminSettings() {
 
   return (
     <div className="p-6 max-w-3xl">
-      <h1 className="text-2xl font-display text-profond mb-4">Paramètres</h1>
+      <h1 className="text-2xl font-display text-profond mb-4">Settings</h1>
 
       <div className="bg-white rounded-2xl border border-brume p-4 sm:p-5 mb-4">
         <h3 className="font-display text-profond mb-2">Session</h3>
-        <p className="text-sm text-gris mb-3">Déconnectez la session administrateur active.</p>
+        <p className="text-sm text-gris mb-3">Log out the active admin session.</p>
         <button
           onClick={logout}
           disabled={busy}
           className="px-4 py-2 rounded-full bg-rose-600 text-white text-sm font-medium disabled:opacity-50"
         >
-          {busy ? "Déconnexion…" : "Se déconnecter"}
+          {busy ? "Logging out…" : "Log out"}
         </button>
-        {done && <p className="text-sm text-emerald-700 mt-2">Déconnecté.</p>}
+        {done && <p className="text-sm text-emerald-700 mt-2">Logged out.</p>}
       </div>
 
       <div className="bg-white rounded-2xl border border-brume p-4 sm:p-5">
-        <h3 className="font-display text-profond mb-2">Sécurité des identifiants</h3>
+        <h3 className="font-display text-profond mb-2">Credentials security</h3>
         <p className="text-sm text-gris mb-2">
-          L&apos;accès administrateur est protégé par <code>ADMIN_USERNAME</code> / <code>ADMIN_PASSWORD</code> définis dans{" "}
+          Admin access is protected by <code>ADMIN_USERNAME</code> / <code>ADMIN_PASSWORD</code> set in{" "}
           <code>frontend/.env.local</code>.
         </p>
         <ol className="list-decimal list-inside text-sm text-gris space-y-1">
-          <li>Ouvrez <code>frontend/.env.local</code>.</li>
-          <li>Modifiez <code>ADMIN_PASSWORD</code> par un mot de passe fort.</li>
-          <li>Redémarrez le serveur (<code>npm run dev</code>) pour appliquer.</li>
+          <li>Open <code>frontend/.env.local</code>.</li>
+          <li>Change <code>ADMIN_PASSWORD</code> to a strong password.</li>
+          <li>Restart the server (<code>npm run dev</code>) to apply.</li>
         </ol>
         <p className="text-xs text-rose-700 mt-3">
-          ⚠️ Les identifiants par défaut (<code>admin</code> / <code>warda-admin-change-me</code>) sont à usage de démonstration et doivent être changés avant toute mise en production.
+          ⚠️ The default credentials (<code>admin</code> / <code>warda-admin-change-me</code>) are for demonstration purposes only and must be changed before going to production.
         </p>
       </div>
     </div>

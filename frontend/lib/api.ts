@@ -31,13 +31,12 @@ export interface CreateOrderPayload {
   customer_name: string;
   phone: string;
   city: string;
-  address: string;
-  postal?: string;
   items: { slug: string; qty: number }[];
   upsell: boolean;
+  idempotency_key: string;
 }
 
-export async function createOrder(payload: CreateOrderPayload): Promise<{ id: string; total: number }> {
+export async function createOrder(payload: CreateOrderPayload): Promise<{ id: string; total: number; discount?: number }> {
   const res = await fetch(`${API_URL}/api/orders`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

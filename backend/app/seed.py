@@ -6,11 +6,19 @@ from .prices import SEED_PRODUCTS
 
 
 def seed_products():
-    # create tables if missing (idempotent; main startup also calls create_all)
     Base.metadata.create_all(bind=engine)
     with Session(engine) as db:
         for p in SEED_PRODUCTS:
-            existing = db.get(Product, p["id"])
+            existing = db.query(Product).filter(Product.slug == p["id"]).first()
             if not existing:
-                db.add(Product(**p))
+                db.add(Product(
+                    slug=p["id"],
+                    name=p["name"],
+                    ar_sub=p["ar_sub"],
+                    price=p["price"],
+                    old_price=p["old_price"],
+                    badge=p["badge"],
+                    stars=p["stars"],
+                    reviews=p["reviews"],
+                ))
         db.commit()

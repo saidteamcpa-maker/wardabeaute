@@ -17,6 +17,11 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   if (!body.add) return NextResponse.json({ ok: true, added: false });
 
   const slugs = order.items.map((i) => i.slug);
+  const hasV = slugs.includes("velvastretch");
+  const hasC = slugs.includes("collaglow");
+  // Both components already present -> the kit discount was auto-applied at
+  // creation. Nothing to add here.
+  if (hasV && hasC) return NextResponse.json({ ok: true, added: false, alreadyDiscounted: true });
   const suggest = suggestedUpsellSlug(slugs);
   if (!suggest) return NextResponse.json({ ok: true, added: false });
 

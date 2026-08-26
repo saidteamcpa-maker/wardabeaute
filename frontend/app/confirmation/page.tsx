@@ -14,6 +14,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { productList, bundle } from "@/content/products";
 import { useLang } from "@/components/LangProvider";
 import { useCatalog } from "@/lib/catalog-context";
+import { usePageOverride } from "@/lib/use-page-override";
 
 function Stars({ value }: { value: number }) {
   return (
@@ -30,6 +31,11 @@ export default function ConfirmationPage() {
   const upsell = params.get("upsell") === "1";
   const { lang } = useLang();
   const catalog = useCatalog();
+  const ov = usePageOverride("confirmation");
+  const C = (key: string, ar: string, fr: string) => {
+    const o = ov?.[lang]?.[key];
+    return o && o.trim() ? o : lang === "ar" ? ar : fr;
+  };
   const A = (ar: string, fr: string) => (lang === "ar" ? ar : fr);
   const kitCat: any = catalog["kit-collagene"];
   const kitPrice = kitCat?.price ?? bundle.price;
@@ -141,9 +147,14 @@ export default function ConfirmationPage() {
 
         {/* 2. HERO */}
         <div className="text-center mt-8">
-          <h1 className="font-display text-5xl text-profond mb-2">
-            {A("مرسي", "Merci")} {firstName} ! 🌹
-          </h1>
+            {ov?.[lang]?.["confirm.bannerImage"] && (
+              <img src={ov[lang]["confirm.bannerImage"]} alt="" className="w-full aspect-[21/9] object-cover rounded-3xl mb-6" />
+            )}
+            <h1 className="font-display text-5xl text-profond mb-2">
+              {C("confirm.title", "مرسي", "Merci")} {firstName} ! 🌹
+            </h1>
+            <p className="text-lg">{C("confirm.message", "الكوماندة ديالك مؤكدة.", "Votre commande est confirmée.")}</p>
+            <p className="text-gris mt-1">{C("confirm.delivery", "التوصيل 24 لـ 48 ساعة فكل المغرب.", "Livraison 24–48h partout au Maroc.")}</p>
           <p className="text-lg">
             {A("الكوماندة ديالك", "Votre commande")}{" "}
             <span className="font-medium text-profond">

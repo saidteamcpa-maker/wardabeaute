@@ -29,11 +29,11 @@ export default function AdminLogin() {
       const d = await res.json().catch(() => ({}));
       setError(
         d.detail === "too_many_attempts"
-          ? "Trop de tentatives. Réessayez plus tard."
-          : "Identifiants invalides.",
+          ? "Too many attempts. Try again later."
+          : "Invalid credentials.",
       );
     } catch {
-      setError("Erreur réseau.");
+      setError("Network error.");
     } finally {
       setLoading(false);
     }
@@ -49,11 +49,11 @@ export default function AdminLogin() {
           <Flower2 className="w-7 h-7 text-warda" />
           <span className="font-display text-2xl text-profond">Warda Admin</span>
         </div>
-        <h1 className="text-lg font-medium text-profond mb-4 text-center">Connexion</h1>
+        <h1 className="text-lg font-medium text-profond mb-4 text-center">Login</h1>
         <input
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          placeholder="Nom d'utilisateur"
+          placeholder="Username"
           autoComplete="username"
           className="w-full rounded-xl border border-brume px-4 py-3 mb-3 font-body"
         />
@@ -61,7 +61,7 @@ export default function AdminLogin() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           type="password"
-          placeholder="Mot de passe"
+          placeholder="Password"
           autoComplete="current-password"
           className="w-full rounded-xl border border-brume px-4 py-3 mb-4 font-body"
         />
@@ -71,7 +71,7 @@ export default function AdminLogin() {
           disabled={loading}
           className="w-full btn-primary disabled:opacity-60"
         >
-          {loading ? "..." : "Se connecter"}
+          {loading ? "..." : "Login"}
         </button>
       </form>
     </div>

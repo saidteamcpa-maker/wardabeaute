@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,25 +12,40 @@ import { unitPrice, localize } from "@/content/products";
 import { useLang } from "@/components/LangProvider";
 import { useCatalog } from "@/lib/catalog-context";
 import { t } from "@/content/ui";
+import { usePageOverride } from "@/lib/use-page-override";
+import { CO_COLLAGEN_DISCOUNT } from "@/lib/orders";
 
 export function CheckoutPopup() {
   const { lang } = useLang();
   const catalog = useCatalog();
   const { items, isCheckoutOpen, closeCheckout, clear } = useCart();
   const router = useRouter();
+  const ov = usePageOverride("checkout");
+  const Co = (k: string) => (ov ? ov[lang]?.[k] || t(lang, k) : t(lang, k));
   const [step, setStep] = useState<"form" | "upsell" | "error">("form");
   const [errorMsg, setErrorMsg] = useState("");
   const [orderId, setOrderId] = useState("");
   const [loading, setLoading] = useState(false);
+  const idemRef = useRef<string>("");
+
+  // Fresh idempotency key each time the checkout is opened. A double-click on
+  // "Commander" reuses the same key (so it won't create a duplicate order), but
+  // a brand-new checkout gets a brand-new key (a new order).
+  useEffect(() => {
+    if (isCheckoutOpen) {
+      idemRef.current =
+        typeof crypto !== "undefined" && crypto.randomUUID
+          ? crypto.randomUUID()
+          : `idem-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    }
+  }, [isCheckoutOpen]);
 
   const schema = useMemo(
     () =>
       z.object({
-        customer_name: z.string().min(2, t(lang, "co.nameReq")),
-        phone: z.string().regex(/^0(5|6|7|8)[0-9]{8}$/, t(lang, "co.phoneReq")),
-        city: z.string().min(1, t(lang, "co.cityReq")),
-        address: z.string().optional(),
-        postal: z.string().optional(),
+        customer_name: z.string().min(2, Co("co.nameReq")),
+        phone: z.string().regex(/^0(6|7)[0-9]{8}$/, Co("co.phoneReq")),
+        city: z.string().min(1, Co("co.cityReq")),
       }),
     [lang]
   );
@@ -43,10 +58,17 @@ export function CheckoutPopup() {
   const cartSlugs = items.map((i) => i.slug);
   const hasV = cartSlugs.includes("velvastretch");
   const hasC = cartSlugs.includes("collaglow");
-  const CO_COLLAGEN_DISCOUNT = 49;
-  const suggestedSlug: string | null =
-    hasV && hasC ? null : hasV ? "collaglow" : hasC ? "velvastretch" : "collaglow";
-  const showUpsell = hasV || hasC;
+  const bothPresent = hasV && hasC;
+  const suggestedSlug: string | null = bothPresent
+    ? null
+    : hasV
+      ? "collaglow"
+      : hasC
+        ? "velvastretch"
+        : "collaglow";
+  // Popup only offers to *complete* the kit (add the missing component). When both
+  // are already in the cart the discount is auto-applied at checkout, so no popup.
+  const showUpsell = (hasV || hasC) && !bothPresent;
 
   useEffect(() => {
     if (isCheckoutOpen) {
@@ -67,45 +89,45 @@ export function CheckoutPopup() {
       const geo = await checkGeo();
       if (!geo.allowed) {
         setStep("error");
-        setErrorMsg(t(lang, "co.errorMorocco"));
+        setErrorMsg(Co("co.errorMorocco"));
         setLoading(false);
         return;
       }
       const res = await createOrder({
         ...data,
-        address: data.address ?? "",
         items: items.map((i) => ({ slug: i.slug, qty: i.qty })),
         upsell: false,
+        idempotency_key: idemRef.current,
       });
       setOrderId(res.id);
       try {
-        sessionStorage.setItem(
-          "warda-last-order",
-          JSON.stringify({
-            id: res.id,
-            customer_name: data.customer_name,
-            phone: data.phone,
-            city: data.city,
-            address: data.address,
-            items: items.map((i) => ({
-              slug: i.slug,
-              name: catalog[i.slug].name,
-              qty: i.qty,
-              price: unitPrice(i.slug, i.qty, catalog),
-            })),
-            total: res.total,
-          })
-        );
+          sessionStorage.setItem(
+            "warda-last-order",
+            JSON.stringify({
+              id: res.id,
+              customer_name: data.customer_name,
+              phone: data.phone,
+              city: data.city,
+              items: items.map((i) => ({
+                slug: i.slug,
+                name: catalog[i.slug].name,
+                qty: i.qty,
+                price: unitPrice(i.slug, i.qty, catalog),
+              })),
+              total: res.total,
+              upsellDiscount: bothPresent ? (res.discount ?? CO_COLLAGEN_DISCOUNT) : 0,
+            })
+          );
       } catch {}
       track("Purchase", { value: res.total, currency: "MAD", content_ids: items.map((i) => i.slug), orderId: res.id });
       if (showUpsell) setStep("upsell");
       else finish(false);
     } catch (e: any) {
       setStep("error");
-      if (e?.message === "morocco_only") setErrorMsg(t(lang, "co.errorMorocco"));
-      else if (e?.message === "invalid_phone") setErrorMsg(t(lang, "co.errorPhone"));
-      else if (e?.message === "blocked") setErrorMsg(t(lang, "co.errorBlocked"));
-      else setErrorMsg(t(lang, "co.errorGeneric"));
+      if (e?.message === "morocco_only") setErrorMsg(Co("co.errorMorocco"));
+      else if (e?.message === "invalid_phone") setErrorMsg(Co("co.errorPhone"));
+      else if (e?.message === "blocked") setErrorMsg(Co("co.errorBlocked"));
+      else setErrorMsg(Co("co.errorGeneric"));
     } finally {
       setLoading(false);
     }
@@ -146,9 +168,9 @@ export function CheckoutPopup() {
 
         {step === "form" && (
           <>
-            <h3 className="font-display text-2xl text-profond mb-1">{t(lang, "co.title")}</h3>
+            <h3 className="font-display text-2xl text-profond mb-1">{Co("co.title")}</h3>
             <p className="text-sm text-gris mb-3">
-              💳 {t(lang, "co.cod")} · 🚚 24–48h
+              💳 {Co("co.cod")} · 🚚 24–48h
             </p>
 
             <div className="text-sm font-body text-brun mb-3 border-b border-brume pb-3">
@@ -178,7 +200,7 @@ export function CheckoutPopup() {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 font-body">
               <input
                 {...register("customer_name")}
-                placeholder={t(lang, "co.name")}
+                placeholder={Co("co.name")}
                 className="w-full rounded-xl border border-brume px-3 py-3"
               />
               {formState.errors.customer_name && (
@@ -188,27 +210,21 @@ export function CheckoutPopup() {
               <div>
                 <input
                   {...register("phone")}
-                  placeholder={t(lang, "co.phone")}
+                  placeholder={Co("co.phone")}
                   className="w-full rounded-xl border border-brume px-3 py-3"
                 />
-                <p className="text-xs text-gris mt-1">{t(lang, "co.phonePh")}</p>
+                <p className="text-xs text-gris mt-1">{Co("co.phonePh")}</p>
               </div>
               {formState.errors.phone && (
                 <p className="text-red-600 text-xs">{formState.errors.phone.message}</p>
               )}
 
-              <input {...register("city")} placeholder={t(lang, "co.city")} className="w-full rounded-xl border border-brume px-3 py-3" />
-
-              <input
-                {...register("address")}
-                placeholder={t(lang, "co.address")}
-                className="w-full rounded-xl border border-brume px-3 py-3"
-              />
+              <input {...register("city")} placeholder={Co("co.city")} className="w-full rounded-xl border border-brume px-3 py-3" />
 
               <button type="submit" disabled={loading} className="btn-primary w-full disabled:opacity-60">
-                {loading ? "..." : `🌹 ${t(lang, "co.submit")} — ${t(lang, "co.cod")}`}
+                {loading ? "..." : `🌹 ${Co("co.submit")} — ${Co("co.cod")}`}
               </button>
-              <p className="text-center text-xs text-gris">{t(lang, "co.secure")}</p>
+              <p className="text-center text-xs text-gris">{Co("co.secure")}</p>
             </form>
           </>
         )}
@@ -221,7 +237,7 @@ export function CheckoutPopup() {
           <div className="py-8 text-center">
             <p className="font-body text-brun mb-4">{errorMsg}</p>
             <button onClick={() => setStep("form")} className="btn-outline">
-              {t(lang, "co.back")}
+              {Co("co.back")}
             </button>
           </div>
         )}
@@ -243,6 +259,8 @@ function UpsellStep({
 }) {
   const { lang } = useLang();
   const catalog = useCatalog();
+  const ov = usePageOverride("checkout");
+  const Co = (k: string) => (ov ? ov[lang]?.[k] || t(lang, k) : t(lang, k));
   const [sec, setSec] = useState(15);
   useEffect(() => {
     const timer = setInterval(() => {
@@ -266,7 +284,7 @@ function UpsellStep({
     <div className="py-4 text-center">
       <p className="font-display text-2xl text-profond mb-1">🎁 Kit Collagène Inside &amp; Outside</p>
       <p className="font-body text-brun text-sm mb-3">
-        {t(lang, "co.upsellBody").split("+").map((part, i, arr) => (
+        {Co("co.upsellBody").split("+").map((part, i, arr) => (
           <span key={i}>
             {i > 0 && <span className="text-warda"> + </span>}
             {part}
@@ -284,7 +302,7 @@ function UpsellStep({
         </div>
       ) : (
         <p className="font-body text-brun text-sm mb-3">
-          {t(lang, "co.upsellBoth").replace("{discount}", String(discount))}
+          {Co("co.upsellBoth").replace("{discount}", String(discount))}
         </p>
       )}
 
@@ -292,16 +310,16 @@ function UpsellStep({
         {newTotal} MAD <span className="line-through text-gris text-base">{newTotal + discount} MAD</span>
       </p>
       <p className="text-xs text-gris mb-3">
-        {t(lang, "co.upsellSave").replace("{discount}", String(discount)).replace("{sec}", String(sec))}
+        {Co("co.upsellSave").replace("{discount}", String(discount)).replace("{sec}", String(sec))}
       </p>
 
       <button onClick={() => onFinish(true)} className="btn-primary w-full mb-2">
         {p
-          ? t(lang, "co.upsellAdd").replace("{name}", p.name).replace("{discount}", String(discount))
-          : t(lang, "co.upsellApply").replace("{discount}", String(discount))}
+          ? Co("co.upsellAdd").replace("{name}", p.name).replace("{discount}", String(discount))
+          : Co("co.upsellApply").replace("{discount}", String(discount))}
       </button>
       <button onClick={() => onFinish(false)} className="text-sm text-gris underline w-full">
-        {t(lang, "co.upsellNo")}
+        {Co("co.upsellNo")}
       </button>
     </div>
   );

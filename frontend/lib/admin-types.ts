@@ -56,15 +56,15 @@ export const STATUS_ORDER = [
 ];
 
 export const STATUS_LABELS: Record<string, string> = {
-  new: "Nouveau",
-  pending_confirmation: "En attente de confirmation",
-  confirmed: "Confirmé",
-  preparing: "En préparation",
-  shipped: "Expédié",
-  out_for_delivery: "En cours de livraison",
-  delivered: "Livré",
-  cancelled: "Annulé",
-  returned: "Retourné",
+  new: "New",
+  pending_confirmation: "Awaiting Confirmation",
+  confirmed: "Confirmed",
+  preparing: "Preparing",
+  shipped: "Shipped",
+  out_for_delivery: "Out for Delivery",
+  delivered: "Delivered",
+  cancelled: "Cancelled",
+  returned: "Returned",
 };
 
 export const SOURCE_LABELS: Record<string, string> = {
@@ -75,5 +75,5 @@ export const SOURCE_LABELS: Record<string, string> = {
   google: "Google",
   snapchat: "Snapchat",
   youtube: "YouTube",
-  other: "Autre",
+  other: "Other",
 };

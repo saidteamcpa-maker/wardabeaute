@@ -15,7 +15,7 @@ const itemSchema = z.object({
 
 const orderSchema = z.object({
   customerName: z.string().min(2),
-  phone: z.string().regex(/^(06|07|05)\d{8}$/, 'Invalid MA phone'),
+  phone: z.string().regex(/^0(6|7)\d{8}$/, 'Invalid MA phone'),
   city: z.string().optional(),
   address: z.string().optional(),
   postalCode: z.string().optional(),

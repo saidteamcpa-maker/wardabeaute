@@ -69,9 +69,9 @@ export function Sensitivity({ inputs }: { inputs: ProfitInputs }) {
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-sm font-semibold text-profond">Matrice de sensibilité CR × DR</h3>
+        <h3 className="text-sm font-semibold text-profond">CR × DR Sensitivity Matrix</h3>
         <p className="mt-1 text-xs text-profond/50">
-          Chaque cellule = profit net pour ce couple (CR lignes, DR colonnes). Vert = rentable, rouge = déficit.
+          Each cell = net profit for that (CR rows, DR columns) pair. Green = profitable, red = loss.
         </p>
         <div className="mt-3 overflow-x-auto">
           <table className="border-collapse text-xs">
@@ -90,11 +90,11 @@ export function Sensitivity({ inputs }: { inputs: ProfitInputs }) {
                   {row.map((cell) => (
                     <td
                       key={cell.dr}
-                      title={`Livrés: ${fmtNum(cell.res.delivered)} | Ventes: ${fmtMAD(cell.res.totalSales)} | Coûts: ${fmtMAD(cell.res.totalCharges)} | Marge: ${isNaN(cell.res.profitMargin) ? "—" : fmtPctFrac(cell.res.profitMargin)}`}
+                      title={`Delivered: ${fmtNum(cell.res.delivered)} | Sales: ${fmtMAD(cell.res.totalSales)} | Costs: ${fmtMAD(cell.res.totalCharges)} | Margin: ${isNaN(cell.res.profitMargin) ? "—" : fmtPctFrac(cell.res.profitMargin)}`}
                       className={`p-2 text-right tabular-nums ${cellColor(cell.res.netProfit)}`}
                     >
                       <div className="font-semibold">{fmtMAD(cell.res.netProfit)}</div>
-                      <div className="text-[10px] opacity-70">{fmtNum(cell.res.delivered)} livrés</div>
+                      <div className="text-[10px] opacity-70">{fmtNum(cell.res.delivered)} delivered</div>
                     </td>
                   ))}
                 </tr>
@@ -105,19 +105,19 @@ export function Sensitivity({ inputs }: { inputs: ProfitInputs }) {
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
-        <SensTable title="Sensibilité CR" rows={crSens} label={(v) => fmtPctFrac(v.cr)} />
-        <SensTable title="Sensibilité DR" rows={drSens} label={(v) => fmtPctFrac(v.dr)} />
-        <SensTable title="Sensibilité CPL" rows={cplSens} label={(v) => fmtMAD(v.cpl)} highlight={(v) => isNaN(inputs.adsCpl) ? false : v.cpl === inputs.adsCpl} />
+        <SensTable title="CR Sensitivity" rows={crSens} label={(v) => fmtPctFrac(v.cr)} />
+        <SensTable title="DR Sensitivity" rows={drSens} label={(v) => fmtPctFrac(v.dr)} />
+        <SensTable title="CPL Sensitivity" rows={cplSens} label={(v) => fmtMAD(v.cpl)} highlight={(v) => isNaN(inputs.adsCpl) ? false : v.cpl === inputs.adsCpl} />
       </div>
 
       <div>
-        <h3 className="text-sm font-semibold text-profond">Graphique break-even : CPL vs Profit Net</h3>
+        <h3 className="text-sm font-semibold text-profond">Break-even chart: CPL vs Net Profit</h3>
         <svg viewBox={`0 0 ${W} ${H}`} className="mt-3 w-full rounded-2xl border border-profond/10 bg-white">
           <line x1={padL} y1={zeroY} x2={W - padR} y2={zeroY} stroke="#cbd5e1" strokeDasharray="4 4" />
           <text x={padL - 6} y={zeroY + 4} textAnchor="end" className="fill-profond/40" fontSize="10">0</text>
           <polyline points={path} fill="none" stroke="#b07a55" strokeWidth="2" />
           <line x1={x(inputs.adsCpl)} y1={padT} x2={x(inputs.adsCpl)} y2={H - padB} stroke="#0ea5e9" strokeWidth="1.5" />
-          <text x={x(inputs.adsCpl)} y={padT - 6} textAnchor="middle" className="fill-sky-600" fontSize="10">CPL actuel</text>
+          <text x={x(inputs.adsCpl)} y={padT - 6} textAnchor="middle" className="fill-sky-600" fontSize="10">Current CPL</text>
           {!isNaN(computeProfit(inputs).breakEvenCpl) && (
             <>
               <line x1={x(computeProfit(inputs).breakEvenCpl)} y1={padT} x2={x(computeProfit(inputs).breakEvenCpl)} y2={H - padB} stroke="#ef4444" strokeWidth="1.5" />

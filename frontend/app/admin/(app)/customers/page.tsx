@@ -14,31 +14,31 @@ export default function AdminCustomers() {
   return (
     <div className="p-6 max-w-6xl">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-display text-profond">Clients & géographie</h1>
+        <h1 className="text-2xl font-display text-profond">Customers & geography</h1>
         <RangeSelector value={range} onChange={setRange} />
       </div>
 
-      {loading && <p className="text-gris">Chargement…</p>}
+      {loading && <p className="text-gris">Loading…</p>}
 
       {aud && (
         <>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            <KpiCard label="Total clients" value={formatNumber(aud.totalCustomers)} />
-            <KpiCard label="Clients récurrents" value={formatNumber(aud.repeatCustomers)} accent="text-emerald-700" />
-            <KpiCard label="Taux de récurrence" value={formatPct(aud.repeatRate)} accent="text-emerald-700" />
-            <KpiCard label="LTV moyenne" value={formatMAD(aud.avgLtv)} />
+            <KpiCard label="Total customers" value={formatNumber(aud.totalCustomers)} />
+            <KpiCard label="Repeat customers" value={formatNumber(aud.repeatCustomers)} accent="text-emerald-700" />
+            <KpiCard label="Repeat rate" value={formatPct(aud.repeatRate)} accent="text-emerald-700" />
+            <KpiCard label="Average LTV" value={formatMAD(aud.avgLtv)} />
           </div>
 
           <div className="bg-white rounded-2xl border border-brume p-4 sm:p-5 mt-4">
-            <h3 className="font-display text-profond mb-3">Performance par ville (COD)</h3>
+            <h3 className="font-display text-profond mb-3">Performance by city (COD)</h3>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="text-left text-gris border-b border-brume">
-                    <th className="py-2 pr-4 font-medium">Ville</th>
-                    <th className="py-2 pr-4 font-medium text-right">Commandes</th>
-                    <th className="py-2 pr-4 font-medium text-right">CA</th>
-                    <th className="py-2 pr-4 font-medium text-right">Livraison</th>
+                    <th className="py-2 pr-4 font-medium">City</th>
+                    <th className="py-2 pr-4 font-medium text-right">Orders</th>
+                    <th className="py-2 pr-4 font-medium text-right">Revenue</th>
+                    <th className="py-2 pr-4 font-medium text-right">Delivery</th>
                     <th className="py-2 pr-4 font-medium text-right">RTO</th>
                     <th className="py-2 font-medium text-right">Confirmation</th>
                   </tr>
@@ -57,7 +57,7 @@ export default function AdminCustomers() {
                   {aud.cities.length === 0 && (
                     <tr>
                       <td colSpan={6} className="py-3 text-gris">
-                        Aucune donnée.
+                        No data.
                       </td>
                     </tr>
                   )}
@@ -67,12 +67,12 @@ export default function AdminCustomers() {
           </div>
 
           <div className="bg-white rounded-2xl border border-brume p-4 sm:p-5 mt-4">
-            <h3 className="font-display text-profond mb-3">Top clients (CA)</h3>
+            <h3 className="font-display text-profond mb-3">Top customers (Revenue)</h3>
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="text-left text-gris border-b border-brume">
-                    <th className="py-2 pr-4 font-medium">Téléphone</th>
+                    <th className="py-2 pr-4 font-medium">Phone</th>
                     <th className="py-2 pr-4 font-medium text-right">Commandes</th>
                     <th className="py-2 font-medium text-right">CA</th>
                   </tr>
@@ -88,7 +88,7 @@ export default function AdminCustomers() {
                   {aud.topCustomers.length === 0 && (
                     <tr>
                       <td colSpan={3} className="py-3 text-gris">
-                        Aucune donnée.
+                        No data.
                       </td>
                     </tr>
                   )}

@@ -19,9 +19,9 @@ const PIE_COLORS = ["#b08d57", "#7c9c7e", "#d9a05b", "#8a6f9e", "#c96d6d", "#6b8
 export function RevenueChart({ data }: { data: { date: string; revenue: number; orders: number }[] }) {
   return (
     <div className="bg-white rounded-2xl border border-brume p-4 sm:p-5">
-      <h3 className="font-display text-profond mb-3">Chiffre d'affaires & commandes</h3>
+      <h3 className="font-display text-profond mb-3">Revenue & Orders</h3>
       {data.length === 0 ? (
-        <p className="text-sm text-gris">Aucune donnée sur la période.</p>
+        <p className="text-sm text-gris">No data for this period.</p>
       ) : (
         <ResponsiveContainer width="100%" height={260}>
           <ComposedChart data={data} margin={{ left: -8, right: 8, top: 8, bottom: 0 }}>
@@ -30,8 +30,8 @@ export function RevenueChart({ data }: { data: { date: string; revenue: number; 
             <YAxis yAxisId="left" tick={{ fontSize: 11 }} />
             <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 11 }} />
             <Tooltip />
-            <Area yAxisId="left" type="monotone" dataKey="revenue" name="CA (MAD)" fill="#b08d57" fillOpacity={0.22} stroke="#b08d57" />
-            <Line yAxisId="right" type="monotone" dataKey="orders" name="Commandes" stroke="#7c9c7e" strokeWidth={2} dot={false} />
+            <Area yAxisId="left" type="monotone" dataKey="revenue" name="Revenue (MAD)" fill="#b08d57" fillOpacity={0.22} stroke="#b08d57" />
+            <Line yAxisId="right" type="monotone" dataKey="orders" name="Orders" stroke="#7c9c7e" strokeWidth={2} dot={false} />
           </ComposedChart>
         </ResponsiveContainer>
       )}
@@ -42,9 +42,9 @@ export function RevenueChart({ data }: { data: { date: string; revenue: number; 
 export function TrafficChart({ data }: { data: { date: string; pageViews: number }[] }) {
   return (
     <div className="bg-white rounded-2xl border border-brume p-4 sm:p-5">
-      <h3 className="font-display text-profond mb-3">Trafic (vues de pages)</h3>
+      <h3 className="font-display text-profond mb-3">Traffic (Page Views)</h3>
       {data.length === 0 ? (
-        <p className="text-sm text-gris">Aucune donnée sur la période.</p>
+        <p className="text-sm text-gris">No data for this period.</p>
       ) : (
         <ResponsiveContainer width="100%" height={260}>
           <ComposedChart data={data} margin={{ left: -8, right: 8, top: 8, bottom: 0 }}>
@@ -52,7 +52,7 @@ export function TrafficChart({ data }: { data: { date: string; pageViews: number
             <XAxis dataKey="date" tick={{ fontSize: 11 }} />
             <YAxis tick={{ fontSize: 11 }} />
             <Tooltip />
-            <Area type="monotone" dataKey="pageViews" name="Vues" fill="#6b8fb5" fillOpacity={0.22} stroke="#6b8fb5" />
+            <Area type="monotone" dataKey="pageViews" name="Views" fill="#6b8fb5" fillOpacity={0.22} stroke="#6b8fb5" />
           </ComposedChart>
         </ResponsiveContainer>
       )}
@@ -74,7 +74,7 @@ export function BreakdownPie({
     <div className="bg-white rounded-2xl border border-brume p-4 sm:p-5">
       <h3 className="font-display text-profond mb-3">{title}</h3>
       {rows.length === 0 ? (
-        <p className="text-sm text-gris">Aucune donnée.</p>
+        <p className="text-sm text-gris">No data.</p>
       ) : (
         <ResponsiveContainer width="100%" height={240}>
           <PieChart>

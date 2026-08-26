@@ -9,12 +9,12 @@ import { formatNumber } from "@/lib/format";
 import { SOURCE_LABELS } from "@/lib/admin-types";
 
 const FUNNEL_STEPS = [
-  { key: "pageViews", label: "Vues de pages" },
-  { key: "addToCarts", label: "Ajouts panier" },
-  { key: "beginCheckouts", label: "Début checkout" },
-  { key: "orders", label: "Commandes" },
-  { key: "confirmed", label: "Confirmées+" },
-  { key: "delivered", label: "Livrées" },
+  { key: "pageViews", label: "Page views" },
+  { key: "addToCarts", label: "Add to carts" },
+  { key: "beginCheckouts", label: "Begin checkout" },
+  { key: "orders", label: "Orders" },
+  { key: "confirmed", label: "Confirmed+" },
+  { key: "delivered", label: "Delivered" },
 ] as const;
 
 export default function AdminAnalytics() {
@@ -25,11 +25,11 @@ export default function AdminAnalytics() {
   return (
     <div className="p-6 max-w-6xl">
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-2xl font-display text-profond">Analytiques & COD</h1>
+        <h1 className="text-2xl font-display text-profond">Analytics & COD</h1>
         <RangeSelector value={range} onChange={setRange} />
       </div>
 
-      {loading && <p className="text-gris">Chargement…</p>}
+      {loading && <p className="text-gris">Loading…</p>}
 
       {data && (
         <>
@@ -39,12 +39,12 @@ export default function AdminAnalytics() {
           </div>
 
           <div className="grid gap-4 mt-4 lg:grid-cols-2">
-            <BreakdownPie title="Sources (commandes)" data={data.sources} labelMap={SOURCE_LABELS} />
-            <BreakdownPie title="Appareils (commandes)" data={data.devices} />
+            <BreakdownPie title="Sources (orders)" data={data.sources} labelMap={SOURCE_LABELS} />
+            <BreakdownPie title="Devices (orders)" data={data.devices} />
           </div>
 
           <div className="bg-white rounded-2xl border border-brume p-4 sm:p-5 mt-4">
-            <h3 className="font-display text-profond mb-3">Entonnoir COD</h3>
+            <h3 className="font-display text-profond mb-3">COD Funnel</h3>
             {funnel && (
               <div className="space-y-2">
                 {FUNNEL_STEPS.map((step) => {
@@ -66,7 +66,7 @@ export default function AdminAnalytics() {
           </div>
 
           <div className="bg-white rounded-2xl border border-brume p-4 sm:p-5 mt-4">
-            <h3 className="font-display text-profond mb-3">Performance produits</h3>
+            <h3 className="font-display text-profond mb-3">Product performance</h3>
             <ProductTable products={data.products} />
           </div>
         </>

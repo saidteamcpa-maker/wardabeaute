@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -12,44 +12,51 @@ model AdminSession {
   token     String   @unique
   username  String
   expiresAt DateTime
-  createdAt DateTime @default(now())
+  createdAt DateTime @default(now()) @map("created_at")
 
   @@index([token])
+  @@map("admin_sessions")
 }
 
 model Order {
-  id                String         @id @default(cuid())
-  reference         String         @unique
-  createdAt         DateTime       @default(now())
-  updatedAt         DateTime       @updatedAt
-  customerName      String
-  phone             String
-  city              String
-  address           String?
-  postal            String?
-  status            String         @default("new")
-  confirmationStatus String?
-  deliveryStatus    String?
-  paymentStatus     String         @default("unpaid")
-  source            String?
-  utmSource         String?
-  utmMedium         String?
-  utmCampaign       String?
-  utmContent        String?
-  utmTerm           String?
-  referrer          String?
-  device            String?
-  browser           String?
-  country           String?
-  visitorId         String?
-  sessionId         String?
-  total             Int
-  discount          Int            @default(0)
-  shippingFee       Int            @default(0)
-  notes             String?
+  id                 String   @id @default(cuid())
+  reference          String   @unique
+  idempotencyKey     String?  @unique @map("idempotency_key")
+  createdAt          DateTime @default(now()) @map("created_at")
+  updatedAt          DateTime @updatedAt @map("updated_at")
+  customerName       String   @map("customer_name")
+  phone              String
+  city               String
+  address            String?
+  postal             String?
+  status             String   @default("new")
+  confirmationStatus String?  @map("confirmation_status")
+  deliveryStatus     String?  @map("delivery_status")
+  paymentStatus      String   @default("unpaid") @map("payment_status")
+  source             String?
+  utmSource          String?  @map("utm_source")
+  utmMedium          String?  @map("utm_medium")
+  utmCampaign        String?  @map("utm_campaign")
+  utmContent         String?  @map("utm_content")
+  utmTerm            String?  @map("utm_term")
+  referrer           String?
+  device             String?
+  browser            String?
+  country            String?
+  visitorId          String?  @map("visitor_id")
+  sessionId          String?  @map("session_id")
+  total              Int
+  discount           Int      @default(0)
+  shippingFee        Int      @default(0) @map("shipping_fee")
+  notes              String?
+  ip                 String?
+  geoRisk            String?  @map("geo_risk")
+  subtotal           Int      @default(0)
+  upsellTotal        Int      @default(0) @map("upsell_total")
+  upsellAdded        Boolean  @default(false) @map("upsell_added")
 
-  items             OrderItem[]
-  activities        OrderActivity[]
+  items      OrderItem[]
+  activities OrderActivity[]
 
   @@index([createdAt])
   @@index([status])
@@ -57,79 +64,144 @@ model Order {
   @@index([source])
   @@index([phone])
   @@index([customerName])
+  @@map("orders")
 }
 
 model OrderItem {
   id        String @id @default(cuid())
-  orderId   String
+  orderId   String @map("order_id")
   order     Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
   slug      String
   name      String
   qty       Int
-  unitPrice Int
+  unitPrice Int    @map("unit_price")
 
   @@index([slug])
+  @@index([orderId])
+  @@map("order_items")
 }
 
 model OrderActivity {
   id        String   @id @default(cuid())
-  orderId   String
+  orderId   String   @map("order_id")
   order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
   type      String
   message   String
-  adminUser String?
-  createdAt DateTime @default(now())
+  adminUser String?  @map("admin_user")
+  createdAt DateTime @default(now()) @map("created_at")
 
   @@index([orderId])
+  @@map("order_activities")
 }
 
 model AnalyticsEvent {
   id          String   @id @default(cuid())
-  eventType   String
+  eventType   String   @map("event_type")
   timestamp   DateTime @default(now())
-  sessionId   String?
-  visitorId   String?
+  sessionId   String?  @map("session_id")
+  visitorId   String?  @map("visitor_id")
   page        String?
-  productId   String?
-  orderId     String?
+  productId   String?  @map("product_id")
+  orderId     String?  @map("order_id")
   country     String?
   referrer    String?
-  utmSource   String?
-  utmMedium   String?
-  utmCampaign String?
-  utmContent  String?
-  utmTerm     String?
+  utmSource   String?  @map("utm_source")
+  utmMedium   String?  @map("utm_medium")
+  utmCampaign String?  @map("utm_campaign")
+  utmContent  String?  @map("utm_content")
+  utmTerm     String?  @map("utm_term")
   device      String?
   browser     String?
 
   @@index([timestamp])
   @@index([eventType])
   @@index([country])
+  @@map("analytics_events")
 }
 
 model Product {
   slug             String   @id
   name             String
+  arSub            String?  @map("ar_sub")
   price            Int
-  oldPrice         Int?
+  oldPrice         Int?     @map("old_price")
   image            String?
   active           Boolean  @default(true)
-  stockCount       Int?
+  stockCount       Int?     @map("stock_count")
   badge            String?
-  shortDescription String?
-  offers           String? // JSON string of Offer[] (qty/price/save)
-  isBundle         Boolean  @default(false)
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  stars            Float?   @default(4.8)
+  reviews          Int?     @default(0)
+  shortDescription String?  @map("short_description")
+  offers           String?
+  isBundle         Boolean  @default(false) @map("is_bundle")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
 
   @@index([active])
+  @@map("products")
 }
 
-model PixelConfig {
-  id            Int      @id @default(1)
-  metaPixelId   String   @default("")
-  tiktokPixelId String   @default("")
-  gtmId         String   @default("")
-  enabled       Boolean  @default(true)
-  updatedAt     DateTime @updatedAt
+model Pixel {
+  id        String   @id @default(cuid())
+  pixelId   String   @map("pixel_id")
+  type      String
+  label     String
+  enabled   Boolean  @default(true)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([type])
+  @@index([enabled])
+  @@map("pixels")
+}
+
+model PageContent {
+  id               String        @id @default(cuid())
+  slug             String        @unique
+  type             String
+  title            String
+  status           String        @default("published")
+  indexable        Boolean       @default(true)
+  seoTitle         String?       @map("seo_title")
+  seoDescription   String?       @map("seo_description")
+  canonical        String?
+  ogTitle          String?       @map("og_title")
+  ogDescription    String?       @map("og_description")
+  ogImage          String?       @map("og_image")
+  content          String        @default("{}")
+  publishedContent String?       @map("published_content")
+  publishedAt      DateTime?     @map("published_at")
+  createdAt        DateTime      @default(now()) @map("created_at")
+  updatedAt        DateTime      @updatedAt @map("updated_at")
+  versions         PageVersion[]
+
+  @@index([slug])
+  @@index([status])
+  @@map("page_contents")
+}
+
+model PageVersion {
+  id        String      @id @default(cuid())
+  pageId    String      @map("page_id")
+  page      PageContent @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  version   Int
+  status    String
+  content   String
+  seoJson   String?     @map("seo_json")
+  label     String?
+  createdAt DateTime    @default(now()) @map("created_at")
+
+  @@index([pageId])
+  @@map("page_versions")
+}
+
+model SiteContent {
+  id           Int      @id @default(1)
+  header       String   @default("{}")
+  footer       String   @default("{}")
+  announcement String   @default("{}")
+  pixels       String   @default("{}")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("site_contents")
 }

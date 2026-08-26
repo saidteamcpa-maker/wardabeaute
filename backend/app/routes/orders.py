@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 
 from ..config import settings
 from ..db import get_db
-from ..models import Order, Product
+from ..models import Order, OrderItem, Product
 from ..prices import PRODUCT_NAMES, compute_total
 from ..schemas import OrderCreate, OrderOut, UpsellIn
 from ..services import geo, sheets
@@ -14,7 +14,7 @@ from ..services.capi import track
 
 router = APIRouter(prefix="/api")
 
-PHONE_RE = re.compile(r"^0(5|6|7|8)[0-9]{8}$")
+PHONE_RE = re.compile(r"^0(6|7)[0-9]{8}$")
 
 
 def _client_ip(request: Request) -> str:
@@ -24,12 +24,19 @@ def _client_ip(request: Request) -> str:
     return request.client.host if request.client else ""
 
 
+def _generate_reference() -> str:
+    import time
+    ts = int(time.time() * 1000)
+    rand = uuid.uuid4().hex[:8].upper()
+    return f"WB-{ts}-{rand}"
+
+
 @router.get("/products")
 def list_products(db: Session = Depends(get_db)):
     rows = db.query(Product).filter(Product.active.is_(True)).all()
     return [
         {
-            "slug": p.id,
+            "slug": p.slug,
             "name": p.name,
             "ar_sub": p.ar_sub,
             "price": p.price,
@@ -53,45 +60,67 @@ async def create_order(
     if not PHONE_RE.match(payload.phone or ""):
         raise HTTPException(status_code=422, detail="invalid_phone")
 
-    # 2. Geo gate (re-check server-side; never trust client)
+    # 2. Geo gate
     ip = _client_ip(request)
     g = geo.lookup(ip)
     if not geo.allowed(payload.phone, g):
         reason = "vpn_blocked" if (g.get("is_vpn") or g.get("is_proxy") or g.get("is_tor")) else "orders_only_morocco"
         raise HTTPException(status_code=403, detail=reason)
 
-    # 3. Authoritative totals (ignore any client price)
+    # 3. Authoritative totals
     subtotal, upsell_total, total, lines = compute_total(payload.items, upsell=False)
 
-    # 4. Insert
+    # 4. Check idempotency
+    if payload.idempotency_key:
+        existing = db.query(Order).filter(Order.idempotency_key == payload.idempotency_key).first()
+        if existing:
+            return OrderOut(id=existing.id, total=existing.total, discount=existing.discount, status=existing.status)
+
+    # 5. Create order
+    reference = _generate_reference()
     order = Order(
+        reference=reference,
+        idempotency_key=payload.idempotency_key,
         customer_name=payload.customer_name,
         phone=payload.phone,
         city=payload.city,
         address=payload.address,
         postal=payload.postal,
-        items=lines,
         subtotal=subtotal,
         upsell_total=0,
         total=total,
         upsell_added=False,
-        status="pending",
+        status="new",
         country=g.get("country_name"),
         ip=ip,
         geo_risk=str(g.get("risk_score")),
+        source="web",
     )
     db.add(order)
+    db.flush()  # get order.id
+
+    # 6. Create order items
+    for line in lines:
+        item = OrderItem(
+            order_id=order.id,
+            slug=line["slug"],
+            name=line["name"],
+            qty=line["qty"],
+            unit_price=line["unit_price"],
+        )
+        db.add(item)
+
     db.commit()
     db.refresh(order)
 
-    # 5. Sheets webhook (fire-and-forget)
+    # 7. Sheets webhook (fire-and-forget)
     sheet_payload = {
-        "order_id": order.id,
+        "order_id": order.reference,
         "date": order.created_at.isoformat(),
         "customer_name": order.customer_name,
         "phone": order.phone,
         "city": order.city,
-        "address": order.address,
+        "address": order.address or "",
         "postal": order.postal or "",
         "items_json": lines,
         "subtotal": subtotal,
@@ -106,7 +135,7 @@ async def create_order(
     }
     background.add_task(sheets.push_order, sheet_payload)
 
-    # 6. CAPI (server) — Purchase
+    # 8. CAPI (server) — Purchase
     background.add_task(
         track, "Purchase", str(uuid.uuid4()), value=total,
         content_ids=[it.slug for it in payload.items],
@@ -129,27 +158,28 @@ async def add_upsell(
     if not order:
         raise HTTPException(status_code=404, detail="order_not_found")
     if not payload.add:
-        return OrderOut(id=order.id, total=order.total, status=order.status)
+        return OrderOut(id=order.id, total=order.total, discount=order.discount, status=order.status)
 
     order.upsell_added = True
     order.upsell_total = 99
     order.total = order.subtotal + 99
-    items = list(order.items)
-    items.append({
-        "slug": "upsell-99",
-        "name": PRODUCT_NAMES.get("upsell-99"),
-        "qty": 1,
-        "unit_price": 99,
-        "line_total": 99,
-    })
-    order.items = items
+
+    # Add upsell item
+    item = OrderItem(
+        order_id=order.id,
+        slug="upsell-99",
+        name=PRODUCT_NAMES.get("upsell-99", "Mini Soin Warda"),
+        qty=1,
+        unit_price=99,
+    )
+    db.add(item)
     db.commit()
 
     background.add_task(
         sheets.push_order,
         {
             "type": "upsell",
-            "order_id": order.id,
+            "order_id": order.reference,
             "total": order.total,
         },
     )

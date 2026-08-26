@@ -30,11 +30,11 @@ export function fmtNum(n: number): string {
 export function statusBadge(s: ProfitResult["cplStatus"]): { label: string; cls: string } {
   switch (s) {
     case "profit":
-      return { label: "RENTABLE", cls: "bg-emerald-100 text-emerald-700" };
+      return { label: "PROFITABLE", cls: "bg-emerald-100 text-emerald-700" };
     case "even":
-      return { label: "SEUIL", cls: "bg-amber-100 text-amber-700" };
+      return { label: "BREAK-EVEN", cls: "bg-amber-100 text-amber-700" };
     case "loss":
-      return { label: "DÉFICIT", cls: "bg-rose-100 text-rose-700" };
+      return { label: "LOSS", cls: "bg-rose-100 text-rose-700" };
     default:
       return { label: "IMPOSSIBLE", cls: "bg-rose-100 text-rose-700" };
   }
@@ -42,7 +42,7 @@ export function statusBadge(s: ProfitResult["cplStatus"]): { label: string; cls:
 
 export function beLabel(value: number, impossible: boolean): string {
   if (impossible || isNaN(value)) return "IMPOSSIBLE";
-  if (value > 1) return "NON ATTEIGNABLE";
+  if (value > 1) return "UNREACHABLE";
   return fmtPct2(Math.max(0, value));
 }
 

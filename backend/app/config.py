@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     database_url: str = "sqlite:///./warda.db"
-    cors_origins: str = "http://localhost:3000,https://wardabeaute.com"
+    cors_origins: str = "*"
     sheets_webhook_url: str = ""
     maxmind_db_path: str = ""
     maxmind_enabled: bool = False
@@ -14,6 +14,10 @@ class Settings(BaseSettings):
     tt_capi_token: str = ""
     whatsapp_token: str = ""
     admin_secret: str = ""
+
+    class Config:
+        env_file = ".env"
+        env_file_encoding = "utf-8"
 
 
 settings = Settings()

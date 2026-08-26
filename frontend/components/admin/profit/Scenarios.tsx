@@ -21,10 +21,10 @@ const PESSIMISTIC: ProfitInputs = { ...BASE, adsCpl: 40, cr: 0.6, dr: 0.4 };
 
 export function Scenarios({ current }: { current: ProfitInputs }) {
   const data = [
-    { name: "Actuel", inputs: current },
+    { name: "Current", inputs: current },
     { name: "Base", inputs: BASE },
-    { name: "Optimiste", inputs: OPTIMISTIC },
-    { name: "Pessimiste", inputs: PESSIMISTIC },
+    { name: "Optimistic", inputs: OPTIMISTIC },
+    { name: "Pessimistic", inputs: PESSIMISTIC },
   ].map((s) => ({ name: s.name, r: computeProfit(s.inputs) }));
 
   return (
@@ -32,13 +32,13 @@ export function Scenarios({ current }: { current: ProfitInputs }) {
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-profond/10 text-xs uppercase text-profond/50">
-            <th className="px-4 py-3 text-left">Scénario</th>
-            <th className="px-4 py-3 text-right">Confirmés</th>
-            <th className="px-4 py-3 text-right">Livrés</th>
-            <th className="px-4 py-3 text-right">Ventes</th>
-            <th className="px-4 py-3 text-right">Coûts</th>
-            <th className="px-4 py-3 text-right">Profit Net</th>
-            <th className="px-4 py-3 text-right">Marge</th>
+            <th className="px-4 py-3 text-left">Scenario</th>
+            <th className="px-4 py-3 text-right">Confirmed</th>
+            <th className="px-4 py-3 text-right">Delivered</th>
+            <th className="px-4 py-3 text-right">Sales</th>
+            <th className="px-4 py-3 text-right">Costs</th>
+            <th className="px-4 py-3 text-right">Net Profit</th>
+            <th className="px-4 py-3 text-right">Margin</th>
             <th className="px-4 py-3 text-right">BE CPL</th>
             <th className="px-4 py-3 text-right">BE CR</th>
             <th className="px-4 py-3 text-right">BE DR</th>

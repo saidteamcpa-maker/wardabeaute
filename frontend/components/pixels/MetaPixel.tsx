@@ -2,11 +2,11 @@
 
 import Script from "next/script";
 
-export function MetaPixel({ id, enabled }: { id?: string; enabled?: boolean }) {
+export function MetaPixel({ id, enabled, scriptId = "fb-pixel" }: { id?: string; enabled?: boolean; scriptId?: string }) {
   const finalId = id || process.env.NEXT_PUBLIC_FB_PIXEL_ID;
   if (enabled === false || !finalId) return null;
   return (
-    <Script id="fb-pixel" strategy="afterInteractive">
+    <Script id={scriptId} strategy="afterInteractive">
       {`
         !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
         n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;

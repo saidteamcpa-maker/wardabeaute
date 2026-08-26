@@ -4,6 +4,7 @@ PRICES = {
     "velvastretch": {"1": 279, "2": 499, "3": 699},
     "silkstop": {"1": 229, "2": 419, "3": 599},
     "collaglow": {"1": 319, "2": 569, "3": 799},
+    "kit-collagene": {"1": 549},
 }
 
 UPSELL_99 = 99
@@ -12,6 +13,7 @@ PRODUCT_NAMES = {
     "velvastretch": "VelvaStretch™",
     "silkstop": "SilkStop™",
     "collaglow": "CollaGlow™",
+    "kit-collagene": "Kit Collagène Inside & Outside",
     "upsell-99": "Mini Soin Warda (99 MAD)",
 }
 
@@ -45,6 +47,16 @@ SEED_PRODUCTS = [
         "badge": "✨ Nouveau",
         "stars": 4.8,
         "reviews": 612,
+    },
+    {
+        "id": "kit-collagene",
+        "name": "Kit Collagène Inside & Outside",
+        "ar_sub": "الكولاجين من الداخل والخارج",
+        "price": 549,
+        "old_price": 848,
+        "badge": "🔥 Offre Duo",
+        "stars": 4.9,
+        "reviews": 1031,
     },
 ]
 

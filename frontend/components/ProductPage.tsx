@@ -16,11 +16,14 @@ import { getLangServer } from "@/lib/lang-server";
 import { getCatalog } from "@/lib/catalog";
 import { t } from "@/content/ui";
 import { ProductViewPixel } from "@/components/pixels/ProductViewPixel";
+import { getPageOverride } from "@/lib/store-content";
 
 const BENEFIT_ICONS = [Check, Sparkles, FlaskConical, Truck, ShieldCheck, Check];
 
-export async function ProductPage({ slug }: { slug: string }) {
+export async function ProductPage({ slug, preview = false }: { slug: string; preview?: boolean }) {
   const lang = getLangServer();
+  const ov = await getPageOverride(slug, lang, preview);
+  const T = (k: string) => ov?.[k] ?? t(lang, k);
   const catalog = await getCatalog();
   const p = localize(catalog[slug], lang);
   return (
@@ -55,7 +58,7 @@ export async function ProductPage({ slug }: { slug: string }) {
           </Reveal>
           <Reveal delay={0.15} className="order-first md:order-2">
             <div className="overflow-hidden rounded-2xl card-hover">
-              <img src={p.image} alt={p.name} className="w-full aspect-[4/5] object-cover" />
+              <img src={ov?.["pp.heroImage"] || p.image} alt={p.name} className="w-full aspect-[4/5] object-cover" />
             </div>
           </Reveal>
         </div>
@@ -67,7 +70,7 @@ export async function ProductPage({ slug }: { slug: string }) {
       </section>
 
       {/* DESCRIPTION */}
-      <Section eyebrow={t(lang, "pp.ceLabel")} title={`${p.name} pour toi`} imageLabel="Texture / Lifestyle" imageSide="right">
+      <Section eyebrow={T("pp.ceLabel")} title={`${p.name} pour toi`} imageLabel="Texture / Lifestyle" imageSrc={ov?.["pp.descImage"]} imageSide="right">
         {p.description.map((d, i) => <p key={i}>{d}</p>)}
       </Section>
 
@@ -75,7 +78,7 @@ export async function ProductPage({ slug }: { slug: string }) {
       <section className="section bg-white">
         <div className="container-page">
           <Reveal>
-            <h2 className="text-3xl text-profond mb-6">{t(lang, "pp.whyLove")}</h2>
+            <h2 className="text-3xl text-profond mb-6">{T("pp.whyLove")}</h2>
           </Reveal>
           <ul className="grid md:grid-cols-2 gap-3 font-body text-brun">
             {p.benefits.map((b, i) => (
@@ -94,28 +97,28 @@ export async function ProductPage({ slug }: { slug: string }) {
       <section className="section bg-petal/40">
         <div className="container-page">
           <Reveal>
-            <h2 className="text-3xl text-profond mb-4">{t(lang, "pp.comparisonTitle")}</h2>
+            <h2 className="text-3xl text-profond mb-4">{T("pp.comparisonTitle")}</h2>
           </Reveal>
           <ComparisonTable slug={slug} />
         </div>
       </section>
 
       {/* INGREDIENTS */}
-      <Section eyebrow={t(lang, "pp.science")} title={t(lang, "pp.ingredients")} imageLabel="Ingrédients" imageSide="left">
+      <Section eyebrow={T("pp.science")} title={T("pp.ingredients")} imageLabel="Ingrédients" imageSrc={ov?.["pp.ingredientsImage"]} imageSide="left">
         <IngredientTable items={p.ingredients} />
         <details className="mt-3">
-          <summary className="font-body text-warda cursor-pointer">{t(lang, "pp.viewInci")}</summary>
+          <summary className="font-body text-warda cursor-pointer">{T("pp.viewInci")}</summary>
           <p className="text-sm text-gris mt-2">{p.inci}</p>
         </details>
       </Section>
 
       {/* HOW TO */}
-      <Section eyebrow={t(lang, "pp.howTo")} title={t(lang, "pp.steps")} imageLabel="Application" imageSide="right">
+      <Section eyebrow={T("pp.howTo")} title={T("pp.steps")} imageLabel="Application" imageSrc={ov?.["pp.howToImage"]} imageSide="right">
         <ol className="list-decimal list-inside space-y-1">
           {p.howTo.map((h, i) => <li key={i}>{h}</li>)}
         </ol>
         <div className="mt-3">
-          <p className="font-medium text-profond">{t(lang, "pp.forYouIf")}</p>
+          <p className="font-medium text-profond">{T("pp.forYouIf")}</p>
           <ul>{p.whoFor.map((w, i) => <li key={i}>• {w}</li>)}</ul>
         </div>
       </Section>
@@ -124,7 +127,7 @@ export async function ProductPage({ slug }: { slug: string }) {
       <section className="section">
         <div className="container-page">
           <Reveal>
-            <h2 className="text-3xl text-profond mb-6">{t(lang, "pp.testimonials")}</h2>
+            <h2 className="text-3xl text-profond mb-6">{T("pp.testimonials")}</h2>
           </Reveal>
           <TestimonialGrid items={p.testimonials} />
         </div>
@@ -134,7 +137,7 @@ export async function ProductPage({ slug }: { slug: string }) {
       <section className="section bg-white">
         <Reveal>
           <div className="container-page text-center">
-            <h2 className="text-3xl text-profond mb-3">{t(lang, "pp.moreResults")}</h2>
+            <h2 className="text-3xl text-profond mb-3">{T("pp.moreResults")}</h2>
             <p className="font-body text-brun mb-4">{p.upsellCopy}</p>
             <div className="max-w-xs mx-auto">
               {p.upsellSlugs ? (
@@ -151,7 +154,7 @@ export async function ProductPage({ slug }: { slug: string }) {
       <section className="section">
         <Reveal>
           <div className="container-page">
-            <h2 className="text-3xl text-profond mb-3">{t(lang, "pp.alsoBought").replace("{name}", p.name)}</h2>
+            <h2 className="text-3xl text-profond mb-3">{T("pp.alsoBought").replace("{name}", p.name)}</h2>
             <div className="rounded-2xl border border-brume p-4 flex flex-col sm:flex-row items-center justify-between gap-4 card-hover">
               <div>
                 <p className="font-display text-xl text-profond">{localize(catalog[p.crossSell.slug], lang).name}</p>
@@ -176,7 +179,7 @@ export async function ProductPage({ slug }: { slug: string }) {
       <section className="section bg-white">
         <div className="container-page">
           <Reveal>
-            <h2 className="text-3xl text-profond mb-6">{t(lang, "pp.faq")}</h2>
+            <h2 className="text-3xl text-profond mb-6">{T("pp.faq")}</h2>
           </Reveal>
           <Faq items={p.faq} />
         </div>

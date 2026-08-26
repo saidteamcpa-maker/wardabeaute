@@ -38,8 +38,8 @@ export function useAnalytics(range: string) {
 }
 
 export const RANGES = [
-  { key: "7d", label: "7 j" },
-  { key: "30d", label: "30 j" },
-  { key: "90d", label: "90 j" },
-  { key: "all", label: "Tout" },
+  { key: "7d", label: "7d" },
+  { key: "30d", label: "30d" },
+  { key: "90d", label: "90d" },
+  { key: "all", label: "All" },
 ];

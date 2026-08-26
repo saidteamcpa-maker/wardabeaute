@@ -14,9 +14,11 @@ export async function computeTotal(items: { slug: string; qty: number }[]): Prom
 }
 
 export function generateReference(): string {
-  const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
-  const time = Date.now().toString(36).slice(-4).toUpperCase();
-  return `WB-${rand}${time}`;
+  const time = Date.now().toString(36).toUpperCase();
+  const rand =
+    Math.random().toString(36).slice(2, 6).toUpperCase() +
+    Math.random().toString(36).slice(2, 4).toUpperCase();
+  return `WB-${time}${rand}`;
 }
 
 const SOURCE_MAP: [RegExp, string][] = [
