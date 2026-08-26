@@ -13,7 +13,7 @@ FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN ./node_modules/.bin/prisma generate
+RUN npm exec prisma -- generate
 RUN npm run build
 
 FROM base AS runner
@@ -30,4 +30,4 @@ COPY --from=builder /app/prisma ./prisma
 
 USER nextjs
 EXPOSE 3000
-CMD ["sh", "-c", "./node_modules/.bin/prisma db push --skip-generate && npm run start"]
+CMD ["sh", "-c", "npm exec prisma -- db push --skip-generate && npm run start"]
