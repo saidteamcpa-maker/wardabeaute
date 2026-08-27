@@ -33,6 +33,7 @@ export function CheckoutPopup() {
   const idemRef = useRef<string>("");
   const formDataRef = useRef<FormData | null>(null);
   const [upsellItems, setUpsellItems] = useState<CartItem[] | null>(null);
+  const upsellAcceptedRef = useRef(false);
 
   // Upsell logic
   const cartSlugs = useMemo(() => items.map((i) => i.slug), [items]);
@@ -58,6 +59,7 @@ export function CheckoutPopup() {
       setErrorMsg("");
       setUpsellItems(null);
       formDataRef.current = null;
+      upsellAcceptedRef.current = false;
     }
   }, [isCheckoutOpen]);
 
@@ -123,7 +125,7 @@ export function CheckoutPopup() {
                 price: unitPrice(i.slug, i.qty, catalog),
               })),
               total: res.total,
-              discount: res.discount || 0,
+              upsellDiscount: res.discount || 0,
             })
           );
         } catch {}
@@ -170,6 +172,7 @@ export function CheckoutPopup() {
 
   const handleUpsellAccept = useCallback(async () => {
     if (upsellItems && formDataRef.current) {
+      upsellAcceptedRef.current = true;
       await submitOrder(upsellItems, formDataRef.current);
     }
   }, [upsellItems, submitOrder]);
@@ -183,7 +186,8 @@ export function CheckoutPopup() {
 
   const finish = () => {
     clear();
-    router.push(`/confirmation?id=${orderId}`);
+    const qs = upsellAcceptedRef.current ? `?id=${orderId}&upsell=1` : `?id=${orderId}`;
+    router.push(`/confirmation${qs}`);
   };
 
   if (!isCheckoutOpen) return null;
