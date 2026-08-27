@@ -11,11 +11,12 @@ const TIMER_SECONDS = 18;
 interface UpsellPopupProps {
   info: Extract<UpsellType, { eligible: true }>;
   productName: string;
+  productImage: string;
   onAccept: () => void;
   onReject: () => void;
 }
 
-export function UpsellPopup({ info, productName, onAccept, onReject }: UpsellPopupProps) {
+export function UpsellPopup({ info, productName, productImage, onAccept, onReject }: UpsellPopupProps) {
   const { lang } = useLang();
   const [seconds, setSeconds] = useState(TIMER_SECONDS);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -78,6 +79,17 @@ export function UpsellPopup({ info, productName, onAccept, onReject }: UpsellPop
           <span className="inline-block bg-warda/10 text-warda text-xs font-semibold px-3 py-1 rounded-full mb-3">
             🌹 {lang === "ar" ? "عرض خاص" : "Offre spéciale"}
           </span>
+
+          {/* Product image */}
+          <div className="flex justify-center mb-3">
+            <div className="w-24 h-24 rounded-2xl overflow-hidden bg-brume shadow-md">
+              <img
+                src={productImage}
+                alt={productName}
+                className="w-full h-full object-cover"
+              />
+            </div>
+          </div>
 
           {/* Headline */}
           <h3 className="font-display text-xl text-profond mb-2">

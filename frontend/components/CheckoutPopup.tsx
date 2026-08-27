@@ -269,6 +269,11 @@ export function CheckoutPopup() {
                 ? upsellInfo.missingName
                 : catalog["collaglow"]?.name || "CollaGlow™"
             }
+            productImage={
+              upsellInfo.type === "add_missing"
+                ? catalog[upsellInfo.missing]?.image || "/images/velvastretch.png"
+                : catalog["collaglow"]?.image || "/images/collaglow.png"
+            }
             onAccept={handleUpsellAccept}
             onReject={handleUpsellReject}
           />
