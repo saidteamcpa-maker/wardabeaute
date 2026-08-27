@@ -7,91 +7,40 @@ deploy URL (treat URL as secret; restrict via Sheet sharing).
 ## 1. Apps Script code (paste in Extensions → Apps Script → deploy as Web App)
 
 ```javascript
-// Warda Beauté — Orders Webhook (9-column format)
-// Deploy: Execute as "Me", Who has access "Anyone". Copy the /exec URL into SHEETS_WEBHOOK_URL.
+function doGet(e){ return json({ok:true, msg:"Warda Sheets webhook: use POST"}); }
 
 function doPost(e) {
   try {
+    if(!e.postData || !e.postData.contents) throw new Error("No POST body received");
     var data = JSON.parse(e.postData.contents);
-    // Use openById instead of getActiveSpreadsheet — the latter returns whatever
-    // spreadsheet the deployer last had open, NOT necessarily the correct one.
     var ss = SpreadsheetApp.openById("1-6W11vKEODIuEHT9lGqA9JBNE26zQE0O1BF12jRQ9IM");
-    var sheet = ss.getSheetByName("Warda Beauté — Orders") || ss.insertSheet("Warda Beauté — Orders");
-
-    // Set headers if sheet is empty
-    if (sheet.getLastRow() === 0) {
-      sheet.appendRow(["date_order","full_name","phone","address","sku","qte","price","note","delivery_note"]);
-    }
-
-    // Handle upsell update: find existing row by order_id in note, update price
-    if (data.type === "upsell") {
+    var sheet = ss.getSheetByName("warda beaute - orders") || ss.insertSheet("warda beaute - orders");
+    if(sheet.getLastRow()===0) sheet.appendRow(["date_order","full_name","phone","address","sku","qte","price","note","delivery_note"]);
+    if(data.type==="upsell"){
       var last = sheet.getLastRow();
-      for (var r = 2; r <= last; r++) {
+      for(var r = 2; r <= last; r++){
         var noteVal = String(sheet.getRange(r, 8).getValue() || "");
-        if (noteVal.indexOf(data.order_id) !== -1) {
+        if(noteVal.indexOf(data.order_id) !== -1){
           sheet.getRange(r, 8).setValue(noteVal + " | UPSELL +99 MAD");
           sheet.getRange(r, 7).setValue(data.total);
+          SpreadsheetApp.flush();
           return json({ ok: true, updated: data.order_id });
         }
       }
       return json({ ok: false, error: "order_not_found" });
     }
+    var items=data.items_json||[]; var skus=[]; var totalQty=0;
+    for(var i=0;i<items.length;i++){ skus.push(items[i].sku || items[i].slug || ""); totalQty+=items[i].qty||1; }
 
-    // Parse items from items_json array — uses Product.sku from admin panel (fallback to slug)
-    var items = data.items_json || [];
-    var skus = [];
-    var totalQty = 0;
-    for (var i = 0; i < items.length; i++) {
-      skus.push(items[i].sku || items[i].slug || "");
-      totalQty += items[i].qty || 1;
-    }
-
-    // Format date: "2026-08-27 14:30"
-    var dateStr = "";
-    if (data.date) {
-      var d = new Date(data.date);
-      dateStr = d.getFullYear() + "-" +
-        ("0" + (d.getMonth() + 1)).slice(-2) + "-" +
-        ("0" + d.getDate()).slice(-2) + " " +
-        ("0" + d.getHours()).slice(-2) + ":" +
-        ("0" + d.getMinutes()).slice(-2);
-    }
-
-    // Combine city + address into one address field
-    var address = [data.city, data.address].filter(Boolean).join(", ");
-
-    // Build note: include order_id + discount info
-    var note = data.order_id || "";
-    if (data.discount) {
-      note += " | Bundle -" + data.discount + " MAD";
-    }
-    if (data.notes) {
-      note += " | " + data.notes;
-    }
-
-    // Append the row (9 columns matching your CSV)
-    sheet.appendRow([
-      dateStr,                    // date_order
-      data.customer_name || "",   // full_name
-      data.phone || "",           // phone
-      address,                    // address
-      skus.join(", "),            // sku (comma-separated if multiple items)
-      totalQty,                   // qte (total quantity)
-      data.total || 0,            // price (final total in MAD)
-      note,                       // note (order_id + discount info)
-      ""                          // delivery_note (manual field)
-    ]);
-
-    return json({ ok: true, id: data.order_id });
-  } catch (err) {
-    return json({ ok: false, error: String(err) });
-  }
+    var dateStr=""; if(data.date){ var d=new Date(data.date); dateStr=d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2)+" "+("0"+d.getHours()).slice(-2)+":"+(("0"+d.getMinutes()).slice(-2)); }
+    var address=[data.city, data.address].filter(Boolean).join(", ");
+    var note=data.order_id||""; if(data.discount) note+=" | Bundle -"+data.discount+" MAD"; if(data.notes) note+=" | "+data.notes;
+    sheet.appendRow([dateStr, data.customer_name||"", data.phone||"", address, skus.join(", "), totalQty, data.total||0, note, ""]);
+    SpreadsheetApp.flush();
+    return json({ok:true, id:data.order_id});
+  } catch(err){ return json({ok:false, error:String(err)}); }
 }
-
-function json(o) {
-  return ContentService.createTextOutput(JSON.stringify(o))
-    .setMimeType(ContentService.MimeType.JSON);
-}
+function json(o){ return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
 ```
 
 ## 2. Setup steps
