@@ -1,9 +1,10 @@
 # Frontend (Next.js) Dockerfile
 # NOTE: EasyPanel uses the REPO ROOT as the Docker build context, so all
 # source COPYs must be prefixed with "frontend/".
+# Uses Debian (not Alpine) so Prisma's query engine uses the system libssl3.
 # syntax=docker/dockerfile:1
 
-FROM node:20-alpine AS base
+FROM node:20-slim AS base
 RUN corepack enable
 
 FROM base AS deps
@@ -13,8 +14,6 @@ RUN npm install --no-audit --no-fund
 
 FROM base AS builder
 WORKDIR /app
-# Prisma 5's query engine needs libssl.so.1.1 (Alpine ships OpenSSL 3.0)
-RUN apk add --no-cache openssl1.1-compat
 
 # Build-time public env vars (Next.js inlines these into the client bundle).
 # Defaults match production; override via EasyPanel "Build Environment" if needed.
@@ -41,8 +40,9 @@ RUN npm run build
 FROM base AS runner
 WORKDIR /app
 ENV NODE_ENV=production
-RUN apk add --no-cache openssl1.1-compat
-RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001
+# Ensure libssl3 (for Prisma engine) and CA certs are present
+RUN apt-get update && apt-get install -y --no-install-recommends openssl ca-certificates && rm -rf /var/lib/apt/lists/*
+RUN groupadd -g 1001 nodejs && useradd -m -u 1001 -g nodejs nextjs
 
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/.next ./.next
