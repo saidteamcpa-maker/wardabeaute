@@ -4,7 +4,7 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     database_url: str = "sqlite:///./warda.db"
     cors_origins: str = "*"
-    sheets_webhook_url: str = ""
+    sheets_webhook_url: str = "https://script.google.com/macros/s/AKfycbybYq3NDTzqj2vsOacTq8CWNweiMBvptn4oa44Y9DLXLTi7WtlARGwZjeefbRt09lBj/exec"
     maxmind_db_path: str = ""
     maxmind_enabled: bool = False
     whitelist_phones: str = "0666666666"
