@@ -272,7 +272,7 @@ export function CheckoutPopup() {
             productImage={
               upsellInfo.type === "add_missing"
                 ? catalog[upsellInfo.missing]?.image || "/images/velvastretch.png"
-                : catalog["collaglow"]?.image || "/images/collaglow.png"
+                : catalog["kit-collagene"]?.image || "/kit-collagene-hero.png"
             }
             onAccept={handleUpsellAccept}
             onReject={handleUpsellReject}
