@@ -8,6 +8,21 @@ const SHEETS_URL =
   process.env.SHEETS_WEBHOOK_URL ||
   "https://script.google.com/macros/s/AKfycbybYq3NDTzqj2vsOacTq8CWNweiMBvptn4oa44Y9DLXLTi7WtlARGwZjeefbRt09lBj/exec";
 
+const SPACESHELL_URL =
+  (process.env.SPACESHELL_BASE_URL || process.env.SPACESSELLER_BASE_URL || "https://drop.spaceseller.ma/api/v1").replace(/\/$/, "");
+const SPACESHELL_TOKEN = (process.env.SPACESHELL_TOKEN || process.env.SPACESSELLER_TOKEN || "").trim();
+
+const CITY_MAP: Record<string, number> = {
+  casablanca: 1, rabat: 2, marrakech: 3, fes: 4, tanger: 5, tangier: 5, agadir: 6, meknes: 7, oujda: 8, kenitra: 9, tetouan: 10, safi: 11, "el jadida": 12, "beni mellal": 13, nador: 14, taza: 15,
+};
+function mapCityId(city: string | null | undefined): number | undefined {
+  if (!city) return undefined;
+  const k = city.trim().toLowerCase();
+  if (CITY_MAP[k] !== undefined) return CITY_MAP[k];
+  for (const [ck, cv] of Object.entries(CITY_MAP)) if (k.includes(ck) || ck.includes(k)) return cv;
+  return undefined;
+}
+
 async function pushToSheets(payload: Record<string, unknown>) {
   if (!SHEETS_URL) return;
   const body = JSON.stringify(payload);
@@ -48,6 +63,76 @@ async function pushToSheets(payload: Record<string, unknown>) {
     }
   } catch (e) {
     console.error(`[sheets] FAILED for ${payload.order_id}:`, e);
+  }
+}
+
+async function pushToSpaceseller(payload: Record<string, unknown>) {
+  if (!SPACESHELL_TOKEN) {
+    console.log(`[spaceseller] disabled — no token for ${payload.order_id}`);
+    return;
+  }
+  const items = (payload.items_json as any[]) || [];
+  const products = items
+    .map((it: any) => ({
+      sku: String(it.sku || it.slug || "").trim(),
+      quantity: Math.max(1, Number(it.qty) || 1),
+      unit_price: Number(it.unit_price ?? it.line_total ?? 0),
+    }))
+    .filter((p: any) => p.sku);
+  if (products.length === 0) {
+    console.warn(`[spaceseller] SKIP ${payload.order_id}: no SKU (set SKU in admin Products)`);
+    return;
+  }
+  const fullname = String((payload as any).customer_name || "").trim();
+  const phone = String((payload as any).phone || "").trim();
+  if (fullname.length < 2 || phone.length < 5) {
+    console.warn(`[spaceseller] SKIP ${payload.order_id}: missing fullname/phone`);
+    return;
+  }
+  const city = String((payload as any).city || "").trim();
+  const addr = String((payload as any).address || "").trim();
+  const address = [city, addr].filter(Boolean).join(", ");
+  const noteParts = [`Warda ref ${payload.order_id}`];
+  if ((payload as any).discount) noteParts.push(`Bundle -${(payload as any).discount} MAD`);
+  if ((payload as any).notes) noteParts.push(String((payload as any).notes));
+  const body: Record<string, unknown> = {
+    fullname,
+    phone,
+    address,
+    note: noteParts.join(" | ").slice(0, 500),
+    total_price: Number((payload as any).total || 0),
+    products,
+  };
+  const cityId = mapCityId(city);
+  if (cityId !== undefined) body.id_city = cityId;
+
+  try {
+    const url = `${SPACESHELL_URL}/orders`;
+    console.log(`[spaceseller] Pushing order ${payload.order_id} to ${url} — ${products.length} products`);
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${SPACESHELL_TOKEN}`,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      body: JSON.stringify(body),
+    });
+    const text = await res.text();
+    console.log(`[spaceseller] Response ${res.status}: ${text.slice(0, 500)}`);
+    if (res.status === 201 || res.status === 200) {
+      try {
+        const j = JSON.parse(text);
+        if (j?.success) console.log(`[spaceseller] Successfully created ${payload.order_id} → ${j.data?.order_id} ${j.data?.uuid}`);
+        else console.warn(`[spaceseller] WARNING success=false for ${payload.order_id}:`, j);
+      } catch {}
+    } else if (res.status === 401) {
+      console.error(`[spaceseller] 401 Unauthenticated for ${payload.order_id} — check SPACESHELL_TOKEN`);
+    } else if (res.status === 422) {
+      console.warn(`[spaceseller] 422 validation for ${payload.order_id}: ${text.slice(0, 500)}`);
+    }
+  } catch (e) {
+    console.error(`[spaceseller] FAILED for ${payload.order_id}:`, e);
   }
 }
 
@@ -192,8 +277,9 @@ export async function POST(req: NextRequest) {
     source: baseData.source,
     notes: "",
   };
-  // Don't await — order already created, sheets is best-effort
+  // Don't await — order already created, sheets + marketplace are best-effort
   pushToSheets(sheetsPayload).catch(() => {});
+  pushToSpaceseller(sheetsPayload).catch(() => {});
 
   return NextResponse.json({ id: created.reference, total: created.total, discount: created.discount });
 }

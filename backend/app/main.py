@@ -8,7 +8,7 @@ from .config import settings
 from .db import Base, engine
 from . import models  # noqa
 from . import seed
-from .routes import health, geo, orders
+from .routes import health, geo, orders, marketplace
 
 
 @asynccontextmanager
@@ -36,6 +36,7 @@ def create_app() -> FastAPI:
     app.include_router(health.router)
     app.include_router(geo.router)
     app.include_router(orders.router)
+    app.include_router(marketplace.router)
     return app
 
 

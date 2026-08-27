@@ -15,6 +15,10 @@ services:
     environment:
       DATABASE_URL: postgres://warda:eyt5p216l73pesz9g3cl@wardabeaute_wardabeaute:5432/database?sslmode=disable
       SHEETS_WEBHOOK_URL: ${SHEETS_WEBHOOK_URL:-https://script.google.com/macros/s/AKfycbybYq3NDTzqj2vsOacTq8CWNweiMBvptn4oa44Y9DLXLTi7WtlARGwZjeefbRt09lBj/exec}
+      SPACESHELL_TOKEN: ${SPACESHELL_TOKEN:-}
+      SPACESSELLER_TOKEN: ${SPACESSELLER_TOKEN:-}
+      SPACESHELL_BASE_URL: ${SPACESHELL_BASE_URL:-}
+      SPACESSELLER_BASE_URL: ${SPACESSELLER_BASE_URL:-}
       NEXT_PUBLIC_API_URL: https://api.wardabeaute.com
       NEXT_PUBLIC_SITE_URL: https://wardabeaute.com
       NEXT_PUBLIC_WHATSAPP_NUMBER: 212600000000
@@ -48,6 +52,10 @@ services:
       TT_CAPI_TOKEN: ${TT_CAPI_TOKEN:-}
       WHATSAPP_TOKEN: ${WHATSAPP_TOKEN:-}
       ADMIN_SECRET: ${ADMIN_SECRET:-}
+      SPACESHELL_TOKEN: ${SPACESHELL_TOKEN:-}
+      SPACESSELLER_TOKEN: ${SPACESSELLER_TOKEN:-}
+      SPACESHELL_BASE_URL: ${SPACESHELL_BASE_URL:-}
+      SPACESSELLER_BASE_URL: ${SPACESSELLER_BASE_URL:-}
     ports:
       - "8000:8000"
     depends_on:
