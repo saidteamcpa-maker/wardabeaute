@@ -57,4 +57,4 @@ RUN chown -R nextjs:nodejs /app
 
 USER nextjs
 EXPOSE 3000
-CMD ["sh", "-c", "./node_modules/.bin/prisma db push --skip-generate && npm run start"]
+CMD ["sh", "-c", "./node_modules/.bin/prisma db push --skip-generate --accept-data-loss && npm run start"]
