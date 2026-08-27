@@ -169,7 +169,10 @@ export function OrderDrawer({
             <Section title="Order">
               {order.items.map((i) => (
                 <div key={i.id} className="flex justify-between py-1 text-sm">
-                  <span>{i.name} × {i.qty}</span>
+                  <span>
+                    {i.name} × {i.qty}
+                    {i.sku ? <span className="block text-xs text-gris">SKU: {i.sku}</span> : null}
+                  </span>
                   <span className="text-gris">{i.unitPrice * i.qty} MAD</span>
                 </div>
               ))}

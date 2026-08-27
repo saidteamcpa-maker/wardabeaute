@@ -52,7 +52,7 @@ export async function GET(req: NextRequest) {
     o.browser ?? "",
     o.total,
     o.discount,
-    o.items.map((i) => `${i.slug} x${i.qty} @${i.unitPrice}`).join(" ; "),
+        o.items.map((i) => `${i.slug}${i.sku ? ` (SKU:${i.sku})` : ""} x${i.qty} @${i.unitPrice}`).join(" ; "),
     o.notes ?? "",
   ].map(csvCell).join(","));
 

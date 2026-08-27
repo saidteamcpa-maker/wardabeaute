@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { UploadCloud } from "lucide-react";
+import { UploadCloud, Copy } from "lucide-react";
 import { useAnalytics } from "@/lib/useAnalytics";
 import { formatMAD, formatNumber } from "@/lib/format";
 
@@ -26,21 +26,26 @@ interface ProdRow {
 export default function AdminProductsEditor() {
   const [products, setProducts] = useState<ProdRow[]>([]);
   const [editing, setEditing] = useState<string | null>(null);
+  const [creating, setCreating] = useState(false);
   const [form, setForm] = useState<any>(null);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [msg, setMsg] = useState("");
+  const [search, setSearch] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
   const { data } = useAnalytics("30d");
   const perf = data?.products || [];
 
-  async function load() {
-    const res = await fetch("/api/admin/products");
+  async function load(term?: string) {
+    const q = (term ?? search).trim();
+    const url = q ? `/api/admin/products?q=${encodeURIComponent(q)}` : "/api/admin/products";
+    const res = await fetch(url);
     if (res.ok) setProducts(await res.json());
   }
   useEffect(() => { load(); }, []);
 
   function openEdit(p: ProdRow) {
+    setCreating(false);
     setEditing(p.slug);
     setForm({
       slug: p.slug,
@@ -63,6 +68,26 @@ export default function AdminProductsEditor() {
     setForm((f: any) => ({ ...f, [k]: v }));
   }
 
+  function openCreate() {
+    setEditing("__new__");
+    setCreating(true);
+    setForm({
+      slug: "",
+      name: "",
+      price: "",
+      oldPrice: "",
+      sku: "",
+      image: "",
+      active: true,
+      stockCount: "",
+      badge: "",
+      shortDescription: "",
+      isBundle: false,
+      offers: "[]",
+    });
+    setMsg("");
+  }
+
   async function uploadImage(file: File) {
     setUploading(true);
     const fd = new FormData();
@@ -77,6 +102,11 @@ export default function AdminProductsEditor() {
   async function save() {
     setSaving(true);
     setMsg("");
+    if (creating && !String(form.slug || "").trim()) {
+      setSaving(false);
+      setMsg("Error: a unique slug is required to create a product.");
+      return;
+    }
     const payload = {
       ...form,
       price: Number(form.price),
@@ -91,12 +121,13 @@ export default function AdminProductsEditor() {
     });
     setSaving(false);
     if (res.ok) {
-      setMsg("Saved ✓");
+      setMsg(creating ? "Product created ✓" : "Saved ✓");
+      setCreating(false);
       setEditing(null);
       await load();
     } else {
       const j = await res.json().catch(() => ({}));
-      if (j.detail === "sku_not_unique") setMsg("Error: this SKU is already used by another product.");
+      if (j.detail === "sku_not_unique") setMsg(j.message || "This SKU is already in use. Please choose a different SKU.");
       else setMsg("Error: " + (j.detail || res.status));
     }
   }
@@ -108,10 +139,20 @@ export default function AdminProductsEditor() {
   }
 
   return (
-    <div className="p-6 max-w-6xl" data-build="sku-v1">
+    <div className="p-6 max-w-6xl">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-display text-profond">Products</h1>
-        <span className="text-xs text-gris">Names are locked (brand immutable). Prices &amp; offers editable.</span>
+        <span className="text-xs text-gris">Prices &amp; offers editable. SKU is unique per product.</span>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-3 mb-4">
+        <input
+          value={search}
+          onChange={(e) => { setSearch(e.target.value); load(e.target.value); }}
+          placeholder="Search by name or SKU…"
+          className="w-full sm:w-72 rounded-xl border border-brume px-3 py-2 text-sm"
+        />
+        <button onClick={openCreate} className="btn-primary ml-auto">+ Add product</button>
       </div>
 
       {msg && <p className="text-sm text-emerald-700 mb-3">{msg}</p>}
@@ -142,7 +183,21 @@ export default function AdminProductsEditor() {
                   </td>
                   <td className="py-2 px-4 text-right">{formatMAD(p.price)}</td>
                   <td className="py-2 px-4 text-right text-gris">{p.oldPrice ? formatMAD(p.oldPrice) : "—"}</td>
-                  <td className="py-2 px-4 text-right text-gris">{p.sku ? p.sku : "—"}</td>
+                  <td className="py-2 px-4 text-right text-gris">
+                    {p.sku ? (
+                      <button
+                        type="button"
+                        onClick={() => navigator.clipboard.writeText(p.sku as string)}
+                        className="inline-flex items-center gap-1 hover:text-profond"
+                        title="Copy SKU"
+                      >
+                        {p.sku}
+                        <Copy className="w-3 h-3" />
+                      </button>
+                    ) : (
+                      "—"
+                    )}
+                  </td>
                   <td className="py-2 px-4 text-center">{p.active ? "✅" : "⛔"}</td>
                   <td className="py-2 px-4 text-right">{perfRow ? formatNumber(perfRow.units) : "—"}</td>
                   <td className="py-2 px-4 text-right">{perfRow ? formatMAD(perfRow.revenue) : "—"}</td>
@@ -165,8 +220,13 @@ export default function AdminProductsEditor() {
 
       {editing && form && (
         <div className="bg-white rounded-2xl border border-brume p-4 sm:p-5 mt-4">
-          <h3 className="font-display text-profond mb-3">Edit — {form.name}</h3>
+          <h3 className="font-display text-profond mb-3">{creating ? "New product" : <>Edit — {form.name}</>}</h3>
           <div className="grid sm:grid-cols-2 gap-3">
+            {creating && (
+              <label className="text-sm sm:col-span-2">Slug (unique product id, e.g. fitgum-coffee)
+                <input type="text" value={form.slug} onChange={(e) => setField("slug", e.target.value)} className="w-full rounded-xl border border-brume px-3 py-2 mt-1" placeholder="e.g. fitgum-coffee" />
+              </label>
+            )}
             <label className="text-sm">Price (MAD)
               <input type="number" value={form.price} onChange={(e) => setField("price", e.target.value)} className="w-full rounded-xl border border-brume px-3 py-2 mt-1" />
             </label>
@@ -175,6 +235,7 @@ export default function AdminProductsEditor() {
             </label>
             <label className="text-sm">SKU (optional, unique)
               <input type="text" autoCapitalize="characters" spellCheck={false} value={form.sku} onChange={(e) => setField("sku", e.target.value)} className="w-full rounded-xl border border-brume px-3 py-2 mt-1 uppercase" placeholder="e.g. WB-VELVA-001" />
+              <span className="block mt-1 text-xs text-gris">A unique identifier used to identify and manage this product.</span>
             </label>
             <label className="text-sm sm:col-span-2">Product image
               <div className="flex items-center gap-3 mt-1">

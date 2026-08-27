@@ -20,6 +20,7 @@ class Product(Base):
     __tablename__ = "products"
     slug = Column(String, primary_key=True)  # maps to Prisma's "slug" PK
     name = Column(String, nullable=False)
+    sku = Column(String)  # unique constraint is owned by Prisma's schema
     ar_sub = Column(String)
     price = Column(Integer, nullable=False)
     old_price = Column(Integer)
@@ -84,6 +85,7 @@ class OrderItem(Base):
     order_id = Column(String, ForeignKey("orders.id", ondelete="CASCADE"), nullable=False)
     slug = Column(String, nullable=False)
     name = Column(String, nullable=False)
+    sku = Column(String)  # snapshot of the product SKU at order time
     qty = Column(Integer, nullable=False)
     unit_price = Column(Integer, nullable=False)
 

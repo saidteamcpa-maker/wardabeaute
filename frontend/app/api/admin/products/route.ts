@@ -7,12 +7,13 @@ function requireAuth() {
   return getAdminSessionFromCookies();
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const session = await requireAuth();
   if (!session) return NextResponse.json({ detail: "unauthorized" }, { status: 401 });
+  const q = req.nextUrl.searchParams.get("q")?.trim().toLowerCase();
   const db = await prisma.product.findMany();
   const bySlug = new Map(db.map((p) => [p.slug, p]));
-  const list = Object.keys(STATIC_PRODUCTS).map((slug) => {
+  let list = Object.keys(STATIC_PRODUCTS).map((slug) => {
     const dbp = bySlug.get(slug);
     if (dbp) return { ...dbp, managed: true };
     const s = STATIC_PRODUCTS[slug];
@@ -32,6 +33,13 @@ export async function GET() {
       managed: false,
     };
   });
+  if (q) {
+    list = list.filter(
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        (p.sku || "").toLowerCase().includes(q),
+    );
+  }
   return NextResponse.json(list);
 }
 
@@ -103,7 +111,10 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(product);
   } catch (e: any) {
     if (e?.code === "P2002" && String(e?.meta?.target ?? "").includes("sku")) {
-      return NextResponse.json({ detail: "sku_not_unique" }, { status: 422 });
+      return NextResponse.json(
+        { detail: "sku_not_unique", message: "This SKU is already in use. Please choose a different SKU." },
+        { status: 409 },
+      );
     }
     throw e;
   }

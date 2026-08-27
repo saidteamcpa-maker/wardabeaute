@@ -38,6 +38,7 @@ def list_products(db: Session = Depends(get_db)):
         {
             "slug": p.slug,
             "name": p.name,
+            "sku": p.sku,
             "ar_sub": p.ar_sub,
             "price": p.price,
             "old_price": p.old_price,
@@ -99,12 +100,14 @@ async def create_order(
     db.add(order)
     db.flush()  # get order.id
 
-    # 6. Create order items
+    # 6. Create order items (snapshot product SKU at order time)
     for line in lines:
+        prod = db.query(Product).filter(Product.slug == line["slug"]).first()
         item = OrderItem(
             order_id=order.id,
             slug=line["slug"],
             name=line["name"],
+            sku=prod.sku if prod else None,
             qty=line["qty"],
             unit_price=line["unit_price"],
         )

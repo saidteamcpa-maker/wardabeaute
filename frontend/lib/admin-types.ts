@@ -2,6 +2,7 @@ export interface AdminOrderItem {
   id: string;
   slug: string;
   name: string;
+  sku?: string | null;
   qty: number;
   unitPrice: number;
 }

@@ -74,6 +74,7 @@ model OrderItem {
   order     Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
   slug      String
   name      String
+  sku       String? @map("sku")
   qty       Int
   unitPrice Int    @map("unit_price")
 
