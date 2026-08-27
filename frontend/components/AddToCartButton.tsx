@@ -23,7 +23,9 @@ export function AddToCartButton({
 }) {
   const { lang } = useLang();
   const catalog = useCatalog();
-  const p = localize(catalog[slug], lang);
+  const raw = catalog[slug];
+  if (!raw) return null;
+  const p = localize(raw, lang);
   const [tier, setTier] = useState(1);
   const add = useCart((s) => s.add);
   const openCart = useCart((s) => s.openCart);

@@ -25,7 +25,12 @@ export async function ProductPage({ slug, preview = false }: { slug: string; pre
   const ov = await getPageOverride(slug, lang, preview);
   const T = (k: string) => ov?.[k] ?? t(lang, k);
   const catalog = await getCatalog();
-  const p = localize(catalog[slug], lang);
+  const raw = catalog[slug];
+  if (!raw) {
+    const { notFound } = await import("next/navigation");
+    notFound();
+  }
+  const p = localize(raw, lang);
   return (
     <div className="pb-24 md:pb-0">
       <ProductViewPixel slug={slug} value={unitPrice(slug, 1, catalog)} />
