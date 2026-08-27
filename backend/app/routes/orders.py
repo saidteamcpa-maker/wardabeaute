@@ -117,7 +117,9 @@ async def create_order(
     db.commit()
     db.refresh(order)
 
-    # 7. Sheets webhook (fire-and-forget)
+    # 7. Sheets webhook (fire-and-forget) — enrich with SKU from admin panel
+    sku_map = {p.slug: p.sku for p in db.query(Product).filter(Product.slug.in_([l["slug"] for l in lines])).all()}
+    lines_for_sheet = [{**l, "sku": sku_map.get(l["slug"])} for l in lines]
     sheet_payload = {
         "order_id": order.reference,
         "date": order.created_at.isoformat(),
@@ -126,7 +128,7 @@ async def create_order(
         "city": order.city,
         "address": order.address or "",
         "postal": order.postal or "",
-        "items_json": lines,
+        "items_json": lines_for_sheet,
         "subtotal": subtotal,
         "discount": discount,
         "upsell": 0,

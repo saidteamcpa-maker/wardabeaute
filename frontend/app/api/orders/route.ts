@@ -167,6 +167,9 @@ export async function POST(req: NextRequest) {
 
   const catalog = await getCatalog();
   const total = await computeTotal(cleanItems);
+  // Fetch SKU snapshot for Sheets/Marketplace (uses existing admin SKU field)
+  const skuRows = await prisma.product.findMany({ where: { slug: { in: cleanItems.map((i) => i.slug) } }, select: { slug: true, sku: true } });
+  const skuMap = new Map(skuRows.map((p) => [p.slug, p.sku] as const));
 
   // "Kit Collagène Inside & Outside" discount: auto-granted whenever the order
   // already contains BOTH VelvaStretch (outside) and CollaGlow (inside) — with or
@@ -215,6 +218,7 @@ export async function POST(req: NextRequest) {
       create: cleanItems.map((i: any) => ({
         slug: i.slug,
         name: catalog[i.slug]?.name ?? i.slug,
+        sku: skuMap.get(i.slug) || null,
         qty: i.qty,
         unitPrice: unitPriceFor(i.slug, i.qty, catalog),
       })),
@@ -261,6 +265,7 @@ export async function POST(req: NextRequest) {
     postal: created.postal || "",
     items_json: created.items.map((i: any) => ({
       slug: i.slug,
+      sku: (i as any).sku || skuMap.get(i.slug) || null,
       name: i.name,
       qty: i.qty,
       unit_price: i.unitPrice,

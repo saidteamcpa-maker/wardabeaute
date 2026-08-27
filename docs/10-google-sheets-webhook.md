@@ -16,7 +16,7 @@ function doPost(e) {
     // Use openById instead of getActiveSpreadsheet — the latter returns whatever
     // spreadsheet the deployer last had open, NOT necessarily the correct one.
     var ss = SpreadsheetApp.openById("1-6W11vKEODIuEHT9lGqA9JBNE26zQE0O1BF12jRQ9IM");
-    var sheet = ss.getSheetByName("Orders") || ss.insertSheet("Orders");
+    var sheet = ss.getSheetByName("Warda Beauté — Orders") || ss.insertSheet("Warda Beauté — Orders");
 
     // Set headers if sheet is empty
     if (sheet.getLastRow() === 0) {
@@ -37,12 +37,12 @@ function doPost(e) {
       return json({ ok: false, error: "order_not_found" });
     }
 
-    // Parse items from items_json array
+    // Parse items from items_json array — uses Product.sku from admin panel (fallback to slug)
     var items = data.items_json || [];
     var skus = [];
     var totalQty = 0;
     for (var i = 0; i < items.length; i++) {
-      skus.push(items[i].slug || "");
+      skus.push(items[i].sku || items[i].slug || "");
       totalQty += items[i].qty || 1;
     }
 
@@ -129,7 +129,7 @@ Place a test order (or use the whitelist phone `0666666666`). Check your Google 
 | `full_name` | `customer_name` | `Fatima Zahra` |
 | `phone` | `phone` | `0661234567` |
 | `address` | `city` + `address` combined | `Casablanca, 12 rue Allal` |
-| `sku` | Item slugs comma-separated | `velvastretch, collaglow` |
+| `sku` | Item **SKU** from admin Products `sku` field (fallback to slug) comma-separated | `WVE-001, CGL-001` (or `velvastretch, collaglow` if SKU empty) |
 | `qte` | Sum of all item quantities | `2` |
 | `price` | Final total (after discount) | `549` |
 | `note` | Order ID + discount info | `WB-xxx \| Bundle -49 MAD` |
@@ -145,7 +145,7 @@ payload = {
   "city": order.city,
   "address": order.address or "",
   "postal": order.postal or "",
-  "items_json": [{"slug":i.slug,"name":i.name,"qty":i.qty,
+  "items_json": [{"slug":i.slug,"sku":i.sku,"name":i.name,"qty":i.qty,
                   "unit_price":i.unit_price,"line_total":i.line_total} for i in items],
   "subtotal": subtotal,
   "discount": discount,                  # 49 for bundle, 0 otherwise
