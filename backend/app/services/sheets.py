@@ -1,8 +1,9 @@
 """Send orders to a Google Apps Script webhook (see docs/10). Fire-and-forget.
 
 Google Apps Script /exec POSTs return 302 to script.googleusercontent.com.
-httpx/fetch follow 302 as GET (drops body), so we must follow manually as POST
-and use text/plain to avoid preflight.
+The POST body is executed on the initial POST; the 302 is just to fetch the
+JSON result via GET. httpx converts 302 POST→GET and drops body, so we
+handle the redirect manually: POST /exec → 302 → GET echo URL → 200 JSON.
 """
 import json
 import traceback
@@ -35,34 +36,24 @@ async def push_order(payload: dict):
         headers = {"Content-Type": "text/plain;charset=utf-8"}
 
         async with httpx.AsyncClient(timeout=20, follow_redirects=False) as client:
-            # POST directly to /exec, manually follow redirects as POST
-            current_url = url
-            resp = None
-            for attempt in range(4):
-                _log(f"[sheets] Sending order {order_id} to {current_url[:70]}... (attempt {attempt+1})")
-                resp = await client.post(current_url, content=body, headers=headers)
+            _log(f"[sheets] Sending order {order_id} to {url[:70]}...")
+            resp = await client.post(url, content=body, headers=headers)
 
-                _log(f"[sheets] Response {resp.status_code}: {resp.text[:300]}")
+            _log(f"[sheets] Response {resp.status_code}: {resp.text[:300]}")
 
-                if resp.status_code in (301, 302, 303, 307, 308):
-                    loc = resp.headers.get("location")
-                    if not loc:
-                        _log(f"[sheets] Redirect {resp.status_code} without location for {order_id}")
-                        break
-                    _log(f"[sheets] Following redirect {resp.status_code} → {loc[:80]}")
-                    current_url = loc
-                    continue
-
-                # Not a redirect — final response
-                break
-
-            if resp is None:
-                _log(f"[sheets] ERROR: no response for {order_id}")
-                return
+            # Apps Script returns 302 with Location to fetch the JSON result
+            if resp.status_code in (301, 302, 303, 307, 308):
+                loc = resp.headers.get("location")
+                if not loc:
+                    _log(f"[sheets] Redirect {resp.status_code} without location for {order_id}")
+                    return
+                _log(f"[sheets] Following redirect GET → {loc[:80]}")
+                # GET the result — this is the JSON from doPost
+                resp = await client.get(loc, follow_redirects=True)
+                _log(f"[sheets] GET Result {resp.status_code}: {resp.text[:300]}")
 
             if resp.status_code == 200:
                 try:
-                    # Apps Script may return text/plain JSON — try json() then fallback to text
                     try:
                         j = resp.json()
                     except Exception:
@@ -72,9 +63,9 @@ async def push_order(payload: dict):
                     else:
                         _log(f"[sheets] WARNING: Apps Script returned ok=false for {order_id}: {j}")
                 except Exception as e:
-                    _log(f"[sheets] WARNING: Response not valid JSON for {order_id}: {e}")
+                    _log(f"[sheets] WARNING: Response not valid JSON for {order_id}: {e} — raw: {resp.text[:300]}")
             elif resp.status_code in (301, 302, 303, 307, 308):
-                _log(f"[sheets] ERROR: still redirect after 4 attempts for {order_id}")
+                _log(f"[sheets] ERROR: still redirect after follow for {order_id}")
             else:
                 _log(f"[sheets] ERROR: Unexpected status {resp.status_code} for {order_id}: {resp.text[:300]}")
 
