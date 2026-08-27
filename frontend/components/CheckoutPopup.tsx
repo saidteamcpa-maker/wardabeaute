@@ -6,14 +6,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useCart } from "@/lib/cart";
-import { createOrder, addUpsell, checkGeo } from "@/lib/api";
+import { createOrder, checkGeo } from "@/lib/api";
 import { track } from "@/lib/pixels";
-import { unitPrice, localize } from "@/content/products";
+import { unitPrice } from "@/content/products";
 import { useLang } from "@/components/LangProvider";
 import { useCatalog } from "@/lib/catalog-context";
 import { t } from "@/content/ui";
 import { usePageOverride } from "@/lib/use-page-override";
-import { CO_COLLAGEN_DISCOUNT } from "@/lib/orders";
 
 export function CheckoutPopup() {
   const { lang } = useLang();
@@ -22,7 +21,7 @@ export function CheckoutPopup() {
   const router = useRouter();
   const ov = usePageOverride("checkout");
   const Co = (k: string) => (ov ? ov[lang]?.[k] || t(lang, k) : t(lang, k));
-  const [step, setStep] = useState<"form" | "upsell" | "error">("form");
+  const [step, setStep] = useState<"form" | "error">("form");
   const [errorMsg, setErrorMsg] = useState("");
   const [orderId, setOrderId] = useState("");
   const [loading, setLoading] = useState(false);
@@ -55,21 +54,6 @@ export function CheckoutPopup() {
   });
   const subtotal = items.reduce((s, i) => s + unitPrice(i.slug, i.qty, catalog), 0);
 
-  const cartSlugs = items.map((i) => i.slug);
-  const hasV = cartSlugs.includes("velvastretch");
-  const hasC = cartSlugs.includes("collaglow");
-  const bothPresent = hasV && hasC;
-  const suggestedSlug: string | null = bothPresent
-    ? null
-    : hasV
-      ? "collaglow"
-      : hasC
-        ? "velvastretch"
-        : "collaglow";
-  // Popup only offers to *complete* the kit (add the missing component). When both
-  // are already in the cart the discount is auto-applied at checkout, so no popup.
-  const showUpsell = (hasV || hasC) && !bothPresent;
-
   useEffect(() => {
     if (isCheckoutOpen) {
       track("InitiateCheckout", {
@@ -101,27 +85,26 @@ export function CheckoutPopup() {
       });
       setOrderId(res.id);
       try {
-          sessionStorage.setItem(
-            "warda-last-order",
-            JSON.stringify({
-              id: res.id,
-              customer_name: data.customer_name,
-              phone: data.phone,
-              city: data.city,
-              items: items.map((i) => ({
-                slug: i.slug,
-                name: catalog[i.slug].name,
-                qty: i.qty,
-                price: unitPrice(i.slug, i.qty, catalog),
-              })),
-              total: res.total,
-              upsellDiscount: bothPresent ? (res.discount ?? CO_COLLAGEN_DISCOUNT) : 0,
-            })
-          );
+        sessionStorage.setItem(
+          "warda-last-order",
+          JSON.stringify({
+            id: res.id,
+            customer_name: data.customer_name,
+            phone: data.phone,
+            city: data.city,
+            items: items.map((i) => ({
+              slug: i.slug,
+              name: catalog[i.slug].name,
+              qty: i.qty,
+              price: unitPrice(i.slug, i.qty, catalog),
+            })),
+            total: res.total,
+            upsellDiscount: 0,
+          })
+        );
       } catch {}
       track("Purchase", { value: res.total, currency: "MAD", content_ids: items.map((i) => i.slug), orderId: res.id });
-      if (showUpsell) setStep("upsell");
-      else finish(false);
+      finish();
     } catch (e: any) {
       setStep("error");
       if (e?.message === "morocco_only") setErrorMsg(Co("co.errorMorocco"));
@@ -133,31 +116,9 @@ export function CheckoutPopup() {
     }
   };
 
-  const finish = async (withUpsell: boolean) => {
-    if (withUpsell) {
-      await addUpsell(orderId).catch(() => {});
-      try {
-        const raw = sessionStorage.getItem("warda-last-order");
-        if (raw) {
-          const o = JSON.parse(raw);
-          let total = o.total ?? 0;
-          if (suggestedSlug) {
-            const pp = catalog[suggestedSlug];
-            o.items = [
-              ...(o.items || []),
-              { slug: suggestedSlug, name: pp.name, qty: 1, price: unitPrice(suggestedSlug, 1, catalog) },
-            ];
-            total += unitPrice(suggestedSlug, 1, catalog);
-          }
-          total -= CO_COLLAGEN_DISCOUNT;
-          o.total = total;
-          o.upsellDiscount = CO_COLLAGEN_DISCOUNT;
-          sessionStorage.setItem("warda-last-order", JSON.stringify(o));
-        }
-      } catch {}
-    }
+  const finish = () => {
     clear();
-    router.push(`/confirmation?id=${orderId}${withUpsell ? "&upsell=1" : ""}`);
+    router.push(`/confirmation?id=${orderId}`);
   };
 
   return (
@@ -229,10 +190,6 @@ export function CheckoutPopup() {
           </>
         )}
 
-        {step === "upsell" && (
-          <UpsellStep onFinish={finish} suggestedSlug={suggestedSlug} baseTotal={subtotal} discount={CO_COLLAGEN_DISCOUNT} />
-        )}
-
         {step === "error" && (
           <div className="py-8 text-center">
             <p className="font-body text-brun mb-4">{errorMsg}</p>
@@ -242,85 +199,6 @@ export function CheckoutPopup() {
           </div>
         )}
       </div>
-    </div>
-  );
-}
-
-function UpsellStep({
-  onFinish,
-  suggestedSlug,
-  baseTotal,
-  discount,
-}: {
-  onFinish: (withUpsell: boolean) => void;
-  suggestedSlug: string | null;
-  baseTotal: number;
-  discount: number;
-}) {
-  const { lang } = useLang();
-  const catalog = useCatalog();
-  const ov = usePageOverride("checkout");
-  const Co = (k: string) => (ov ? ov[lang]?.[k] || t(lang, k) : t(lang, k));
-  const [sec, setSec] = useState(15);
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setSec((s) => {
-        if (s <= 1) {
-          clearInterval(timer);
-          onFinish(false);
-          return 0;
-        }
-        return s - 1;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [onFinish]);
-
-  const p = suggestedSlug ? localize(catalog[suggestedSlug], lang) : null;
-  const productPrice = p ? p.offers[0].price : 0;
-  const newTotal = suggestedSlug ? baseTotal + productPrice - discount : baseTotal - discount;
-
-  return (
-    <div className="py-4 text-center">
-      <p className="font-display text-2xl text-profond mb-1">🎁 Kit Collagène Inside &amp; Outside</p>
-      <p className="font-body text-brun text-sm mb-3">
-        {Co("co.upsellBody").split("+").map((part, i, arr) => (
-          <span key={i}>
-            {i > 0 && <span className="text-warda"> + </span>}
-            {part}
-          </span>
-        ))}
-      </p>
-
-      {p ? (
-        <div className="flex items-center gap-3 mb-3 text-left bg-petal rounded-2xl p-3">
-          <img src={p.image} alt={p.name} className="w-16 h-16 rounded-xl object-cover shrink-0" />
-          <div>
-            <p className="font-display text-lg text-profond">{p.name}</p>
-            <p className="text-xs text-gris">{lang === "ar" ? p.arSub : p.hero.sub}</p>
-          </div>
-        </div>
-      ) : (
-        <p className="font-body text-brun text-sm mb-3">
-          {Co("co.upsellBoth").replace("{discount}", String(discount))}
-        </p>
-      )}
-
-      <p className="text-2xl font-display text-champagne mb-1">
-        {newTotal} MAD <span className="line-through text-gris text-base">{newTotal + discount} MAD</span>
-      </p>
-      <p className="text-xs text-gris mb-3">
-        {Co("co.upsellSave").replace("{discount}", String(discount)).replace("{sec}", String(sec))}
-      </p>
-
-      <button onClick={() => onFinish(true)} className="btn-primary w-full mb-2">
-        {p
-          ? Co("co.upsellAdd").replace("{name}", p.name).replace("{discount}", String(discount))
-          : Co("co.upsellApply").replace("{discount}", String(discount))}
-      </button>
-      <button onClick={() => onFinish(false)} className="text-sm text-gris underline w-full">
-        {Co("co.upsellNo")}
-      </button>
     </div>
   );
 }
