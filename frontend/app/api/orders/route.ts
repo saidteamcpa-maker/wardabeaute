@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { isMorocco } from "@/lib/geo";
-import { computeTotal, generateReference, deriveSource, parseDevice, parseBrowser, unitPriceFor, CO_COLLAGEN_DISCOUNT } from "@/lib/orders";
+import { computeTotal, generateReference, deriveSource, parseDevice, parseBrowser, unitPriceFor, CO_COLLAGEN_DISCOUNT, bundleDiscount } from "@/lib/orders";
 import { getCatalog } from "@/lib/catalog";
 
 const PHONE_RE = /^0(5|6|7|8)[0-9]{8}$/;
@@ -40,9 +40,8 @@ export async function POST(req: NextRequest) {
   // already contains BOTH VelvaStretch (outside) and CollaGlow (inside) — with or
   // without any other products. The upsell popup only offers to *complete* the kit
   // (add the missing one) when exactly one of them is present.
-  const hasV = cleanItems.some((i: any) => i.slug === "velvastretch");
-  const hasC = cleanItems.some((i: any) => i.slug === "collaglow");
-  const kitDiscount = hasV && hasC ? CO_COLLAGEN_DISCOUNT : 0;
+  // NOT applied when the Kit product itself is in the cart (tested separately).
+  const kitDiscount = bundleDiscount(cleanItems.map((i: any) => i.slug));
 
   const idemKey =
     typeof body.idempotency_key === "string" && body.idempotency_key.trim()

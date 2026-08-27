@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from ..config import settings
 from ..db import get_db
 from ..models import Order, OrderItem, Product
-from ..prices import PRODUCT_NAMES, compute_total
+from ..prices import PRODUCT_NAMES, compute_total, CO_COLLAGEN_DISCOUNT
 from ..schemas import OrderCreate, OrderOut, UpsellIn
 from ..services import geo, sheets
 from ..services.capi import track
@@ -68,8 +68,8 @@ async def create_order(
         reason = "vpn_blocked" if (g.get("is_vpn") or g.get("is_proxy") or g.get("is_tor")) else "orders_only_morocco"
         raise HTTPException(status_code=403, detail=reason)
 
-    # 3. Authoritative totals
-    subtotal, upsell_total, total, lines = compute_total(payload.items, upsell=False)
+    # 3. Authoritative totals (includes bundle discount when eligible)
+    subtotal, upsell_total, discount, total, lines = compute_total(payload.items, upsell=False)
 
     # 4. Check idempotency
     if payload.idempotency_key:
@@ -90,6 +90,7 @@ async def create_order(
         subtotal=subtotal,
         upsell_total=0,
         total=total,
+        discount=discount,
         upsell_added=False,
         status="new",
         country=g.get("country_name"),
@@ -127,6 +128,7 @@ async def create_order(
         "postal": order.postal or "",
         "items_json": lines,
         "subtotal": subtotal,
+        "discount": discount,
         "upsell": 0,
         "total": total,
         "status": order.status,
@@ -146,7 +148,7 @@ async def create_order(
         ua=request.headers.get("user-agent", ""), url=str(request.url),
     )
 
-    return OrderOut(id=order.id, total=total, status=order.status)
+    return OrderOut(id=order.id, total=total, discount=discount, status=order.status)
 
 
 @router.post("/orders/{order_id}/upsell", response_model=OrderOut)

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,6 +13,11 @@ import { useLang } from "@/components/LangProvider";
 import { useCatalog } from "@/lib/catalog-context";
 import { t } from "@/content/ui";
 import { usePageOverride } from "@/lib/use-page-override";
+import { UpsellPopup } from "@/components/UpsellPopup";
+import { getUpsellInfo } from "@/lib/upsell";
+import type { CartItem } from "@/lib/cart";
+
+type FormData = { customer_name: string; phone: string; city: string };
 
 export function CheckoutPopup() {
   const { lang } = useLang();
@@ -21,21 +26,38 @@ export function CheckoutPopup() {
   const router = useRouter();
   const ov = usePageOverride("checkout");
   const Co = (k: string) => (ov ? ov[lang]?.[k] || t(lang, k) : t(lang, k));
-  const [step, setStep] = useState<"form" | "error">("form");
+  const [step, setStep] = useState<"form" | "upsell" | "error">("form");
   const [errorMsg, setErrorMsg] = useState("");
   const [orderId, setOrderId] = useState("");
   const [loading, setLoading] = useState(false);
   const idemRef = useRef<string>("");
+  const formDataRef = useRef<FormData | null>(null);
+  const [upsellItems, setUpsellItems] = useState<CartItem[] | null>(null);
 
-  // Fresh idempotency key each time the checkout is opened. A double-click on
-  // "Commander" reuses the same key (so it won't create a duplicate order), but
-  // a brand-new checkout gets a brand-new key (a new order).
+  // Upsell logic
+  const cartSlugs = useMemo(() => items.map((i) => i.slug), [items]);
+  const productNames = useMemo(() => {
+    const names: Record<string, string> = {};
+    for (const [slug, p] of Object.entries(catalog)) {
+      names[slug] = p.name;
+    }
+    return names;
+  }, [catalog]);
+  const upsellInfo = useMemo(() => getUpsellInfo(cartSlugs, productNames), [cartSlugs, productNames]);
+
+  // Fresh idempotency key each time the checkout is opened
   useEffect(() => {
     if (isCheckoutOpen) {
       idemRef.current =
         typeof crypto !== "undefined" && crypto.randomUUID
           ? crypto.randomUUID()
           : `idem-${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      // Reset state when checkout opens
+      setStep("form");
+      setOrderId("");
+      setErrorMsg("");
+      setUpsellItems(null);
+      formDataRef.current = null;
     }
   }, [isCheckoutOpen]);
 
@@ -49,7 +71,7 @@ export function CheckoutPopup() {
     [lang]
   );
 
-  const { register, handleSubmit, formState } = useForm<z.infer<typeof schema>>({
+  const { register, handleSubmit, formState } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
   const subtotal = items.reduce((s, i) => s + unitPrice(i.slug, i.qty, catalog), 0);
@@ -64,62 +86,107 @@ export function CheckoutPopup() {
     }
   }, [isCheckoutOpen]);
 
-  if (!isCheckoutOpen) return null;
-
-  const onSubmit = async (data: z.infer<typeof schema>) => {
-    setLoading(true);
-    setErrorMsg("");
-    try {
-      const geo = await checkGeo();
-      if (!geo.allowed) {
-        setStep("error");
-        setErrorMsg(Co("co.errorMorocco"));
-        setLoading(false);
-        return;
-      }
-      const res = await createOrder({
-        ...data,
-        items: items.map((i) => ({ slug: i.slug, qty: i.qty })),
-        upsell: false,
-        idempotency_key: idemRef.current,
-      });
-      setOrderId(res.id);
+  // Actual order submission (called after upsell resolution or directly)
+  const submitOrder = useCallback(
+    async (orderItems: CartItem[], formData: FormData) => {
+      setLoading(true);
+      setErrorMsg("");
       try {
-        sessionStorage.setItem(
-          "warda-last-order",
-          JSON.stringify({
-            id: res.id,
-            customer_name: data.customer_name,
-            phone: data.phone,
-            city: data.city,
-            items: items.map((i) => ({
-              slug: i.slug,
-              name: catalog[i.slug].name,
-              qty: i.qty,
-              price: unitPrice(i.slug, i.qty, catalog),
-            })),
-            total: res.total,
-            upsellDiscount: 0,
-          })
-        );
-      } catch {}
-      track("Purchase", { value: res.total, currency: "MAD", content_ids: items.map((i) => i.slug), orderId: res.id });
-      finish();
-    } catch (e: any) {
-      setStep("error");
-      if (e?.message === "morocco_only") setErrorMsg(Co("co.errorMorocco"));
-      else if (e?.message === "invalid_phone") setErrorMsg(Co("co.errorPhone"));
-      else if (e?.message === "blocked") setErrorMsg(Co("co.errorBlocked"));
-      else setErrorMsg(Co("co.errorGeneric"));
-    } finally {
+        const geo = await checkGeo();
+        if (!geo.allowed) {
+          setStep("error");
+          setErrorMsg(Co("co.errorMorocco"));
+          setLoading(false);
+          return;
+        }
+        const res = await createOrder({
+          customer_name: formData.customer_name,
+          phone: formData.phone,
+          city: formData.city,
+          items: orderItems.map((i) => ({ slug: i.slug, qty: i.qty })),
+          upsell: false,
+          idempotency_key: idemRef.current,
+        });
+        setOrderId(res.id);
+        try {
+          sessionStorage.setItem(
+            "warda-last-order",
+            JSON.stringify({
+              id: res.id,
+              customer_name: formData.customer_name,
+              phone: formData.phone,
+              city: formData.city,
+              items: orderItems.map((i) => ({
+                slug: i.slug,
+                name: catalog[i.slug]?.name || i.slug,
+                qty: i.qty,
+                price: unitPrice(i.slug, i.qty, catalog),
+              })),
+              total: res.total,
+              discount: res.discount || 0,
+            })
+          );
+        } catch {}
+        track("Purchase", { value: res.total, currency: "MAD", content_ids: orderItems.map((i) => i.slug), orderId: res.id });
+        finish();
+      } catch (e: any) {
+        setStep("error");
+        if (e?.message === "morocco_only") setErrorMsg(Co("co.errorMorocco"));
+        else if (e?.message === "invalid_phone") setErrorMsg(Co("co.errorPhone"));
+        else if (e?.message === "blocked") setErrorMsg(Co("co.errorBlocked"));
+        else setErrorMsg(Co("co.errorGeneric"));
+      } finally {
+        setLoading(false);
+      }
+    },
+    [catalog, Co]
+  );
+
+  const onSubmit = async (data: FormData) => {
+    setLoading(true);
+    // Check upsell eligibility
+    if (upsellInfo.eligible) {
+      // Store form data for later use after upsell resolution
+      formDataRef.current = data;
+      // If add_missing: prepare items with the missing product added
+      if (upsellInfo.type === "add_missing") {
+        const existing = items.find((i) => i.slug === upsellInfo.missing);
+        if (!existing) {
+          setUpsellItems([...items, { slug: upsellInfo.missing, qty: 1 }]);
+        } else {
+          setUpsellItems(items);
+        }
+      } else {
+        // apply_discount: items stay the same, backend applies discount
+        setUpsellItems(items);
+      }
+      setStep("upsell");
       setLoading(false);
+      return;
     }
+    // No upsell — submit directly
+    await submitOrder(items, data);
   };
+
+  const handleUpsellAccept = useCallback(async () => {
+    if (upsellItems && formDataRef.current) {
+      await submitOrder(upsellItems, formDataRef.current);
+    }
+  }, [upsellItems, submitOrder]);
+
+  const handleUpsellReject = useCallback(async () => {
+    // Proceed with original items (no upsell)
+    if (formDataRef.current) {
+      await submitOrder(items, formDataRef.current);
+    }
+  }, [items, submitOrder]);
 
   const finish = () => {
     clear();
     router.push(`/confirmation?id=${orderId}`);
   };
+
+  if (!isCheckoutOpen) return null;
 
   return (
     <div className="fixed inset-0 z-[60] flex items-end md:items-center justify-center p-0 md:p-4">
@@ -188,6 +255,19 @@ export function CheckoutPopup() {
               <p className="text-center text-xs text-gris">{Co("co.secure")}</p>
             </form>
           </>
+        )}
+
+        {step === "upsell" && upsellInfo.eligible && upsellItems && (
+          <UpsellPopup
+            info={upsellInfo}
+            productName={
+              upsellInfo.type === "add_missing"
+                ? upsellInfo.missingName
+                : catalog["collaglow"]?.name || "CollaGlow™"
+            }
+            onAccept={handleUpsellAccept}
+            onReject={handleUpsellReject}
+          />
         )}
 
         {step === "error" && (
