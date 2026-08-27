@@ -13,6 +13,10 @@ import { CatalogProvider } from "@/lib/catalog-context";
 import { getEnabledPixels, seedPixelsFromEnv } from "@/lib/pixels";
 import { PixelDebug } from "@/components/pixels/PixelDebug";
 
+// Render dynamically: catalog/pixels come from the live Postgres DB at request
+// time, so we must not statically prerender (which would query the DB at build).
+export const dynamic = "force-dynamic";
+
 const META = {
   fr: {
     title: "Warda Beauté | Soins beauté naturels au Maroc | Paiement à la livraison",

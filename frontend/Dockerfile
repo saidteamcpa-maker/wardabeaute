@@ -13,6 +13,8 @@ RUN npm install --no-audit --no-fund
 
 FROM base AS builder
 WORKDIR /app
+# Prisma 5's query engine needs libssl.so.1.1 (Alpine ships OpenSSL 3.0)
+RUN apk add --no-cache openssl1.1-compat
 
 # Build-time public env vars (Next.js inlines these into the client bundle).
 # Defaults match production; override via EasyPanel "Build Environment" if needed.
@@ -39,6 +41,7 @@ RUN npm run build
 FROM base AS runner
 WORKDIR /app
 ENV NODE_ENV=production
+RUN apk add --no-cache openssl1.1-compat
 RUN addgroup -g 1001 -S nodejs && adduser -S nextjs -u 1001
 
 COPY --from=builder /app/public ./public
