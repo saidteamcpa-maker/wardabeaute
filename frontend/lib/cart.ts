@@ -57,6 +57,44 @@ export const useCart = create<CartState>()(
       closeCheckout: () => set({ isCheckoutOpen: false }),
       clear: () => set({ items: [], isCartOpen: false, isCheckoutOpen: false }),
     }),
-    { name: "warda-cart" }
+    {
+      name: "warda-cart",
+      // Only persist cart data, not UI open flags — prevents checkout popup showing on reload
+      partialize: (state) => ({ items: state.items, selectedTier: state.selectedTier }),
+      // Migrate old persisted data: filter out invalid slugs (e.g. bundle-bck, upsell-99)
+      onRehydrateStorage: () => (state) => {
+        if (state && Array.isArray(state.items)) {
+          const validSlugs = new Set(["velvastretch", "silkstop", "collaglow", "kit-collagene"]);
+          const before = state.items.length;
+          state.items = state.items.filter((i: any) => i && typeof i.slug === "string" && validSlugs.has(i.slug) && typeof i.qty === "number" && i.qty >= 1 && i.qty <= 20);
+          if (state.items.length !== before) {
+            // Force UI closed if we cleaned cart
+            state.isCartOpen = false;
+            state.isCheckoutOpen = false;
+          }
+        }
+        // Always start with UI closed on rehydrate
+        if (state) {
+          state.isCartOpen = false;
+          state.isCheckoutOpen = false;
+        }
+      },
+      version: 2,
+      migrate: (persistedState: any, version: number) => {
+        if (version < 2) {
+          // v1 stored isCartOpen/isCheckoutOpen — drop them
+          const s = persistedState as any;
+          if (s) {
+            s.isCartOpen = false;
+            s.isCheckoutOpen = false;
+            if (Array.isArray(s.items)) {
+              const valid = new Set(["velvastretch", "silkstop", "collaglow", "kit-collagene"]);
+              s.items = s.items.filter((i: any) => i && valid.has(i.slug));
+            }
+          }
+        }
+        return persistedState as CartState;
+      },
+    }
   )
 );

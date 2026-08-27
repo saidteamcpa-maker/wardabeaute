@@ -13,8 +13,9 @@ export function CartDrawer() {
   const { lang } = useLang();
   const catalog = useCatalog();
   const { items, isCartOpen, closeCart, openCheckout, remove } = useCart();
-  const subtotal = items.reduce((s, i) => s + unitPrice(i.slug, i.qty, catalog), 0);
-  const cross = Object.keys(catalog).filter((s) => !items.find((i) => i.slug === s)).slice(0, 3);
+  const validItems = items.filter((i) => i && typeof i.slug === "string" && !!catalog[i.slug]);
+  const subtotal = validItems.reduce((s, i) => s + unitPrice(i.slug, i.qty, catalog), 0);
+  const cross = Object.keys(catalog).filter((s) => !validItems.find((i) => i.slug === s)).slice(0, 3);
 
   if (!isCartOpen) return null;
 
@@ -27,10 +28,11 @@ export function CartDrawer() {
           <button onClick={closeCart} aria-label={t(lang, "close")} className="text-2xl">✕</button>
         </div>
 
-        {items.length === 0 && <p className="font-body text-gris">{t(lang, "cart.empty")}</p>}
+        {validItems.length === 0 && <p className="font-body text-gris">{t(lang, "cart.empty")}</p>}
 
-        {items.map((i) => {
+        {validItems.map((i) => {
           const p = localize(catalog[i.slug], lang);
+          if (!p) return null;
           return (
             <div key={i.slug} className="flex gap-3 border-b border-brume py-3">
               <div className="w-16 h-16 rounded-lg overflow-hidden bg-brume shrink-0">
@@ -49,7 +51,7 @@ export function CartDrawer() {
           );
         })}
 
-        {items.length > 0 && (
+        {validItems.length > 0 && (
           <>
             <div className="mt-4">
               <p className="text-sm text-gris mb-2">{t(lang, "cart.youMayLike")}</p>

@@ -35,8 +35,10 @@ export function CheckoutPopup() {
   const [upsellItems, setUpsellItems] = useState<CartItem[] | null>(null);
   const upsellAcceptedRef = useRef(false);
 
+  // Filter stale slugs (old localStorage like bundle-bck) to prevent client crash
+  const validItems = useMemo(() => items.filter((i) => i && typeof i.slug === "string" && !!catalog[i.slug]), [items, catalog]);
   // Upsell logic
-  const cartSlugs = useMemo(() => items.map((i) => i.slug), [items]);
+  const cartSlugs = useMemo(() => validItems.map((i) => i.slug), [validItems]);
   const productNames = useMemo(() => {
     const names: Record<string, string> = {};
     for (const [slug, p] of Object.entries(catalog)) {
@@ -76,17 +78,17 @@ export function CheckoutPopup() {
   const { register, handleSubmit, formState } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
-  const subtotal = items.reduce((s, i) => s + unitPrice(i.slug, i.qty, catalog), 0);
+  const subtotal = validItems.reduce((s, i) => s + unitPrice(i.slug, i.qty, catalog), 0);
 
   useEffect(() => {
     if (isCheckoutOpen) {
       track("InitiateCheckout", {
         value: subtotal,
         currency: "MAD",
-        content_ids: items.map((i) => i.slug),
+        content_ids: validItems.map((i) => i.slug),
       });
     }
-  }, [isCheckoutOpen]);
+  }, [isCheckoutOpen, subtotal, validItems]);
 
   // Actual order submission (called after upsell resolution or directly)
   const submitOrder = useCallback(
@@ -147,28 +149,34 @@ export function CheckoutPopup() {
 
   const onSubmit = async (data: FormData) => {
     setLoading(true);
+    if (validItems.length === 0) {
+      setStep("error");
+      setErrorMsg(Co("co.errorGeneric"));
+      setLoading(false);
+      return;
+    }
     // Check upsell eligibility
     if (upsellInfo.eligible) {
       // Store form data for later use after upsell resolution
       formDataRef.current = data;
       // If add_missing: prepare items with the missing product added
       if (upsellInfo.type === "add_missing") {
-        const existing = items.find((i) => i.slug === upsellInfo.missing);
+        const existing = validItems.find((i) => i.slug === upsellInfo.missing);
         if (!existing) {
-          setUpsellItems([...items, { slug: upsellInfo.missing, qty: 1 }]);
+          setUpsellItems([...validItems, { slug: upsellInfo.missing, qty: 1 }]);
         } else {
-          setUpsellItems(items);
+          setUpsellItems(validItems);
         }
       } else {
         // apply_discount: items stay the same, backend applies discount
-        setUpsellItems(items);
+        setUpsellItems(validItems);
       }
       setStep("upsell");
       setLoading(false);
       return;
     }
     // No upsell — submit directly
-    await submitOrder(items, data);
+    await submitOrder(validItems, data);
   };
 
   const handleUpsellAccept = useCallback(async () => {
@@ -181,9 +189,9 @@ export function CheckoutPopup() {
   const handleUpsellReject = useCallback(async () => {
     // Proceed with original items (no upsell)
     if (formDataRef.current) {
-      await submitOrder(items, formDataRef.current);
+      await submitOrder(validItems, formDataRef.current);
     }
-  }, [items, submitOrder]);
+  }, [validItems, submitOrder]);
 
   const finish = (id?: string) => {
     clear();
@@ -208,23 +216,25 @@ export function CheckoutPopup() {
             </p>
 
             <div className="text-sm font-body text-brun mb-3 border-b border-brume pb-3">
-              {items.map((i) => (
-                <div key={i.slug} className="flex items-center gap-3 py-1">
-                  <div className="w-12 h-12 rounded-lg overflow-hidden bg-brume shrink-0">
-                    <img
-                      src={catalog[i.slug].image}
-                      alt={catalog[i.slug].name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <span className="flex-1">
-                    {catalog[i.slug].name} × {i.qty}
-                  </span>
-                  <span>
-                    {unitPrice(i.slug, i.qty, catalog)} MAD
-                  </span>
-                </div>
-              ))}
+              {validItems.length === 0 ? (
+                <p className="text-sm text-gris py-2">{Co("co.errorGeneric")}</p>
+              ) : (
+                validItems.map((i) => {
+                  const p = catalog[i.slug];
+                  if (!p) return null;
+                  return (
+                    <div key={i.slug} className="flex items-center gap-3 py-1">
+                      <div className="w-12 h-12 rounded-lg overflow-hidden bg-brume shrink-0">
+                        <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
+                      </div>
+                      <span className="flex-1">
+                        {p.name} × {i.qty}
+                      </span>
+                      <span>{unitPrice(i.slug, i.qty, catalog)} MAD</span>
+                    </div>
+                  );
+                })
+              )}
               <div className="flex justify-between font-medium mt-1">
                 <span>{t(lang, "total")}</span>
                 <span>{subtotal} MAD</span>

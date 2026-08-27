@@ -27,10 +27,6 @@ export function UpsellPopup({ info, productName, productImage, onAccept, onRejec
       setSeconds((s) => {
         if (s <= 1) {
           if (timerRef.current) clearInterval(timerRef.current);
-          if (!closedRef.current) {
-            closedRef.current = true;
-            onReject();
-          }
           return 0;
         }
         return s - 1;
@@ -39,7 +35,7 @@ export function UpsellPopup({ info, productName, productImage, onAccept, onRejec
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [onReject]);
+  }, []);
 
   const handleAccept = () => {
     if (closedRef.current) return;
