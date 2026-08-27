@@ -172,7 +172,7 @@ export default function AdminProductsEditor() {
               <input type="number" value={form.oldPrice} onChange={(e) => setField("oldPrice", e.target.value)} className="w-full rounded-xl border border-brume px-3 py-2 mt-1" />
             </label>
             <label className="text-sm">SKU (optional, unique)
-              <input type="text" value={form.sku} onChange={(e) => setField("sku", e.target.value)} className="w-full rounded-xl border border-brume px-3 py-2 mt-1" placeholder="e.g. WB-VELVA-001" />
+              <input type="text" autoCapitalize="characters" spellCheck={false} value={form.sku} onChange={(e) => setField("sku", e.target.value)} className="w-full rounded-xl border border-brume px-3 py-2 mt-1 uppercase" placeholder="e.g. WB-VELVA-001" />
             </label>
             <label className="text-sm sm:col-span-2">Product image
               <div className="flex items-center gap-3 mt-1">
