@@ -138,6 +138,7 @@ async def create_order(
         "source": "web",
         "notes": "test" if order.phone in settings.whitelist_phones else "",
     }
+    print(f"[orders] Scheduling Sheets sync for {order.reference}", flush=True)
     background.add_task(sheets.push_order, sheet_payload)
 
     # 8. CAPI (server) — Purchase
