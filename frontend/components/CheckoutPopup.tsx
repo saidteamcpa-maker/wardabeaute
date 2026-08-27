@@ -118,6 +118,7 @@ export function CheckoutPopup() {
               customer_name: formData.customer_name,
               phone: formData.phone,
               city: formData.city,
+              address: formData.city,
               items: orderItems.map((i) => ({
                 slug: i.slug,
                 name: catalog[i.slug]?.name || i.slug,
@@ -130,7 +131,7 @@ export function CheckoutPopup() {
           );
         } catch {}
         track("Purchase", { value: res.total, currency: "MAD", content_ids: orderItems.map((i) => i.slug), orderId: res.id });
-        finish();
+        finish(res.id);
       } catch (e: any) {
         setStep("error");
         if (e?.message === "morocco_only") setErrorMsg(Co("co.errorMorocco"));
@@ -184,9 +185,10 @@ export function CheckoutPopup() {
     }
   }, [items, submitOrder]);
 
-  const finish = () => {
+  const finish = (id?: string) => {
     clear();
-    const qs = upsellAcceptedRef.current ? `?id=${orderId}&upsell=1` : `?id=${orderId}`;
+    const finalId = id || orderId;
+    const qs = upsellAcceptedRef.current ? `?id=${finalId}&upsell=1` : `?id=${finalId}`;
     router.push(`/confirmation${qs}`);
   };
 

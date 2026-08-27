@@ -37,18 +37,39 @@ export interface CreateOrderPayload {
 }
 
 export async function createOrder(payload: CreateOrderPayload): Promise<{ id: string; total: number; discount?: number }> {
-  const res = await fetch(`${API_URL}/api/orders`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(payload),
-  });
-  if (res.status === 403) {
-    const e = await res.json().catch(() => ({}));
-    throw new Error(e.detail === "orders_only_morocco" ? "morocco_only" : "blocked");
+  // Try backend first (canonical — has Sheets, CAPI, geo). Fall back to local
+  // Next.js route if backend is unreachable (e.g. CORS/dns in dev or outage).
+  const backends = [`${API_URL}/api/orders`, `/api/orders`];
+  let lastErr: any = null;
+  for (const url of backends) {
+    try {
+      const res = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (res.status === 403) {
+        const e = await res.json().catch(() => ({}));
+        throw new Error(e.detail === "orders_only_morocco" ? "morocco_only" : "blocked");
+      }
+      if (res.status === 422) throw new Error("invalid_phone");
+      if (!res.ok) throw new Error("order_failed");
+      const data = await res.json();
+      // Normalize: backend now returns reference as id, frontend already does the same
+      if (data?.id) return data;
+      // Unexpected shape — try next
+      lastErr = new Error("order_failed");
+      continue;
+    } catch (e: any) {
+      // For the first (backend) URL, swallow network errors and try fallback
+      if (url === backends[0] && e?.message !== "morocco_only" && e?.message !== "blocked" && e?.message !== "invalid_phone") {
+        lastErr = e;
+        continue;
+      }
+      throw e;
+    }
   }
-  if (res.status === 422) throw new Error("invalid_phone");
-  if (!res.ok) throw new Error("order_failed");
-  return res.json();
+  throw lastErr || new Error("order_failed");
 }
 
 export async function addUpsell(orderId: string): Promise<void> {

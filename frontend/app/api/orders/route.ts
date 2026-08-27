@@ -4,6 +4,31 @@ import { isMorocco } from "@/lib/geo";
 import { computeTotal, generateReference, deriveSource, parseDevice, parseBrowser, unitPriceFor, CO_COLLAGEN_DISCOUNT, bundleDiscount } from "@/lib/orders";
 import { getCatalog } from "@/lib/catalog";
 
+const SHEETS_URL =
+  process.env.SHEETS_WEBHOOK_URL ||
+  "https://script.google.com/macros/s/AKfycbybYq3NDTzqj2vsOacTq8CWNweiMBvptn4oa44Y9DLXLTi7WtlARGwZjeefbRt09lBj/exec";
+
+async function pushToSheets(payload: Record<string, unknown>) {
+  if (!SHEETS_URL) return;
+  try {
+    console.log(`[sheets] Sending order ${payload.order_id} to Google Sheets...`);
+    const res = await fetch(SHEETS_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    const text = await res.text();
+    console.log(`[sheets] Response ${res.status}: ${text.slice(0, 300)}`);
+    try {
+      const body = JSON.parse(text);
+      if (body?.ok) console.log(`[sheets] Successfully synced order ${payload.order_id}`);
+      else console.warn(`[sheets] WARNING ok=false for ${payload.order_id}:`, body);
+    } catch {}
+  } catch (e) {
+    console.error(`[sheets] FAILED for ${payload.order_id}:`, e);
+  }
+}
+
 const PHONE_RE = /^0(5|6|7|8)[0-9]{8}$/;
 
 export async function POST(req: NextRequest) {
@@ -116,6 +141,37 @@ export async function POST(req: NextRequest) {
       throw e;
     }
   }
+
+  // Sheets webhook — fire-and-forget (must not block order creation)
+  // Payload shape must match backend/app/services/sheets.py and the Apps Script doc.
+  const sheetsPayload = {
+    order_id: created.reference,
+    date: created.createdAt.toISOString(),
+    customer_name: created.customerName,
+    phone: created.phone,
+    city: created.city,
+    address: created.address || "",
+    postal: created.postal || "",
+    items_json: created.items.map((i: any) => ({
+      slug: i.slug,
+      name: i.name,
+      qty: i.qty,
+      unit_price: i.unitPrice,
+      line_total: i.unitPrice * i.qty,
+    })),
+    subtotal: total,
+    discount: kitDiscount,
+    upsell: 0,
+    total: created.total,
+    status: created.status,
+    country: created.country,
+    geo_risk: "",
+    ip: req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "",
+    source: baseData.source,
+    notes: "",
+  };
+  // Don't await — order already created, sheets is best-effort
+  pushToSheets(sheetsPayload).catch(() => {});
 
   return NextResponse.json({ id: created.reference, total: created.total, discount: created.discount });
 }

@@ -71,11 +71,11 @@ async def create_order(
     # 3. Authoritative totals (includes bundle discount when eligible)
     subtotal, upsell_total, discount, total, lines = compute_total(payload.items, upsell=False)
 
-    # 4. Check idempotency
+    # 4. Check idempotency - return reference as public ID for consistency with frontend
     if payload.idempotency_key:
         existing = db.query(Order).filter(Order.idempotency_key == payload.idempotency_key).first()
         if existing:
-            return OrderOut(id=existing.id, total=existing.total, discount=existing.discount, status=existing.status)
+            return OrderOut(id=existing.reference, total=existing.total, discount=existing.discount, status=existing.status)
 
     # 5. Create order
     reference = _generate_reference()
@@ -149,7 +149,8 @@ async def create_order(
         ua=request.headers.get("user-agent", ""), url=str(request.url),
     )
 
-    return OrderOut(id=order.id, total=total, discount=discount, status=order.status)
+    # Return reference as public ID (matches frontend/confirmation + admin)
+    return OrderOut(id=order.reference, total=total, discount=discount, status=order.status)
 
 
 @router.post("/orders/{order_id}/upsell", response_model=OrderOut)
@@ -160,11 +161,14 @@ async def add_upsell(
     background: BackgroundTasks,
     db: Session = Depends(get_db),
 ):
+    # Support both internal id and public reference (frontend always sends reference)
     order = db.get(Order, order_id)
+    if not order:
+        order = db.query(Order).filter(Order.reference == order_id).first()
     if not order:
         raise HTTPException(status_code=404, detail="order_not_found")
     if not payload.add:
-        return OrderOut(id=order.id, total=order.total, discount=order.discount, status=order.status)
+        return OrderOut(id=order.reference, total=order.total, discount=order.discount, status=order.status)
 
     order.upsell_added = True
     order.upsell_total = 99
@@ -189,4 +193,4 @@ async def add_upsell(
             "total": order.total,
         },
     )
-    return OrderOut(id=order.id, total=order.total, status=order.status)
+    return OrderOut(id=order.reference, total=order.total, status=order.status)

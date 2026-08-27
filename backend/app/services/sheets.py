@@ -30,7 +30,7 @@ async def push_order(payload: dict):
     """POST order data to Google Apps Script. Called as a FastAPI BackgroundTask."""
     global _resolved_url
 
-    url = settings.sheets_webhook_url
+    url = settings.sheets_url
     if not url:
         _log("[sheets] SHEETS_WEBHOOK_URL not set — skipping push")
         return

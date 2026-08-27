@@ -14,6 +14,7 @@ services:
       dockerfile: Dockerfile
     environment:
       DATABASE_URL: postgres://warda:eyt5p216l73pesz9g3cl@wardabeaute_wardabeaute:5432/database?sslmode=disable
+      SHEETS_WEBHOOK_URL: ${SHEETS_WEBHOOK_URL:-https://script.google.com/macros/s/AKfycbybYq3NDTzqj2vsOacTq8CWNweiMBvptn4oa44Y9DLXLTi7WtlARGwZjeefbRt09lBj/exec}
       NEXT_PUBLIC_API_URL: https://api.wardabeaute.com
       NEXT_PUBLIC_SITE_URL: https://wardabeaute.com
       NEXT_PUBLIC_WHATSAPP_NUMBER: 212600000000
@@ -37,7 +38,7 @@ services:
     environment:
       DATABASE_URL: postgres://warda:eyt5p216l73pesz9g3cl@wardabeaute_wardabeaute:5432/database?sslmode=disable
       CORS_ORIGINS: https://wardabeaute.com,https://www.wardabeaute.com,http://localhost:3000
-      SHEETS_WEBHOOK_URL: ${SHEETS_WEBHOOK_URL:-}
+      SHEETS_WEBHOOK_URL: ${SHEETS_WEBHOOK_URL:-https://script.google.com/macros/s/AKfycbybYq3NDTzqj2vsOacTq8CWNweiMBvptn4oa44Y9DLXLTi7WtlARGwZjeefbRt09lBj/exec}
       MAXMIND_DB_PATH: ${MAXMIND_DB_PATH:-}
       MAXMIND_ENABLED: ${MAXMIND_ENABLED:-false}
       WHITELIST_PHONES: ${WHITELIST_PHONES:-0666666666}
