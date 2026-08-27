@@ -10,6 +10,7 @@ interface ProdRow {
   name: string;
   price: number;
   oldPrice: number | null;
+  sku: string | null;
   image: string | null;
   active: boolean;
   stockCount: number | null;
@@ -44,6 +45,7 @@ export default function AdminProductsEditor() {
       name: p.name,
       price: p.price,
       oldPrice: p.oldPrice ?? "",
+      sku: p.sku ?? "",
       image: p.image ?? "",
       active: p.active,
       stockCount: p.stockCount ?? "",
@@ -78,6 +80,7 @@ export default function AdminProductsEditor() {
       price: Number(form.price),
       oldPrice: form.oldPrice === "" ? null : Number(form.oldPrice),
       stockCount: form.stockCount === "" ? null : Number(form.stockCount),
+      sku: form.sku ? String(form.sku).trim() : null,
     };
     const res = await fetch("/api/admin/products", {
       method: "POST",
@@ -91,7 +94,8 @@ export default function AdminProductsEditor() {
       await load();
     } else {
       const j = await res.json().catch(() => ({}));
-      setMsg("Error: " + (j.detail || res.status));
+      if (j.detail === "sku_not_unique") setMsg("Error: this SKU is already used by another product.");
+      else setMsg("Error: " + (j.detail || res.status));
     }
   }
 
@@ -116,8 +120,9 @@ export default function AdminProductsEditor() {
             <tr className="text-left text-gris border-b border-brume">
               <th className="py-2 px-4 font-medium">Product</th>
               <th className="py-2 px-4 font-medium text-right">Price</th>
-              <th className="py-2 px-4 font-medium text-right">Old price</th>
-              <th className="py-2 px-4 font-medium text-center">Active</th>
+                  <th className="py-2 px-4 font-medium text-right">Old price</th>
+                  <th className="py-2 px-4 font-medium text-right">SKU</th>
+                  <th className="py-2 px-4 font-medium text-center">Active</th>
               <th className="py-2 px-4 font-medium text-right">Sold</th>
               <th className="py-2 px-4 font-medium text-right">Revenue</th>
               <th className="py-2 px-4 font-medium text-right">Orders</th>
@@ -135,6 +140,7 @@ export default function AdminProductsEditor() {
                   </td>
                   <td className="py-2 px-4 text-right">{formatMAD(p.price)}</td>
                   <td className="py-2 px-4 text-right text-gris">{p.oldPrice ? formatMAD(p.oldPrice) : "—"}</td>
+                  <td className="py-2 px-4 text-right text-gris">{p.sku ? p.sku : "—"}</td>
                   <td className="py-2 px-4 text-center">{p.active ? "✅" : "⛔"}</td>
                   <td className="py-2 px-4 text-right">{perfRow ? formatNumber(perfRow.units) : "—"}</td>
                   <td className="py-2 px-4 text-right">{perfRow ? formatMAD(perfRow.revenue) : "—"}</td>
@@ -164,6 +170,9 @@ export default function AdminProductsEditor() {
             </label>
             <label className="text-sm">Old price (MAD, optional)
               <input type="number" value={form.oldPrice} onChange={(e) => setField("oldPrice", e.target.value)} className="w-full rounded-xl border border-brume px-3 py-2 mt-1" />
+            </label>
+            <label className="text-sm">SKU (optional, unique)
+              <input type="text" value={form.sku} onChange={(e) => setField("sku", e.target.value)} className="w-full rounded-xl border border-brume px-3 py-2 mt-1" placeholder="e.g. WB-VELVA-001" />
             </label>
             <label className="text-sm sm:col-span-2">Product image
               <div className="flex items-center gap-3 mt-1">

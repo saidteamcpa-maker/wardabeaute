@@ -19,6 +19,7 @@ export async function GET() {
     return {
       slug,
       name: s.name,
+      sku: null,
       price: s.price,
       oldPrice: s.oldPrice,
       image: s.image,
@@ -38,6 +39,7 @@ interface ProductBody {
   slug: string;
   name: string;
   price: number;
+  sku?: string | null;
   oldPrice?: number | null;
   image?: string | null;
   active?: boolean;
@@ -81,6 +83,7 @@ export async function POST(req: NextRequest) {
     slug,
     name,
     price: Math.round(body.price),
+    sku: body.sku ? body.sku.trim() : null,
     oldPrice: body.oldPrice != null ? Math.round(body.oldPrice as number) : null,
     image: body.image || null,
     active: body.active ?? true,
@@ -91,10 +94,17 @@ export async function POST(req: NextRequest) {
   };
   if (offers !== undefined) data.offers = JSON.stringify(offers);
 
-  const product = await prisma.product.upsert({
-    where: { slug },
-    update: data,
-    create: data as any,
-  });
-  return NextResponse.json(product);
+  try {
+    const product = await prisma.product.upsert({
+      where: { slug },
+      update: data,
+      create: data as any,
+    });
+    return NextResponse.json(product);
+  } catch (e: any) {
+    if (e?.code === "P2002" && String(e?.meta?.target ?? "").includes("sku")) {
+      return NextResponse.json({ detail: "sku_not_unique" }, { status: 422 });
+    }
+    throw e;
+  }
 }

@@ -123,6 +123,7 @@ model AnalyticsEvent {
 model Product {
   slug             String   @id
   name             String
+  sku              String?  @unique @map("sku")
   arSub            String?  @map("ar_sub")
   price            Int
   oldPrice         Int?     @map("old_price")
