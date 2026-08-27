@@ -40,6 +40,12 @@ export interface AdminOrder {
   discount: number;
   shippingFee: number;
   notes: string | null;
+  externalId: number | null;
+  externalUuid: string | null;
+  externalStatus: string | null;
+  externalDeliveryStatus: string | null;
+  lastSyncedAt: string | null;
+  trackingNumber: string | null;
   items: AdminOrderItem[];
   activities: AdminActivity[];
 }

@@ -46,6 +46,9 @@ export function OrderDrawer({
   const [saving, setSaving] = useState(false);
   const [note, setNote] = useState("");
   const [noteSaving, setNoteSaving] = useState(false);
+  const [externalId, setExternalId] = useState("");
+  const [savingExternal, setSavingExternal] = useState(false);
+  const [syncing, setSyncing] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -54,6 +57,7 @@ export function OrderDrawer({
       const json = await res.json();
       setOrder(json);
       setStatusSelect(json.status);
+      setExternalId(json.externalId ? String(json.externalId) : "");
     }
     setLoading(false);
   }, [reference]);
@@ -85,6 +89,30 @@ export function OrderDrawer({
     });
     setNote("");
     setNoteSaving(false);
+    await load();
+    onChanged();
+  };
+
+  const saveExternalId = async () => {
+    if (!externalId.trim()) return;
+    setSavingExternal(true);
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.wardabeaute.com";
+    await fetch(`${apiUrl}/api/marketplace/orders/${reference}/external`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ externalId: Number(externalId) }),
+    });
+    setSavingExternal(false);
+    await load();
+    onChanged();
+  };
+
+  const syncMarketplace = async () => {
+    if (!order?.externalId) return;
+    setSyncing(true);
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://api.wardabeaute.com";
+    await fetch(`${apiUrl}/api/marketplace/orders/${order.externalId}/sync/${reference}`, { method: "POST" });
+    setSyncing(false);
     await load();
     onChanged();
   };
@@ -195,6 +223,36 @@ export function OrderDrawer({
               {order.utmMedium && <Row label="Medium" value={order.utmMedium} />}
               {order.referrer && <Row label="Referrer" value={order.referrer} />}
               <Row label="Device" value={order.device ?? "—"} />
+            </Section>
+
+            {/* Marketplace */}
+            <Section title="Marketplace (SpaceSeller)">
+              <div className="space-y-2">
+                <div className="flex gap-2">
+                  <input
+                    value={externalId}
+                    onChange={(e) => setExternalId(e.target.value)}
+                    placeholder="Marketplace order ID (e.g. 278669)"
+                    className="flex-1 rounded-xl border border-brume px-3 py-2 text-sm font-body"
+                  />
+                  <button onClick={saveExternalId} disabled={savingExternal || !externalId.trim()} className="btn-primary px-4 disabled:opacity-50">
+                    {savingExternal ? "…" : "Link"}
+                  </button>
+                </div>
+                {order.externalId && (
+                  <div className="text-xs text-gris space-y-1">
+                    <Row label="Linked ID" value={String(order.externalId)} />
+                    {order.externalStatus && <Row label="Ext. Status" value={order.externalStatus} />}
+                    {order.externalDeliveryStatus && <Row label="Ext. Delivery" value={order.externalDeliveryStatus} />}
+                    {order.trackingNumber && <Row label="Tracking" value={order.trackingNumber} />}
+                    {order.lastSyncedAt && <Row label="Last Sync" value={new Date(order.lastSyncedAt).toLocaleString("fr-FR")} />}
+                  </div>
+                )}
+                <button onClick={syncMarketplace} disabled={syncing || !order.externalId} className="btn-outline w-full disabled:opacity-50">
+                  {syncing ? "Syncing…" : "Sync status from SpaceSeller (auto every 5m)"}
+                </button>
+                <p className="text-xs text-gris">Auto-sync runs every 5m for linked orders. Manual sync forces immediate check.</p>
+              </div>
             </Section>
 
             {/* Notes / history */}

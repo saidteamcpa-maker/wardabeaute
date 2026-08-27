@@ -282,9 +282,8 @@ export async function POST(req: NextRequest) {
     source: baseData.source,
     notes: "",
   };
-  // Don't await — order already created, sheets + marketplace are best-effort
+  // Don't await — order already created, sheets is best-effort (marketplace push disabled per request — manual via Sheets)
   pushToSheets(sheetsPayload).catch(() => {});
-  pushToSpaceseller(sheetsPayload).catch(() => {});
 
   return NextResponse.json({ id: created.reference, total: created.total, discount: created.discount });
 }

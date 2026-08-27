@@ -74,6 +74,12 @@ class Order(Base):
     subtotal = Column(Integer, default=0)
     upsell_total = Column(Integer, default=0)
     upsell_added = Column(Boolean, default=False)
+    external_id = Column(Integer, unique=True)
+    external_uuid = Column(String)
+    external_status = Column(String)
+    external_delivery_status = Column(String)
+    last_synced_at = Column(DateTime)
+    tracking_number = Column(String)
 
     items = relationship("OrderItem", back_populates="order", cascade="all, delete-orphan")
     activities = relationship("OrderActivity", back_populates="order", cascade="all, delete-orphan")

@@ -9,7 +9,7 @@ from ..db import get_db
 from ..models import Order, OrderItem, Product
 from ..prices import PRODUCT_NAMES, compute_total, CO_COLLAGEN_DISCOUNT
 from ..schemas import OrderCreate, OrderOut, UpsellIn
-from ..services import geo, sheets, spaceseller
+from ..services import geo, sheets
 from ..services.capi import track
 
 router = APIRouter(prefix="/api")
@@ -142,11 +142,6 @@ async def create_order(
     }
     print(f"[orders] Scheduling Sheets sync for {order.reference}", flush=True)
     background.add_task(sheets.push_order, sheet_payload)
-    # 7b. SpaceSeller Marketplace (fire-and-forget, uses existing Product.sku)
-    # Reuses same payload shape as Sheets — marketplace maps it to {fullname, phone, address, total_price, products: [{sku, quantity, unit_price}]}
-    if settings.is_spaceseller_enabled:
-        print(f"[orders] Scheduling SpaceSeller sync for {order.reference}", flush=True)
-        background.add_task(spaceseller.push_order, sheet_payload)
 
     # 8. CAPI (server) — Purchase
     background.add_task(

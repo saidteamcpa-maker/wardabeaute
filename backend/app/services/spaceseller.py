@@ -34,15 +34,46 @@ CITY_MAP: dict[str, int] = {
     "taza": 15,
 }
 
-# Warda internal status -> marketplace (not used outbound, for reference)
-# Marketplace inbound NEW/CONFIRMED/PAID/CANCELED etc -> Warda STATUS_ORDER mapping is in polling.
+# Marketplace -> Warda STATUS_ORDER (9-state)
 STATUS_MAP_INBOUND: dict[str, str] = {
     "NEW": "new",
+    "PENDING": "pending_confirmation",
+    "PENDING_CONFIRMATION": "pending_confirmation",
     "CONFIRMED": "confirmed",
+    "PREPARING": "preparing",
+    "SHIPPED": "shipped",
+    "OUT_FOR_DELIVERY": "out_for_delivery",
+    "DELIVERED": "delivered",
     "PAID": "delivered",
     "CANCELED": "cancelled",
     "CANCELLED": "cancelled",
+    "RETURNED": "returned",
 }
+DELIVERY_MAP_INBOUND: dict[str, str] = {
+    "P_UNPACKED": "preparing",
+    "P_PACKED": "preparing",
+    "P_PENDING": "pending_confirmation",
+    "P_SHIPPED": "shipped",
+    "P_OUT_FOR_DELIVERY": "out_for_delivery",
+    "P_DELIVERED": "delivered",
+    "P_CANCELED": "cancelled",
+    "P_CANCELLED": "cancelled",
+    "P_RETURNED": "returned",
+}
+
+
+def map_to_warda_status(order_code: str | None, delivery_code: str | None) -> str | None:
+    """Prioritize delivery status for granularity, fallback to order status."""
+    if delivery_code:
+        d = DELIVERY_MAP_INBOUND.get(delivery_code.strip().upper())
+        if d:
+            # If order is cancelled/returned, keep that
+            if order_code and order_code.strip().upper() in ("CANCELED", "CANCELLED", "RETURNED"):
+                return STATUS_MAP_INBOUND.get(order_code.strip().upper(), d)
+            return d
+    if order_code:
+        return STATUS_MAP_INBOUND.get(order_code.strip().upper())
+    return None
 
 
 def _log(msg: str):

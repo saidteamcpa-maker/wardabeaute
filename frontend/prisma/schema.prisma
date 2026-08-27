@@ -55,6 +55,12 @@ model Order {
   subtotal           Int      @default(0)
   upsellTotal        Int      @default(0) @map("upsell_total")
   upsellAdded        Boolean  @default(false) @map("upsell_added")
+  externalId         Int?     @unique @map("external_id")
+  externalUuid       String?  @map("external_uuid")
+  externalStatus     String?  @map("external_status")
+  externalDeliveryStatus String? @map("external_delivery_status")
+  lastSyncedAt       DateTime? @map("last_synced_at")
+  trackingNumber     String?  @map("tracking_number")
 
   items      OrderItem[]
   activities OrderActivity[]
