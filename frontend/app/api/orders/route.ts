@@ -10,20 +10,47 @@ const SHEETS_URL =
 
 async function pushToSheets(payload: Record<string, unknown>) {
   if (!SHEETS_URL) return;
+  const body = JSON.stringify(payload);
+  const headers = { "Content-Type": "text/plain;charset=utf-8" } as const;
   try {
-    console.log(`[sheets] Sending order ${payload.order_id} to Google Sheets...`);
-    const res = await fetch(SHEETS_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    const text = await res.text();
-    console.log(`[sheets] Response ${res.status}: ${text.slice(0, 300)}`);
-    try {
-      const body = JSON.parse(text);
-      if (body?.ok) console.log(`[sheets] Successfully synced order ${payload.order_id}`);
-      else console.warn(`[sheets] WARNING ok=false for ${payload.order_id}:`, body);
-    } catch {}
+    let current = SHEETS_URL;
+    for (let attempt = 0; attempt < 4; attempt++) {
+      console.log(`[sheets] Sending order ${payload.order_id} to ${current.slice(0, 70)}... (attempt ${attempt + 1})`);
+      const res = await fetch(current, {
+        method: "POST",
+        headers,
+        body,
+        redirect: "manual",
+      });
+      const status = res.status;
+      const text = await res.text().catch(() => "");
+      console.log(`[sheets] Response ${status}: ${text.slice(0, 300)}`);
+      // 0 = opaque redirect in some runtimes, 301-308 = redirect
+      if (status >= 301 && status <= 308) {
+        const loc = res.headers.get("location");
+        if (!loc) break;
+        console.log(`[sheets] Following redirect → ${loc.slice(0, 80)}`);
+        current = loc;
+        continue;
+      }
+      // Also handle fetch following redirect automatically (status 200 but HTML)
+      // If we got HTML instead of JSON, it means we were redirected to echo without POST body
+      if (status === 200) {
+        try {
+          const j = JSON.parse(text);
+          if (j?.ok) console.log(`[sheets] Successfully synced order ${payload.order_id}`);
+          else console.warn(`[sheets] WARNING ok=false for ${payload.order_id}:`, j);
+        } catch {
+          // Not JSON — likely HTML from echo GET, treat as needing manual POST
+          if (text.includes("<!DOCTYPE") || text.includes("ppConfig")) {
+            console.warn(`[sheets] Got HTML instead of JSON for ${payload.order_id} — redirect was followed as GET, body lost`);
+          }
+        }
+      } else {
+        console.warn(`[sheets] Unexpected status ${status} for ${payload.order_id}`);
+      }
+      break;
+    }
   } catch (e) {
     console.error(`[sheets] FAILED for ${payload.order_id}:`, e);
   }
