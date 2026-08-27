@@ -21,7 +21,8 @@ export async function getCatalog(): Promise<Record<string, CatalogProduct>> {
     let offers = base.offers as CatalogOffer[];
     if (db?.offers) {
       try {
-        offers = JSON.parse(db.offers) as CatalogOffer[];
+        const parsed = JSON.parse(db.offers) as CatalogOffer[];
+        if (Array.isArray(parsed) && parsed.length > 0) offers = parsed;
       } catch {
         offers = base.offers as CatalogOffer[];
       }

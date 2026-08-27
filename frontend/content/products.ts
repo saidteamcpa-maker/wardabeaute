@@ -383,6 +383,7 @@ export const bundle = {
 export function unitPrice(slug: string, qty: number, catalog: Record<string, Product> = products): number {
   const p = catalog[slug];
   if (!p) return 0;
+  if (!p.offers || p.offers.length === 0) return p.price ?? 0;
   const offer = p.offers.find((o) => o.qty === qty) || p.offers[0];
-  return offer.price;
+  return offer?.price ?? p.price ?? 0;
 }
