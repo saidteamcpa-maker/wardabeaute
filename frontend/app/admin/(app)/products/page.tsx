@@ -5,6 +5,8 @@ import { UploadCloud } from "lucide-react";
 import { useAnalytics } from "@/lib/useAnalytics";
 import { formatMAD, formatNumber } from "@/lib/format";
 
+export const dynamic = "force-dynamic";
+
 interface ProdRow {
   slug: string;
   name: string;
@@ -106,7 +108,7 @@ export default function AdminProductsEditor() {
   }
 
   return (
-    <div className="p-6 max-w-6xl">
+    <div className="p-6 max-w-6xl" data-build="sku-v1">
       <div className="flex items-center justify-between mb-4">
         <h1 className="text-2xl font-display text-profond">Products</h1>
         <span className="text-xs text-gris">Names are locked (brand immutable). Prices &amp; offers editable.</span>
