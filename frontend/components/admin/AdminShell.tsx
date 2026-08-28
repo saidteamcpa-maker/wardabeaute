@@ -127,7 +127,7 @@ export function AdminShell({ username, children }: { username: string; children:
                 <Icon className="w-5 h-5 shrink-0" />
                 {!collapsed && <span className="truncate">{item.label}</span>}
                 {collapsed && (
-                  <span className="pointer-events-none absolute left-full ml-2 top-1/2 -translate-y-1/2 z-50 whitespace-nowrap rounded-md bg-black px-2 py-1 text-xs text-white opacity-0 transition group-hover:opacity-100">
+                  <span className="pointer-events-none absolute left-full ml-2 top-1/2 -translate-y-1/2 z-50 whitespace-nowrap rounded-lg bg-black px-2 py-1 text-xs text-white opacity-0 transition group-hover:opacity-100">
                     {item.label}
                   </span>
                 )}

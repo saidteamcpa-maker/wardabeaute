@@ -122,12 +122,12 @@ export function OrderDrawer({
   return (
     <div className="fixed inset-0 z-[70] flex justify-end">
       <div className="absolute inset-0 bg-brun/50" onClick={onClose} />
-      <div className="relative bg-white w-full max-w-[460px] h-full overflow-y-auto p-5">
+      <div className="drawer-panel">
         <div className="flex items-center justify-between mb-4">
           <h2 className="font-display text-2xl text-profond">
             {loading ? "Loading…" : order?.reference}
           </h2>
-          <button onClick={onClose} className="text-2xl text-brun">✕</button>
+          <button onClick={onClose} className="btn-ghost"><X className="w-5 h-5" /></button>
         </div>
 
         {order && (
@@ -142,7 +142,7 @@ export function OrderDrawer({
                 <select
                   value={statusSelect}
                   onChange={(e) => setStatusSelect(e.target.value)}
-                  className="flex-1 rounded-xl border border-brume px-3 py-2 text-sm font-body"
+                  className="flex-1 input-field"
                 >
                   {STATUS_ORDER.map((s) => (
                     <option key={s} value={s}>{STATUS_LABELS[s]}</option>
@@ -233,7 +233,7 @@ export function OrderDrawer({
                     value={externalId}
                     onChange={(e) => setExternalId(e.target.value)}
                     placeholder="Marketplace order ID (e.g. 278669)"
-                    className="flex-1 rounded-xl border border-brume px-3 py-2 text-sm font-body"
+                    className="flex-1 input-field"
                   />
                   <button onClick={saveExternalId} disabled={savingExternal || !externalId.trim()} className="btn-primary px-4 disabled:opacity-50">
                     {savingExternal ? "…" : "Link"}
@@ -261,7 +261,7 @@ export function OrderDrawer({
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
                 placeholder="Add an internal note…"
-                className="w-full rounded-xl border border-brume px-3 py-2 text-sm font-body mb-2"
+                className="w-full input-field mb-2"
                 rows={3}
               />
               <button

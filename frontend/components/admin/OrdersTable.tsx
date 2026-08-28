@@ -90,12 +90,12 @@ export function OrdersTable() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search (ID, name, phone, city)…"
-          className="flex-1 min-w-[220px] rounded-xl border border-brume px-4 py-2.5 font-body text-sm"
+          className="flex-1 min-w-[220px] input-field"
         />
         <select
           value={status}
           onChange={(e) => { setStatus(e.target.value); setPage(1); }}
-          className="rounded-xl border border-brume px-3 py-2.5 font-body text-sm"
+          className="input-field"
         >
           <option value="">All statuses</option>
           {STATUS_ORDER.map((s) => (
@@ -105,7 +105,7 @@ export function OrdersTable() {
         <select
           value={source}
           onChange={(e) => { setSource(e.target.value); setPage(1); }}
-          className="rounded-xl border border-brume px-3 py-2.5 font-body text-sm"
+          className="input-field"
         >
           <option value="">All sources</option>
           {SOURCES.map((s) => (
@@ -116,18 +116,18 @@ export function OrdersTable() {
           type="date"
           value={dateFrom}
           onChange={(e) => { setDateFrom(e.target.value); setPage(1); }}
-          className="rounded-xl border border-brume px-3 py-2.5 font-body text-sm"
+          className="input-field"
         />
         <input
           type="date"
           value={dateTo}
           onChange={(e) => { setDateTo(e.target.value); setPage(1); }}
-          className="rounded-xl border border-brume px-3 py-2.5 font-body text-sm"
+          className="input-field"
         />
         <select
           value={sort}
           onChange={(e) => { setSort(e.target.value); setPage(1); }}
-          className="rounded-xl border border-brume px-3 py-2.5 font-body text-sm"
+          className="input-field"
         >
           <option value="newest">Newest</option>
           <option value="oldest">Oldest</option>
@@ -141,7 +141,7 @@ export function OrdersTable() {
             if (debounced) p.set("search", debounced);
             window.open(`/api/admin/orders/export?${p.toString()}`, "_blank");
           }}
-          className="rounded-xl border border-brume px-4 py-2.5 font-body text-sm hover:bg-petal/40"
+          className="btn-sm"
         >
           ⬇ Export CSV
         </button>
@@ -209,14 +209,14 @@ export function OrdersTable() {
           <button
             disabled={page <= 1}
             onClick={() => setPage((p) => Math.max(1, p - 1))}
-            className="px-3 py-1.5 rounded-lg border border-brume disabled:opacity-40 hover:bg-petal/40"
+            className="btn-sm disabled:opacity-40"
           >
             Previous
           </button>
           <select
             value={pageSize}
             onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }}
-            className="rounded-lg border border-brume px-2 py-1.5"
+            className="input-field px-2 py-1.5"
           >
             {[10, 20, 50, 100].map((s) => (
               <option key={s} value={s}>{s} / page</option>
@@ -225,7 +225,7 @@ export function OrdersTable() {
           <button
             disabled={page >= totalPages}
             onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-            className="px-3 py-1.5 rounded-lg border border-brume disabled:opacity-40 hover:bg-petal/40"
+            className="btn-sm disabled:opacity-40"
           >
             Next
           </button>
