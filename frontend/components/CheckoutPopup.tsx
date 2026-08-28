@@ -38,7 +38,6 @@ export function CheckoutPopup() {
   // Filter stale slugs (old localStorage like bundle-bck) to prevent client crash
   const validItems = useMemo(() => items.filter((i) => i && typeof i.slug === "string" && !!catalog[i.slug]), [items, catalog]);
   // Upsell logic
-  const cartSlugs = useMemo(() => validItems.map((i) => i.slug), [validItems]);
   const productNames = useMemo(() => {
     const names: Record<string, string> = {};
     for (const [slug, p] of Object.entries(catalog)) {
@@ -46,7 +45,7 @@ export function CheckoutPopup() {
     }
     return names;
   }, [catalog]);
-  const upsellInfo = useMemo(() => getUpsellInfo(cartSlugs, productNames), [cartSlugs, productNames]);
+  const upsellInfo = useMemo(() => getUpsellInfo(validItems, productNames), [validItems, productNames]);
 
   // Fresh idempotency key each time the checkout is opened
   useEffect(() => {
@@ -79,6 +78,7 @@ export function CheckoutPopup() {
     resolver: zodResolver(schema),
   });
   const subtotal = validItems.reduce((s, i) => s + unitPrice(i.slug, i.qty, catalog), 0);
+  const preDiscountTotal = subtotal;
 
   useEffect(() => {
     if (isCheckoutOpen) {
@@ -286,6 +286,7 @@ export function CheckoutPopup() {
                 ? catalog[upsellInfo.missing]?.image || "/images/velvastretch.png"
                 : catalog["kit-collagene"]?.image || "/kit-collagene-hero.png"
             }
+            preDiscountTotal={preDiscountTotal}
             onAccept={handleUpsellAccept}
             onReject={handleUpsellReject}
           />

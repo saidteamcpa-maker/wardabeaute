@@ -9,9 +9,7 @@ PRICES = {
 
 UPSELL_99 = 99
 
-# "Kit Collagène Inside & Outside" bundle discount — applied server-side when
-# the order contains BOTH velvastretch AND collaglow (individual products only).
-# The existing kit-collagene product is NOT eligible for this discount.
+# "Kit Collagène Inside & Outside" bundle discount: 49 MAD per matched pair.
 CO_COLLAGEN_DISCOUNT = 49
 
 PRODUCT_NAMES = {
@@ -93,13 +91,13 @@ def compute_total(items, upsell=False) -> tuple:
         )
     upsell_total = UPSELL_99 if upsell else 0
 
-    # "Kit Collagène Inside & Outside" bundle discount: auto-applied when the
-    # order contains BOTH velvastretch AND collaglow — even if kit-collagene
-    # or other products are also in the cart.
-    slugs = [it.slug for it in items]
-    has_velva = "velvastretch" in slugs
-    has_collaglow = "collaglow" in slugs
-    discount = CO_COLLAGEN_DISCOUNT if (has_velva and has_collaglow) else 0
+    # "Kit Collagène Inside & Outside" bundle discount: 49 MAD per matched pair.
+    # Applied when the order contains BOTH velvastretch AND collaglow.
+    # Other products (kit-collagene, silkstop) do not affect the calculation.
+    vs_qty = sum(it.qty for it in items if it.slug == "velvastretch")
+    cg_qty = sum(it.qty for it in items if it.slug == "collaglow")
+    matched = min(vs_qty, cg_qty)
+    discount = matched * CO_COLLAGEN_DISCOUNT if matched > 0 else 0
 
     total = subtotal + upsell_total - discount
     return subtotal, upsell_total, discount, total, lines

@@ -176,7 +176,7 @@ export async function POST(req: NextRequest) {
   // without any other products. The upsell popup only offers to *complete* the kit
   // (add the missing one) when exactly one of them is present.
   // NOT applied when the Kit product itself is in the cart (tested separately).
-  const kitDiscount = bundleDiscount(cleanItems.map((i: any) => i.slug));
+  const kitDiscount = bundleDiscount(cleanItems);
 
   const idemKey =
     typeof body.idempotency_key === "string" && body.idempotency_key.trim()

@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { useLang } from "@/components/LangProvider";
 import { t } from "@/content/ui";
 import type { UpsellType } from "@/lib/upsell";
-import { BUNDLE_DISCOUNT } from "@/lib/upsell";
 
 const TIMER_SECONDS = 18;
 
@@ -12,11 +11,12 @@ interface UpsellPopupProps {
   info: Extract<UpsellType, { eligible: true }>;
   productName: string;
   productImage: string;
+  preDiscountTotal: number;
   onAccept: () => void;
   onReject: () => void;
 }
 
-export function UpsellPopup({ info, productName, productImage, onAccept, onReject }: UpsellPopupProps) {
+export function UpsellPopup({ info, productName, productImage, preDiscountTotal, onAccept, onReject }: UpsellPopupProps) {
   const { lang } = useLang();
   const [seconds, setSeconds] = useState(TIMER_SECONDS);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -52,7 +52,8 @@ export function UpsellPopup({ info, productName, productImage, onAccept, onRejec
   };
 
   const isAddMissing = info.type === "add_missing";
-  const saveAmount = BUNDLE_DISCOUNT;
+  const saveAmount = info.discount;
+  const bundleTotal = preDiscountTotal - saveAmount;
 
   return (
     <div className="fixed inset-0 z-[70] flex items-end md:items-center justify-center p-0 md:p-4">
@@ -113,11 +114,11 @@ export function UpsellPopup({ info, productName, productImage, onAccept, onRejec
           <div className="bg-warda/5 rounded-xl p-4 mb-4">
             <div className="flex justify-between items-center text-sm text-gris mb-1">
               <span>{lang === "ar" ? "الثمن الأصلي" : "Prix original"}</span>
-              <span className="line-through">{info.originalTotal} MAD</span>
+              <span className="line-through">{preDiscountTotal} MAD</span>
             </div>
             <div className="flex justify-between items-center text-lg font-bold text-warda">
-              <span>{lang === "ar" ? "الثمنていき مع العرض" : "Prix promotionnel"}</span>
-              <span>{info.bundleTotal} MAD</span>
+              <span>{lang === "ar" ? "الثمن otherButtonTitles" : "Prix promotionnel"}</span>
+              <span>{bundleTotal} MAD</span>
             </div>
             <div className="mt-2 text-center text-sm font-semibold text-warda">
               {lang === "ar" ? `كترشدي ${saveAmount} MAD` : `Économisez ${saveAmount} MAD`}
@@ -128,8 +129,8 @@ export function UpsellPopup({ info, productName, productImage, onAccept, onRejec
           {isAddMissing && (
             <p className="text-sm text-brun mb-4">
               {lang === "ar"
-                ? `${productName} — الثمن: ${info.type === "add_missing" ? (info.bundleTotal - 279) : 319} MAD`
-                : `${productName} — ${info.bundleTotal - 279} MAD`}
+                ? `${productName}`
+                : `${productName}`}
             </p>
           )}
 

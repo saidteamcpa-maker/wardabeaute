@@ -1,19 +1,18 @@
 /**
  * Bundle upsell logic for the "Kit Collagène Inside & Outside" promotion.
  *
- * The 49 MAD discount applies when the cart contains BOTH CollaGlow and
- * VelvaStretch — even if kit-collagene or SilkStop are also present.
+ * The discount is 49 MAD per matched VelvaStretch + CollaGlow pair.
+ * Formula: discount = 49 × min(vsQty, cgQty)
  */
 
 export const BUNDLE_DISCOUNT = 49;
-export const BUNDLE_PRICE = 549; // 319 + 279 - 49
 export const COLLAGLOW_SLUG = "collaglow";
 export const VELVASTRETCH_SLUG = "velvastretch";
 
 export type UpsellType =
   | { eligible: false }
-  | { eligible: true; type: "add_missing"; missing: string; missingName: string; originalTotal: number; bundleTotal: number }
-  | { eligible: true; type: "apply_discount"; originalTotal: number; bundleTotal: number };
+  | { eligible: true; type: "add_missing"; missing: string; missingName: string; discount: number }
+  | { eligible: true; type: "apply_discount"; discount: number };
 
 /**
  * Determine whether the customer qualifies for the bundle upsell.
@@ -21,26 +20,26 @@ export type UpsellType =
  * Conditions:
  *  - Has CollaGlow only  → propose VelvaStretch
  *  - Has VelvaStretch only → propose CollaGlow
- *  - Has BOTH → communicate the 49 MAD savings
- *  - Has neither / has Kit / has unrelated → no popup
+ *  - Has BOTH → communicate the savings
+ *  - Has neither → no popup
  */
 export function getUpsellInfo(
-  cartSlugs: string[],
+  cartItems: { slug: string; qty: number }[],
   productNames: Record<string, string>
 ): UpsellType {
-  const hasV = cartSlugs.includes(VELVASTRETCH_SLUG);
-  const hasC = cartSlugs.includes(COLLAGLOW_SLUG);
+  const vsQty = cartItems.filter((i) => i.slug === VELVASTRETCH_SLUG).reduce((s, i) => s + i.qty, 0);
+  const cgQty = cartItems.filter((i) => i.slug === COLLAGLOW_SLUG).reduce((s, i) => s + i.qty, 0);
+  const hasV = vsQty > 0;
+  const hasC = cgQty > 0;
 
   if (!hasV && !hasC) return { eligible: false };
 
-  const originalTotal = 319 + 279;
-
   if (hasV && hasC) {
+    const matchedPairs = Math.min(vsQty, cgQty);
     return {
       eligible: true,
       type: "apply_discount",
-      originalTotal,
-      bundleTotal: BUNDLE_PRICE,
+      discount: matchedPairs * BUNDLE_DISCOUNT,
     };
   }
 
@@ -50,8 +49,7 @@ export function getUpsellInfo(
       type: "add_missing",
       missing: VELVASTRETCH_SLUG,
       missingName: productNames[VELVASTRETCH_SLUG] || "VelvaStretch™",
-      originalTotal,
-      bundleTotal: BUNDLE_PRICE,
+      discount: BUNDLE_DISCOUNT,
     };
   }
 
@@ -61,8 +59,7 @@ export function getUpsellInfo(
       type: "add_missing",
       missing: COLLAGLOW_SLUG,
       missingName: productNames[COLLAGLOW_SLUG] || "CollaGlow™",
-      originalTotal,
-      bundleTotal: BUNDLE_PRICE,
+      discount: BUNDLE_DISCOUNT,
     };
   }
 
