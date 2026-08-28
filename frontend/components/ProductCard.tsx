@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useMemo } from "react";
 import { AddToCartButton } from "./AddToCartButton";
 import { localize } from "@/content/products";
@@ -29,10 +30,12 @@ export function ProductCard({
     return (
       <div className="rounded-2xl bg-white border border-brume p-4 flex gap-4 shadow-soft card-hover">
         <Link href={`/${slug}`} className="shrink-0 w-1/3 max-w-[170px]">
-          <div className="overflow-hidden rounded-xl">
-            <img
+          <div className="overflow-hidden rounded-xl relative">
+            <Image
               src={p.image}
               alt={p.name}
+              fill
+              sizes="(max-width: 768px) 100vw, 170px"
               className="w-full aspect-video object-cover transition-transform duration-300 hover:scale-105"
             />
           </div>
@@ -71,15 +74,17 @@ export function ProductCard({
 
   return (
     <div className="rounded-2xl bg-white border border-brume p-4 flex flex-col shadow-soft card-hover">
-      <Link href={`/${slug}`} className="flex flex-col flex-1">
-        <span className="badge-pill self-start mb-2">{p.badge}</span>
-        <div className="overflow-hidden rounded-xl">
-          <img
-            src={p.image}
-            alt={p.name}
-            className="w-full aspect-square object-cover transition-transform duration-300 hover:scale-105"
-          />
-        </div>
+        <Link href={`/${slug}`} className="flex flex-col flex-1">
+          <span className="badge-pill self-start mb-2">{p.badge}</span>
+          <div className="overflow-hidden rounded-xl relative">
+            <Image
+              src={p.image}
+              alt={p.name}
+              fill
+              sizes="(max-width: 768px) 100vw, 320px"
+              className="w-full aspect-square object-cover transition-transform duration-300 hover:scale-105"
+            />
+          </div>
         <h3 className="font-display text-2xl text-profond mt-3 hover:text-warda">
           {p.name}
         </h3>

@@ -2,6 +2,7 @@ import { getLangServer } from "@/lib/lang-server";
 import { t } from "@/content/ui";
 import { getPageOverride } from "@/lib/store-content";
 import { sanitizeHtml } from "@/lib/safe-html";
+import Image from "next/image";
 
 export default async function PolitiqueRetour({ searchParams }: { searchParams?: { preview?: string } }) {
   const lang = getLangServer();
@@ -128,7 +129,9 @@ export default async function PolitiqueRetour({ searchParams }: { searchParams?:
     <div className="section">
       {ov?.["policy.bannerImage"] && (
         <div className="container-page mb-6">
-          <img src={ov["policy.bannerImage"]} alt="" className="w-full aspect-[21/9] object-cover rounded-3xl" />
+          <div className="relative w-full aspect-[21/9]">
+            <Image src={ov["policy.bannerImage"]} alt="" fill sizes="(max-width: 768px) 100vw, 1000px" className="object-cover rounded-3xl" />
+          </div>
         </div>
       )}
       <div className="container-page max-w-3xl font-body text-brun space-y-6">

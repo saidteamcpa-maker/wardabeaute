@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Section } from "@/components/Section";
 import { TrustBadges } from "@/components/TrustBadges";
 import { TestimonialGrid } from "@/components/TestimonialGrid";
@@ -62,8 +63,8 @@ export async function ProductPage({ slug, preview = false }: { slug: string; pre
             </div>
           </Reveal>
           <Reveal delay={0.15} className="order-first md:order-2">
-            <div className="overflow-hidden rounded-2xl card-hover">
-              <img src={ov?.["pp.heroImage"] || p.image} alt={p.name} className="w-full aspect-[4/5] object-cover" />
+            <div className="overflow-hidden rounded-2xl card-hover relative">
+              <Image src={ov?.["pp.heroImage"] || p.image} alt={p.name} fill sizes="(max-width: 768px) 100vw, 50vw" priority className="w-full aspect-[4/5] object-cover" />
             </div>
           </Reveal>
         </div>

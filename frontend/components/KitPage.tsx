@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Section } from "@/components/Section";
 import { Reveal } from "@/components/ui/Reveal";
 import { FloatingPetals } from "@/components/ui/FloatingPetals";
@@ -75,10 +76,13 @@ export async function KitPage({ preview = false }: { preview?: boolean }) {
           </Reveal>
 
           <Reveal delay={0.15} className="order-first md:order-2">
-            <div className="overflow-hidden rounded-3xl card-hover shadow-lg">
-              <img
+            <div className="overflow-hidden rounded-3xl card-hover shadow-lg relative">
+              <Image
                 src={ov?.["kit.heroImage"] || "/kit-collagene-hero.png"}
                 alt="Kit Collagène Inside & Outside — VelvaStretch™ + CollaGlow™"
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
+                priority
                 className="w-full aspect-[4/5] object-cover"
               />
             </div>

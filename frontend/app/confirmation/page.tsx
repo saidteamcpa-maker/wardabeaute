@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { FaWhatsapp, FaPhoneAlt, FaShieldAlt, FaTruck } from "react-icons/fa";
 import {
@@ -148,7 +149,9 @@ export default function ConfirmationPage() {
         {/* 2. HERO */}
         <div className="text-center mt-8">
             {ov?.[lang]?.["confirm.bannerImage"] && (
-              <img src={ov[lang]["confirm.bannerImage"]} alt="" className="w-full aspect-[21/9] object-cover rounded-3xl mb-6" />
+              <div className="relative w-full aspect-[21/9] mb-6">
+                <Image src={ov[lang]["confirm.bannerImage"]} alt="" fill sizes="(max-width: 768px) 100vw, 700px" className="object-cover rounded-3xl" />
+              </div>
             )}
             <h1 className="font-display text-5xl text-profond mb-2">
               {C("confirm.title", "مرسي", "Merci")} {firstName} ! 🌹
@@ -180,11 +183,13 @@ export default function ConfirmationPage() {
                 null;
               return (
                 <div key={idx} className="flex items-center gap-3 py-3">
-                  <div className="w-14 h-14 rounded-lg overflow-hidden bg-brume shrink-0">
+                  <div className="relative w-14 h-14 rounded-lg overflow-hidden bg-brume shrink-0">
                     {p ? (
-                      <img
+                      <Image
                         src={p.image}
                         alt={it.name}
+                        fill
+                        sizes="56px"
                         className="w-full h-full object-cover"
                       />
                     ) : null}

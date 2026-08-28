@@ -2,6 +2,7 @@ import { Section } from "@/components/Section";
 import { getLangServer } from "@/lib/lang-server";
 import { t } from "@/content/ui";
 import { getPageOverride } from "@/lib/store-content";
+import Image from "next/image";
 
 export default async function NotreHistoirePage({ searchParams }: { searchParams?: { preview?: string } }) {
   const lang = getLangServer();
@@ -12,7 +13,9 @@ export default async function NotreHistoirePage({ searchParams }: { searchParams
       <section className="section">
         <div className="container-page grid md:grid-cols-2 gap-8 items-center">
           {ov?.["story.image"] ? (
-            <img src={ov["story.image"]} alt="Warda Beauté" className="aspect-[3/4] w-full max-w-md rounded-2xl object-cover mx-auto" />
+            <div className="relative aspect-[3/4] w-full max-w-md rounded-2xl mx-auto">
+              <Image src={ov["story.image"]} alt="Warda Beauté" fill sizes="(max-width: 768px) 100vw, 448px" className="object-cover rounded-2xl" priority />
+            </div>
           ) : (
             <div className="aspect-[3/4] w-full max-w-md rounded-2xl bg-brume mx-auto" />
           )}

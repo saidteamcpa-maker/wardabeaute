@@ -1,6 +1,7 @@
 import { ProductCard } from "@/components/ProductCard";
 import { localize } from "@/content/products";
 import Link from "next/link";
+import Image from "next/image";
 import { getLangServer } from "@/lib/lang-server";
 import { getCatalog, getBundleFromCatalog } from "@/lib/catalog";
 import { t } from "@/content/ui";
@@ -17,7 +18,9 @@ export default async function CollectionPage({ searchParams }: { searchParams?: 
     <div className="section">
       {ov?.["collection.bannerImage"] && (
         <div className="container-page mb-6">
-          <img src={ov["collection.bannerImage"]} alt="" className="w-full aspect-[21/9] object-cover rounded-3xl" />
+          <div className="relative w-full aspect-[21/9]">
+            <Image src={ov["collection.bannerImage"]} alt="" fill sizes="(max-width: 768px) 100vw, 1000px" className="object-cover rounded-3xl" />
+          </div>
         </div>
       )}
       <div className="container-page">

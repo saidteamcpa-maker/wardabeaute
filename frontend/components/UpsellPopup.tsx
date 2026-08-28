@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { X } from "lucide-react";
+import Image from "next/image";
 import { useLang } from "@/components/LangProvider";
 import { t } from "@/content/ui";
 import type { UpsellType } from "@/lib/upsell";
@@ -80,10 +81,12 @@ export function UpsellPopup({ info, productName, productImage, preDiscountTotal,
 
           {/* Product image */}
           <div className="flex justify-center mb-3">
-            <div className="w-24 h-24 rounded-2xl overflow-hidden bg-brume shadow-md">
-              <img
+            <div className="relative w-24 h-24 rounded-2xl overflow-hidden bg-brume shadow-md">
+              <Image
                 src={productImage}
                 alt={productName}
+                fill
+                sizes="96px"
                 className="w-full h-full object-cover"
               />
             </div>

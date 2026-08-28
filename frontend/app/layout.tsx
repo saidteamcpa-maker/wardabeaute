@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import dynamicImport from "next/dynamic";
+import { Cormorant_Garamond, DM_Sans, Cairo, Amiri } from "next/font/google";
 import "./globals.css";
 import { StorefrontHeader, StorefrontFooterArea } from "@/components/StorefrontChrome";
 import { MetaPixel } from "@/components/pixels/MetaPixel";
@@ -14,6 +15,11 @@ import { CatalogProvider } from "@/lib/catalog-context";
 import { getEnabledPixels, seedPixelsFromEnv } from "@/lib/pixels";
 
 const PixelDebug = dynamicImport(() => import("@/components/pixels/PixelDebug").then((m) => m.PixelDebug), { ssr: false });
+
+const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["300", "400"], style: ["normal", "italic"], display: "swap", variable: "--font-cormorant" });
+const dmSans = DM_Sans({ subsets: ["latin"], weight: ["300", "400", "500"], display: "swap", variable: "--font-dm-sans" });
+const cairo = Cairo({ subsets: ["arabic"], weight: ["400", "600", "700"], display: "swap", variable: "--font-cairo" });
+const amiri = Amiri({ subsets: ["arabic"], weight: ["400", "700"], display: "swap", variable: "--font-amiri" });
 
 // Render dynamically: catalog/pixels come from the live Postgres DB at request
 // time, so we must not statically prerender (which would query the DB at build).
@@ -69,15 +75,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const tiktokPixels = pixels.filter((p) => p.type === "tiktok");
   const gtmPixels = pixels.filter((p) => p.type === "gtm");
   return (
-    <html lang={lang === "ar" ? "ar-MA" : "fr"} dir={dirFor(lang)}>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Cairo:wght@400;600;700&family=Amiri:wght@400;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang={lang === "ar" ? "ar-MA" : "fr"} dir={dirFor(lang)} className={`${cormorant.variable} ${dmSans.variable} ${cairo.variable} ${amiri.variable}`}>
       <body className="font-body">
         {gtmPixels.map((p) => (
           <GoogleTag key={p.id} id={p.pixelId} scriptId={`gtm-${p.id}`} />

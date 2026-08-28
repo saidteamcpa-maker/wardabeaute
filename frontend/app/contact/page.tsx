@@ -8,6 +8,7 @@ import {
 import { getLangServer } from "@/lib/lang-server";
 import { t } from "@/content/ui";
 import { getPageOverride } from "@/lib/store-content";
+import Image from "next/image";
 
 export default async function ContactPage({ searchParams }: { searchParams?: { preview?: string } }) {
   const lang = getLangServer();
@@ -20,7 +21,9 @@ export default async function ContactPage({ searchParams }: { searchParams?: { p
     <div className="section">
       {ov?.["contact.bannerImage"] && (
         <div className="container-page mb-6">
-          <img src={ov["contact.bannerImage"]} alt="" className="w-full aspect-[21/9] object-cover rounded-3xl" />
+          <div className="relative w-full aspect-[21/9]">
+            <Image src={ov["contact.bannerImage"]} alt="" fill sizes="(max-width: 768px) 100vw, 1000px" className="object-cover rounded-3xl" />
+          </div>
         </div>
       )}
       <div className="container-page max-w-2xl">

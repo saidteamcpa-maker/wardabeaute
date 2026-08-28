@@ -5,6 +5,7 @@ import { unitPrice, localize } from "@/content/products";
 import { useLang } from "@/components/LangProvider";
 import { useCatalog } from "@/lib/catalog-context";
 import { track } from "@/lib/pixels";
+import Image from "next/image";
 
 const COD_MARKERS = [
   "— الدفع عند الاستلام",
@@ -65,9 +66,11 @@ export function StickyCTA({ slug }: { slug: string }) {
     >
       <div className="bg-profond/95 backdrop-blur-md border-t border-white/10 shadow-[0_-10px_30px_rgba(0,0,0,0.28)] px-4 pt-3 pb-3">
         <div className="flex items-center gap-3">
-          <img
+          <Image
             src={p.image}
             alt={p.name}
+            width={48}
+            height={48}
             className="w-12 h-12 rounded-xl object-cover border border-white/10 shrink-0"
           />
             <div className="min-w-0 flex-1 leading-tight">

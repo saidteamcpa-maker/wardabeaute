@@ -4,6 +4,7 @@ import { getLangServer } from "@/lib/lang-server";
 import { getCatalog } from "@/lib/catalog";
 import { t } from "@/content/ui";
 import { getPageOverride } from "@/lib/store-content";
+import Image from "next/image";
 
 export default async function FaqPage({ searchParams }: { searchParams?: { preview?: string } }) {
   const lang = getLangServer();
@@ -15,7 +16,9 @@ export default async function FaqPage({ searchParams }: { searchParams?: { previ
     <div className="section">
       {ov?.["faq.bannerImage"] && (
         <div className="container-page mb-6">
-          <img src={ov["faq.bannerImage"]} alt="" className="w-full aspect-[21/9] object-cover rounded-3xl" />
+          <div className="relative w-full aspect-[21/9]">
+            <Image src={ov["faq.bannerImage"]} alt="" fill sizes="(max-width: 768px) 100vw, 1000px" className="object-cover rounded-3xl" />
+          </div>
         </div>
       )}
       <div className="container-page max-w-3xl">

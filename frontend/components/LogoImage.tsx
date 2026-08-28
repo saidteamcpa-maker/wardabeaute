@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export function LogoImage({
   imageSrc = "/logo.png",
   alt = "Warda Beauté",
@@ -13,7 +15,7 @@ export function LogoImage({
     <div
       className={`relative overflow-hidden rounded-2xl bg-brume card-hover ${containerClassName}`}
     >
-      <img src={imageSrc} alt={alt} className="absolute inset-0 h-full w-full object-cover" />
+      <Image src={imageSrc} alt={alt} fill sizes="(max-width: 768px) 100vw, 50vw" priority className="absolute inset-0 h-full w-full object-cover" />
     </div>
   );
 }
