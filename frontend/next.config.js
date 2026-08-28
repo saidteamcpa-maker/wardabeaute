@@ -2,7 +2,9 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    formats: ["image/avif", "image/webp"],
+    loader: "custom",
+    loaderFile: "./image-loader.js",
+    // Remote (store-content override) images are passed through unchanged by the loader.
     remotePatterns: [{ protocol: "https", hostname: "**" }],
   },
 };
