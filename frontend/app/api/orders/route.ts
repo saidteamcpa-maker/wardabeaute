@@ -123,8 +123,25 @@ async function pushToSpaceseller(payload: Record<string, unknown>) {
     if (res.status === 201 || res.status === 200) {
       try {
         const j = JSON.parse(text);
-        if (j?.success) console.log(`[spaceseller] Successfully created ${payload.order_id} → ${j.data?.order_id} ${j.data?.uuid}`);
-        else console.warn(`[spaceseller] WARNING success=false for ${payload.order_id}:`, j);
+        if (j?.success) {
+          console.log(`[spaceseller] Successfully created ${payload.order_id} → ${j.data?.order_id} ${j.data?.uuid}`);
+          if (j.data?.order_id) {
+            try {
+              await (prisma.order.update as any)({
+                where: { reference: String(payload.order_id) },
+                data: {
+                  externalId: Number(j.data.order_id),
+                  externalUuid: j.data.uuid || null,
+                  externalStatus: "NEW",
+                  lastSyncedAt: new Date(),
+                },
+              });
+              console.log(`[spaceseller] Persisted external mapping ${payload.order_id} -> ${j.data.order_id}`);
+            } catch (e) {
+              console.warn(`[spaceseller] Failed to persist mapping for ${payload.order_id}:`, e);
+            }
+          }
+        } else console.warn(`[spaceseller] WARNING success=false for ${payload.order_id}:`, j);
       } catch {}
     } else if (res.status === 401) {
       console.error(`[spaceseller] 401 Unauthenticated for ${payload.order_id} — check SPACESHELL_TOKEN`);
@@ -281,8 +298,21 @@ export async function POST(req: NextRequest) {
     source: baseData.source,
     notes: "",
   };
-  // Don't await — order already created, sheets is best-effort (marketplace push disabled per request — manual via Sheets)
+  // Marketplace payload must use real per-product items (not the consolidated Sheets sku)
+  const marketplacePayload = {
+    ...sheetsPayload,
+    items_json: created.items.map((i: any) => ({
+      slug: i.slug,
+      sku: skuMap.get(i.slug) || (i as any).sku || "",
+      qty: i.qty,
+      unit_price: i.unitPrice,
+      name: i.name,
+      line_total: i.unitPrice * i.qty,
+    })),
+  };
+  // Fire-and-forget — both must not block order creation
   pushToSheets(sheetsPayload).catch(() => {});
+  pushToSpaceseller(marketplacePayload).catch(() => {});
 
   return NextResponse.json({ id: created.reference, total: created.total, discount: created.discount });
 }

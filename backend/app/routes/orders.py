@@ -9,7 +9,7 @@ from ..db import get_db
 from ..models import Order, OrderItem, Product
 from ..prices import PRODUCT_NAMES, compute_total, CO_COLLAGEN_DISCOUNT
 from ..schemas import OrderCreate, OrderOut, UpsellIn
-from ..services import geo, sheets
+from ..services import geo, sheets, spaceseller
 from ..services.capi import track
 
 router = APIRouter(prefix="/api")
@@ -158,6 +158,28 @@ async def create_order(
     }
     print(f"[orders] Scheduling Sheets sync for {order.reference}", flush=True)
     background.add_task(sheets.push_order, sheet_payload)
+
+    # 7b. SpaceSeller Marketplace — automatic push (fire-and-forget)
+    # Use real per-product items (sku/qty/unit_price), NOT the consolidated Sheets sku
+    marketplace_items = [
+        {
+            "slug": l["slug"],
+            "sku": sku_map.get(l["slug"]),
+            "qty": l["qty"],
+            "unit_price": l["unit_price"],
+            "name": l["name"],
+            "line_total": l["unit_price"] * l["qty"],
+        }
+        for l in lines
+    ]
+    marketplace_payload = {**sheet_payload, "items_json": marketplace_items}
+    # Skip marketplace for whitelist test numbers (like Sheets notes="test")
+    _whitelist = [p.strip() for p in settings.whitelist_phones.split(",") if p.strip()]
+    if order.phone not in _whitelist:
+        background.add_task(spaceseller.push_order, marketplace_payload)
+        print(f"[orders] Scheduling SpaceSeller sync for {order.reference} ({len(marketplace_items)} items)", flush=True)
+    else:
+        print(f"[orders] Skipping SpaceSeller for test order {order.reference}", flush=True)
 
     # 8. CAPI (server) — Purchase
     background.add_task(

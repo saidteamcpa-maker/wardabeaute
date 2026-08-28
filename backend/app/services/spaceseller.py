@@ -194,8 +194,28 @@ async def push_order(order_payload: dict):
                         ext_id = data.get("data", {}).get("order_id")
                         ext_uuid = data.get("data", {}).get("uuid")
                         _log(f"[spaceseller] Successfully created {order_id} → marketplace order_id={ext_id} uuid={ext_uuid}")
-                        # TODO: persist external id mapping to Order.externalId/externalUuid if you add columns
-                        # For now we just log; polling can match via note containing Warda ref.
+                        # Persist external mapping so polling (main.py 5m loop) works automatically
+                        if ext_id:
+                            try:
+                                import datetime
+                                from ..db import SessionLocal
+                                from ..models import Order, OrderActivity
+                                db = SessionLocal()
+                                try:
+                                    order = db.query(Order).filter(Order.reference == order_id).first()
+                                    if order:
+                                        order.external_id = int(ext_id)
+                                        if ext_uuid:
+                                            order.external_uuid = ext_uuid
+                                        order.external_status = "NEW"
+                                        order.last_synced_at = datetime.datetime.utcnow()
+                                        db.add(OrderActivity(order_id=order.id, type="marketplace_auto_create", message=f"Auto-created in marketplace {ext_id}", admin_user="marketplace"))
+                                        db.commit()
+                                        _log(f"[spaceseller] Persisted external mapping {order_id} -> {ext_id}")
+                                finally:
+                                    db.close()
+                            except Exception as e:  # noqa: BLE001
+                                _log(f"[spaceseller] Failed to persist external mapping for {order_id}: {e}")
                     else:
                         _log(f"[spaceseller] WARNING: success=false for {order_id}: {data}")
                 except Exception as e:
