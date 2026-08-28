@@ -30,12 +30,12 @@ function doPost(e) {
       return json({ ok: false, error: "order_not_found" });
     }
     var items=data.items_json||[]; var skus=[]; var totalQty=0;
-    for(var i=0;i<items.length;i++){ skus.push(items[i].sku || items[i].slug || ""); totalQty+=items[i].qty||1; }
+    for(var i=0;i<items.length;i++){ skus.push((items[i].qty||1) + "x" + (items[i].sku || items[i].slug || "")); totalQty+=items[i].qty||1; }
 
     var dateStr=""; if(data.date){ var d=new Date(data.date); dateStr=d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2)+" "+("0"+d.getHours()).slice(-2)+":"+(("0"+d.getMinutes()).slice(-2)); }
     var address=[data.city, data.address].filter(Boolean).join(", ");
     var note=data.order_id||""; if(data.discount) note+=" | Bundle -"+data.discount+" MAD"; if(data.notes) note+=" | "+data.notes;
-    sheet.appendRow([dateStr, data.customer_name||"", data.phone||"", address, skus.join(", "), totalQty, data.total||0, note, ""]);
+    sheet.appendRow([dateStr, data.customer_name||"", data.phone||"", address, skus.join(" / "), totalQty, data.total||0, note, ""]);
     SpreadsheetApp.flush();
     return json({ok:true, id:data.order_id});
   } catch(err){ return json({ok:false, error:String(err)}); }
@@ -78,7 +78,7 @@ Place a test order (or use the whitelist phone `0666666666`). Check your Google 
 | `full_name` | `customer_name` | `Fatima Zahra` |
 | `phone` | `phone` | `0661234567` |
 | `address` | `city` + `address` combined | `Casablanca, 12 rue Allal` |
-| `sku` | Item **SKU** from admin Products `sku` field (fallback to slug) comma-separated | `WVE-001, CGL-001` (or `velvastretch, collaglow` if SKU empty) |
+| `sku` | Per line: `<qty>x<SKU>` from admin Products `sku` field (fallback to slug), joined by ` / ` | `2xWVE-001 / 1xCGL-001` (or `2xvelvastretch / 1xcollaglow` if SKU empty) |
 | `qte` | Sum of all item quantities | `2` |
 | `price` | Final total (after discount) | `549` |
 | `note` | Order ID + discount info | `WB-xxx \| Bundle -49 MAD` |
@@ -112,7 +112,7 @@ payload = {
 
 ## 5. Notes
 - `items_json` is an array of objects: `[{slug, name, qty, unit_price, line_total}]`.
-- The Apps Script extracts `slug` → `sku` column, sums `qty` → `qte` column.
+- The Apps Script formats each line as `<qty>x<sku>` (fallback to `<qty>x<slug>` if SKU empty) and joins them with ` / ` into the `sku` column; it sums `qty` → `qte` column.
 - For upsell, backend sends `{type:"upsell", order_id, total}` → script finds row by order_id in note and updates.
 - Deploy URL is secret; rotate by re-deploying if leaked.
 - Failures are silent — orders always succeed even if Sheets is down.
