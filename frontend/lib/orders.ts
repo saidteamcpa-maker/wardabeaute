@@ -60,8 +60,6 @@ export const CO_COLLAGEN_DISCOUNT = 49;
 export function bundleDiscount(cartSlugs: string[]): number {
   const hasV = cartSlugs.includes("velvastretch");
   const hasC = cartSlugs.includes("collaglow");
-  const hasKit = cartSlugs.includes("kit-collagene");
-  if (hasKit) return 0;
   return hasV && hasC ? CO_COLLAGEN_DISCOUNT : 0;
 }
 
