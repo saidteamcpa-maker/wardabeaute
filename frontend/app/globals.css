@@ -127,8 +127,8 @@ textarea:focus-visible {
 }
 
 @keyframes shimmer {
-   0% { transform: translateX(-100%); }
-   100% { transform: translateX(100%); }
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 @keyframes stickyShift {
@@ -182,7 +182,6 @@ textarea:focus-visible {
     );
     background-size: 200% 100%;
     animation: shimmer 2.8s linear infinite;
-    will-change: transform;
     opacity: 0;
   }
   .btn-glow:hover::after { opacity: 1; }
@@ -213,7 +212,6 @@ textarea:focus-visible {
     background: linear-gradient(110deg, transparent 35%, rgba(255, 255, 255, 0.5) 50%, transparent 65%);
     background-size: 200% 100%;
     animation: shimmer 2.6s linear infinite;
-    will-change: transform;
     pointer-events: none;
   }
   .card-hover {
@@ -256,14 +254,3 @@ html[dir="rtl"] [dir="ltr"] {
 /* Keep numeric/price blocks readable in both directions */
 html[dir="rtl"] .text-right { text-align: left; }
 html[dir="rtl"] .text-left { text-align: right; }
-
-/* ===== Reduced motion: stop non-essential decorative animations ===== */
-@media (prefers-reduced-motion: reduce) {
-  .btn-glow::after,
-  .btn-sticky-cta::after,
-  .animate-float,
-  .animate-marquee,
-  .btn-sticky-cta {
-    animation: none !important;
-  }
-}

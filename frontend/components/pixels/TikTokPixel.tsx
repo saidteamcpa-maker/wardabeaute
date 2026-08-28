@@ -6,7 +6,7 @@ export function TikTokPixel({ id, enabled, scriptId = "tt-pixel" }: { id?: strin
   const finalId = id || process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID;
   if (enabled === false || !finalId) return null;
   return (
-    <Script id={scriptId} strategy="lazyOnload">
+    <Script id={scriptId} strategy="afterInteractive">
       {`
         !function(w,d,t){w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];
         ttq.methods=['page','track','identify','instance','init'];
