@@ -5,7 +5,7 @@ import { eq, and, sql } from 'drizzle-orm';
 import { verifyToken, ADMIN_COOKIE } from '@/lib/auth';
 import { sendWatiMessage } from '@/lib/wati';
 
-const VALID = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'];
+const VALID = ['new','pending','pending_confirmation','confirmed','preparing','shipped','out_for_delivery','delivered','paid','canceled','cancelled','returned'];
 
 export async function PATCH(
   req: NextRequest,

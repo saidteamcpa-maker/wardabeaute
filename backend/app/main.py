@@ -27,7 +27,7 @@ async def _spaceseller_poll_loop():
             # Quick check if any pending orders exist before opening DB
             db = SessionLocal()
             try:
-                terminal = {"delivered", "cancelled", "returned"}
+                terminal = {"canceled", "cancelled", "returned"}
                 # Find up to 20 orders with externalId not terminal and not synced recently
                 import datetime
                 cutoff = datetime.datetime.utcnow() - datetime.timedelta(minutes=5)
@@ -57,10 +57,13 @@ async def _spaceseller_poll_loop():
                         order.status = mapped
                         if mapped == "confirmed":
                             order.confirmation_status = "confirmed"
-                        elif mapped == "cancelled":
+                        elif mapped in ("canceled", "cancelled"):
                             order.confirmation_status = "cancelled"
                             order.payment_status = "unpaid"
                         elif mapped == "delivered":
+                            order.delivery_status = "delivered"
+                            order.payment_status = "paid"
+                        elif mapped == "paid":
                             order.delivery_status = "delivered"
                             order.payment_status = "paid"
                         elif mapped == "returned":
@@ -73,6 +76,8 @@ async def _spaceseller_poll_loop():
                         elif mapped == "preparing":
                             order.delivery_status = "preparing"
                         elif mapped == "pending_confirmation":
+                            order.confirmation_status = "pending_confirmation"
+                        elif mapped == "pending":
                             order.confirmation_status = "pending_confirmation"
                         from .models import OrderActivity
                         db.add(OrderActivity(order_id=order.id, type="marketplace_sync", message=f"Auto-poll {old}→{mapped} ext {order_code}/{delivery_code}", admin_user="marketplace"))

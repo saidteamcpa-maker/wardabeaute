@@ -16,12 +16,15 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 
 const VALID_STATUSES = [
   "new",
+  "pending",
   "pending_confirmation",
   "confirmed",
   "preparing",
   "shipped",
   "out_for_delivery",
   "delivered",
+  "paid",
+  "canceled",
   "cancelled",
   "returned",
 ];
@@ -43,13 +46,17 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   if (body.address !== undefined) data.address = body.address ? String(body.address).slice(0, 300) : null;
   if (body.notes !== undefined) data.notes = body.notes ? String(body.notes).slice(0, 500) : null;
 
-  // Derive linked statuses from the main status for convenience.
+  // Derive linked statuses from the main status for convenience. Leads-faithful.
   if (data.status === "confirmed") data.confirmationStatus = "confirmed";
-  if (data.status === "cancelled") {
+  if (data.status === "canceled" || data.status === "cancelled") {
     data.confirmationStatus = "cancelled";
     data.paymentStatus = "unpaid";
   }
   if (data.status === "delivered") {
+    data.deliveryStatus = "delivered";
+    data.paymentStatus = "paid";
+  }
+  if (data.status === "paid") {
     data.deliveryStatus = "delivered";
     data.paymentStatus = "paid";
   }
@@ -60,6 +67,7 @@ export async function PATCH(req: NextRequest, { params }: { params: { id: string
   if (data.status === "shipped") data.deliveryStatus = "shipped";
   if (data.status === "out_for_delivery") data.deliveryStatus = "out_for_delivery";
   if (data.status === "preparing") data.deliveryStatus = "preparing";
+  if (data.status === "pending") data.confirmationStatus = "pending_confirmation";
 
   const activities: { type: string; message: string; adminUser: string }[] = [];
   if (data.status && data.status !== existing.status) {

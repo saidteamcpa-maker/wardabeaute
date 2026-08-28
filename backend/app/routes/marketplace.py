@@ -12,19 +12,22 @@ from ..services import spaceseller
 
 router = APIRouter()
 
-# Warda internal status ordering for history display
-WARD_ORDER = ["new", "pending_confirmation", "confirmed", "preparing", "shipped", "out_for_delivery", "delivered", "cancelled", "returned"]
+# Warda internal status ordering for history display — leads-faithful (mirrors SpaceSeller order_status)
+WARD_ORDER = ["new", "pending", "pending_confirmation", "confirmed", "preparing", "shipped", "out_for_delivery", "delivered", "paid", "canceled", "cancelled", "returned"]
 
 
 def _apply_status_derivation(order: Order, mapped: str):
-    """Mirror frontend/app/api/admin/orders/[id]/route.ts:47 derivation."""
+    """Mirror frontend/app/api/admin/orders/[id]/route.ts:47 derivation. Leads-faithful: primary status = order_status verbatim."""
     order.status = mapped
     if mapped == "confirmed":
         order.confirmation_status = "confirmed"
-    elif mapped == "cancelled":
+    elif mapped in ("canceled", "cancelled"):
         order.confirmation_status = "cancelled"
         order.payment_status = "unpaid"
     elif mapped == "delivered":
+        order.delivery_status = "delivered"
+        order.payment_status = "paid"
+    elif mapped == "paid":
         order.delivery_status = "delivered"
         order.payment_status = "paid"
     elif mapped == "returned":
@@ -37,6 +40,8 @@ def _apply_status_derivation(order: Order, mapped: str):
     elif mapped == "preparing":
         order.delivery_status = "preparing"
     elif mapped == "pending_confirmation":
+        order.confirmation_status = "pending_confirmation"
+    elif mapped == "pending":
         order.confirmation_status = "pending_confirmation"
 
 
@@ -119,8 +124,8 @@ async def poll_all_pending(db: Session = Depends(get_db)):
     Auto-sync every 5m: polls all orders with externalId set and not in terminal status.
     Called by background task and can be triggered manually from admin.
     """
-    # Terminal statuses that no longer need polling
-    terminal = {"delivered", "cancelled", "returned"}
+    # Terminal statuses that no longer need polling — keep paid with delivered, allow delivered->returned RTO
+    terminal = {"canceled", "cancelled", "returned"}
     # Find orders with externalId that are not terminal and last synced >5m ago or never
     cutoff = datetime.datetime.utcnow() - datetime.timedelta(minutes=5)
     q = db.query(Order).filter(Order.external_id.isnot(None), ~Order.status.in_(list(terminal)))
@@ -163,7 +168,7 @@ async def poll_all_pending(db: Session = Depends(get_db)):
 @router.get("/api/marketplace/pending")
 async def list_pending_for_poll(db: Session = Depends(get_db)):
     """List orders that will be auto-polled (have externalId and not terminal)."""
-    terminal = {"delivered", "cancelled", "returned"}
+    terminal = {"canceled", "cancelled", "returned"}
     orders = db.query(Order).filter(Order.external_id.isnot(None), ~Order.status.in_(list(terminal))).order_by(Order.created_at.desc()).limit(50).all()
     return {"success": True, "data": [{"reference": o.reference, "status": o.status, "externalId": o.external_id, "lastSyncedAt": o.last_synced_at.isoformat() if o.last_synced_at else None} for o in orders]}
 

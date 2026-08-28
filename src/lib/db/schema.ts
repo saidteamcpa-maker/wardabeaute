@@ -10,11 +10,18 @@ import {
 } from 'drizzle-orm/pg-core';
 
 export const orderStatus = pgEnum('order_status', [
+  'new',
   'pending',
+  'pending_confirmation',
   'confirmed',
+  'preparing',
   'shipped',
+  'out_for_delivery',
   'delivered',
+  'paid',
+  'canceled',
   'cancelled',
+  'returned',
 ]);
 
 export type OrderStatus = (typeof orderStatus.enumValues)[number];

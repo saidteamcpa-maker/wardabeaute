@@ -12,7 +12,7 @@ const PRODUCT_NAMES = {
 const NAMES = ["Fatima Zahra", "Yasmine", "Khadija", "Salma", "Imane", "Nour", "Maryam", "Lina", "Sara", "Aya"];
 const CITIES = ["Casablanca", "Rabat", "Marrakech", "Fès", "Agadir", "Tanger", "Oujda", "Meknès"];
 const SOURCES = ["facebook", "instagram", "tiktok", "google", "direct", "snapchat", "youtube", "other"];
-const STATUSES = ["new", "pending_confirmation", "confirmed", "preparing", "shipped", "out_for_delivery", "delivered", "cancelled", "returned"];
+const STATUSES = ["new", "pending", "pending_confirmation", "confirmed", "preparing", "shipped", "out_for_delivery", "delivered", "paid", "canceled", "cancelled", "returned"];
 const SLUGS = Object.keys(PRICES);
 const DEVICES = ["mobile", "mobile", "mobile", "desktop", "tablet"];
 const BROWSERS = ["chrome", "safari", "firefox", "samsung"];
@@ -65,9 +65,9 @@ async function seedOrders() {
         city: rand(CITIES),
         address: "123 rue " + rand(["Mohammed", "Hassan", "Zagora", "Atlas"]),
         status,
-        paymentStatus: status === "delivered" ? "paid" : "unpaid",
-        confirmationStatus: ["confirmed", "preparing", "shipped", "out_for_delivery", "delivered"].includes(status) ? "confirmed" : status === "cancelled" ? "cancelled" : null,
-        deliveryStatus: ["shipped", "out_for_delivery", "delivered"].includes(status) ? status : null,
+        paymentStatus: status === "delivered" || status === "paid" ? "paid" : "unpaid",
+        confirmationStatus: ["confirmed", "preparing", "shipped", "out_for_delivery", "delivered", "paid"].includes(status) ? "confirmed" : status === "canceled" || status === "cancelled" ? "cancelled" : status === "pending" || status === "pending_confirmation" ? "pending_confirmation" : null,
+        deliveryStatus: ["shipped", "out_for_delivery", "delivered", "paid"].includes(status) ? status : null,
         source: rand(SOURCES),
         utmCampaign: Math.random() > 0.5 ? rand(CAMPAIGNS) : null,
         utmMedium: rand(["cpc", "social", "email", null]),

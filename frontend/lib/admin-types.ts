@@ -52,24 +52,30 @@ export interface AdminOrder {
 
 export const STATUS_ORDER = [
   "new",
+  "pending",
   "pending_confirmation",
   "confirmed",
   "preparing",
   "shipped",
   "out_for_delivery",
   "delivered",
+  "paid",
+  "canceled",
   "cancelled",
   "returned",
 ];
 
 export const STATUS_LABELS: Record<string, string> = {
   new: "New",
+  pending: "Pending",
   pending_confirmation: "Awaiting Confirmation",
   confirmed: "Confirmed",
   preparing: "Preparing",
   shipped: "Shipped",
   out_for_delivery: "Out for Delivery",
   delivered: "Delivered",
+  paid: "Paid",
+  canceled: "Canceled",
   cancelled: "Cancelled",
   returned: "Returned",
 };

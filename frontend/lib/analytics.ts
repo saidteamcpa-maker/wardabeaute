@@ -2,8 +2,8 @@ import { prisma } from "@/lib/db";
 
 export type Range = "7d" | "30d" | "90d" | "all";
 
-const ACTIVE = ["confirmed", "preparing", "shipped", "out_for_delivery", "delivered"];
-const LOST = ["cancelled", "returned"];
+const ACTIVE = ["confirmed", "preparing", "shipped", "out_for_delivery", "delivered", "paid"];
+const LOST = ["canceled", "cancelled", "returned"];
 
 function rangeDate(range: Range): Date | null {
   if (range === "all") return null;
@@ -54,7 +54,7 @@ export async function getOverview(range: Range): Promise<Overview> {
       revenuePotential += o.total;
       activeCount += 1;
     }
-    if (o.status === "delivered") {
+    if (o.status === "delivered" || o.status === "paid") {
       revenueCollected += o.total;
       deliveredCount += 1;
     }
@@ -207,7 +207,7 @@ export interface CodFunnel {
 export async function getCodFunnel(range: Range): Promise<CodFunnel> {
   const ov = await getOverview(range);
   const confirmed = ov.statusCounts["confirmed"] ?? 0;
-  const delivered = ov.statusCounts["delivered"] ?? 0;
+  const delivered = (ov.statusCounts["delivered"] ?? 0) + (ov.statusCounts["paid"] ?? 0);
   return {
     pageViews: ov.pageViews,
     addToCarts: ov.addToCarts,
@@ -264,7 +264,7 @@ export async function getAudience(range: Range): Promise<Audience> {
     const cc = byCity.get(c)!;
     cc.orders += 1;
     cc.revenue += o.total;
-    if (o.status === "delivered") cc.delivered += 1;
+    if (o.status === "delivered" || o.status === "paid") cc.delivered += 1;
     if (o.status === "returned") cc.returned += 1;
     if (ACTIVE.includes(o.status)) cc.active += 1;
 

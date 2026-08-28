@@ -34,21 +34,23 @@ CITY_MAP: dict[str, int] = {
     "taza": 15,
 }
 
-# Marketplace -> Warda STATUS_ORDER (9-state)
+# Marketplace -> Warda STATUS_ORDER (leads-faithful, Option A)
+# Primary status mirrors SpaceSeller order_status.code verbatim (lowercased).
 STATUS_MAP_INBOUND: dict[str, str] = {
     "NEW": "new",
-    "PENDING": "pending_confirmation",
+    "PENDING": "pending",
     "PENDING_CONFIRMATION": "pending_confirmation",
     "CONFIRMED": "confirmed",
     "PREPARING": "preparing",
     "SHIPPED": "shipped",
     "OUT_FOR_DELIVERY": "out_for_delivery",
     "DELIVERED": "delivered",
-    "PAID": "delivered",
-    "CANCELED": "cancelled",
+    "PAID": "paid",
+    "CANCELED": "canceled",
     "CANCELLED": "cancelled",
     "RETURNED": "returned",
 }
+# Delivery codes are kept for derived deliveryStatus only; primary status ignores them when order_status is present.
 DELIVERY_MAP_INBOUND: dict[str, str] = {
     "P_UNPACKED": "preparing",
     "P_PACKED": "preparing",
@@ -56,23 +58,27 @@ DELIVERY_MAP_INBOUND: dict[str, str] = {
     "P_SHIPPED": "shipped",
     "P_OUT_FOR_DELIVERY": "out_for_delivery",
     "P_DELIVERED": "delivered",
-    "P_CANCELED": "cancelled",
+    "P_CANCELED": "canceled",
     "P_CANCELLED": "cancelled",
     "P_RETURNED": "returned",
 }
 
 
 def map_to_warda_status(order_code: str | None, delivery_code: str | None) -> str | None:
-    """Prioritize delivery status for granularity, fallback to order status."""
-    if delivery_code:
-        d = DELIVERY_MAP_INBOUND.get(delivery_code.strip().upper())
-        if d:
-            # If order is cancelled/returned, keep that
-            if order_code and order_code.strip().upper() in ("CANCELED", "CANCELLED", "RETURNED"):
-                return STATUS_MAP_INBOUND.get(order_code.strip().upper(), d)
-            return d
+    """Leads-faithful: primary status mirrors order_status.code verbatim (lowercased). Delivery ignored when order present."""
     if order_code:
-        return STATUS_MAP_INBOUND.get(order_code.strip().upper())
+        key = order_code.strip().upper()
+        mapped = STATUS_MAP_INBOUND.get(key)
+        if mapped:
+            return mapped
+        # Fallback: verbatim lowercased for forward-compat with new SpaceSeller codes
+        return order_code.strip().lower()
+    if delivery_code:
+        key = delivery_code.strip().upper()
+        mapped = DELIVERY_MAP_INBOUND.get(key)
+        if mapped:
+            return mapped
+        return delivery_code.strip().lower()
     return None
 
 
