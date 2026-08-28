@@ -32,7 +32,7 @@ export function ProductCard({
             <img
               src={p.image}
               alt={p.name}
-              className="w-full aspect-video object-cover"
+              className="w-full aspect-video object-cover transition-transform duration-300 hover:scale-105"
             />
           </div>
         </Link>
@@ -72,11 +72,11 @@ export function ProductCard({
     <div className="rounded-2xl bg-white border border-brume p-4 flex flex-col shadow-soft card-hover">
       <Link href={`/${slug}`} className="flex flex-col flex-1">
         <span className="badge-pill self-start mb-2">{p.badge}</span>
-        <div className="overflow-hidden rounded-xl card-hover">
+        <div className="overflow-hidden rounded-xl">
           <img
             src={p.image}
             alt={p.name}
-            className="w-full aspect-square object-cover"
+            className="w-full aspect-square object-cover transition-transform duration-300 hover:scale-105"
           />
         </div>
         <h3 className="font-display text-2xl text-profond mt-3 hover:text-warda">

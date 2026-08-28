@@ -57,7 +57,7 @@ export function ComparisonTable({ slug }: { slug: string }) {
     <div className="mt-4">
       <p className="text-sm text-gris italic mb-3">{data.vs}</p>
       <div className="overflow-hidden rounded-2xl border border-brume">
-        <div className="grid grid-cols-3 bg-brume/40 text-profond font-display text-sm">
+        <div className="grid grid-cols-3 bg-brume/40 text-profond font-display text-sm rounded-t-xl">
           <div className="p-3">{t(lang, "cmp.criterion")}</div>
           <div className="p-3 text-warda">Warda Beauté</div>
           <div className="p-3">{t(lang, "cmp.alt")}</div>

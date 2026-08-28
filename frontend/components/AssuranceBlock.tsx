@@ -16,7 +16,7 @@ export function AssuranceBlock() {
 
         <div className="grid md:grid-cols-3 gap-4">
           <Reveal>
-            <div className="rounded-2xl border border-brume p-5 card-hover h-full">
+            <div className="rounded-2xl border border-brume p-5 card-hover h-full transition-shadow duration-200">
               <div className="flex items-center gap-3 mb-2">
                 <IconBadge icon={Stethoscope} tone="warda" size="sm" />
                 <h3 className="font-display text-lg text-profond">{t(lang, "ab.safeTitle")}</h3>
@@ -26,7 +26,7 @@ export function AssuranceBlock() {
           </Reveal>
 
           <Reveal delay={0.08}>
-            <div className="rounded-2xl border border-brume p-5 card-hover h-full">
+            <div className="rounded-2xl border border-brume p-5 card-hover h-full transition-shadow duration-200">
               <div className="flex items-center gap-3 mb-2">
                 <IconBadge icon={BadgeCheck} tone="warda" size="sm" />
                 <h3 className="font-display text-lg text-profond">{t(lang, "ab.halalTitle")}</h3>
@@ -36,7 +36,7 @@ export function AssuranceBlock() {
           </Reveal>
 
           <Reveal delay={0.16}>
-            <div className="rounded-2xl border border-brume p-5 card-hover h-full">
+            <div className="rounded-2xl border border-brume p-5 card-hover h-full transition-shadow duration-200">
               <div className="flex items-center gap-3 mb-2">
                 <IconBadge icon={ShieldCheck} tone="warda" size="sm" />
                 <h3 className="font-display text-lg text-profond">{t(lang, "ab.guaranteeTitle")}</h3>
