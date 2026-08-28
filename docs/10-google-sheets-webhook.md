@@ -78,7 +78,7 @@ Place a test order (or use the whitelist phone `0666666666`). Check your Google 
 | `full_name` | `customer_name` | `Fatima Zahra` |
 | `phone` | `phone` | `0661234567` |
 | `address` | `city` + `address` combined | `Casablanca, 12 rue Allal` |
-| `sku` | Per line: `<qty>x<SKU>` from admin Products `sku` field (fallback to slug), joined by ` / ` | `2xWVE-001 / 1xCGL-001` (or `2xvelvastretch / 1xcollaglow` if SKU empty) |
+| `sku` | Per line: `<qty> x <SKU>` from admin Products `sku` field (fallback to slug), joined by ` / ` | `2 x WVE-001 / 1 x CGL-001` (or `2 x velvastretch / 1 x collaglow` if SKU empty) |
 | `qte` | Sum of all item quantities | `2` |
 | `price` | Final total (after discount) | `549` |
 | `note` | Order ID + discount info | `WB-xxx \| Bundle -49 MAD` |
