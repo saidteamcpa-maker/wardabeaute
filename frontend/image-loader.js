@@ -12,13 +12,13 @@ const MAP = {
   "/header-logo.png": "header-logo",
 };
 
-const WIDTHS = {
+export const WIDTHS = {
   collaglow: [640, 828, 1200, 1254],
   velvastretch: [640, 828, 1200, 1254],
   silkstop: [640, 828, 1200, 1254],
   "kit-collagene-hero": [640, 828, 1200, 1792],
   logo: [640, 828, 1024],
-  "header-logo": [500],
+  "header-logo": [64, 128],
 };
 
 export default function wardaLoader({ src, width }) {

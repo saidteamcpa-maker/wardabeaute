@@ -2,6 +2,7 @@ import sharp from "sharp";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { WIDTHS } from "../image-loader.js";
 
 const root = join(fileURLToPath(import.meta.url), "..", "..");
 const pub = join(root, "public");
@@ -22,11 +23,7 @@ const QUALITY = 80;
 
 for (const [rel, base] of sources) {
   const abs = join(pub, rel);
-  const meta = await sharp(abs).metadata();
-  const srcW = meta.width || 1200;
-  const widths = [640, 828, 1200, 1920]
-    .filter((w) => w <= srcW)
-    .concat(srcW <= 1920 ? [srcW] : []);
+  const widths = WIDTHS[base] || [640, 828, 1200];
   const uniq = [...new Set(widths)].sort((a, b) => a - b);
   for (const w of uniq) {
     const buf = await sharp(abs)

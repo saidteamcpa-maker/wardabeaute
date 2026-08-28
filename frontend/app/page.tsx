@@ -43,7 +43,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { prev
       <section className="section relative overflow-hidden">
         <FloatingPetals />
         <div className="container-page grid md:grid-cols-2 gap-8 items-center relative">
-          <Reveal delay={0.15} className="order-first md:order-2">
+          <Reveal immediate className="order-first md:order-2">
             {ov?.["home.heroImage"] ? (
           <div className="relative overflow-hidden rounded-2xl bg-brume card-hover aspect-[4/5]">
             <Image src={ov["home.heroImage"]} alt="Warda Beauté — Hero" fill sizes="(max-width: 768px) 100vw, 50vw" priority className="absolute inset-0 h-full w-full object-cover" />
@@ -52,7 +52,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { prev
           <LogoImage alt="Warda Beauté — Hero" containerClassName="aspect-[4/5]" />
         )}
           </Reveal>
-          <Reveal className="md:order-1">
+          <Reveal immediate className="md:order-1">
             <div>
               <p className="text-champagne text-sm font-body mb-2">{T("home.heroEyebrow")}</p>
               <h1 className="text-5xl md:text-6xl leading-tight">

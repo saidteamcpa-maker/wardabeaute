@@ -7,12 +7,19 @@ export function Reveal({
   delay = 0,
   y = 28,
   className,
+  immediate = false,
 }: {
   children: React.ReactNode;
   delay?: number;
   y?: number;
   className?: string;
+  immediate?: boolean;
 }) {
+  if (immediate) {
+    // Render immediately (no opacity gate) so LCP/above-the-fold content is
+    // painted in the initial HTML without waiting for hydration/animation.
+    return <div className={className}>{children}</div>;
+  }
   return (
     <motion.div
       className={className}
