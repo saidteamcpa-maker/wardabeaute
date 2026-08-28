@@ -25,6 +25,8 @@ const config: Config = {
       },
       boxShadow: {
         soft: "0 10px 30px -12px rgba(60,33,40,0.25)",
+        drawer: "0 0 40px rgba(60,33,40,0.18)",
+        card: "0 2px 12px rgba(60,33,40,0.08)",
       },
     },
   },

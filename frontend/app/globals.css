@@ -44,12 +44,58 @@ textarea {
   font-size: 16px;
 }
 
+/* Focus-visible for all interactive elements */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  @apply focus-visible:ring-2 focus-visible:ring-warda/30 focus-visible:outline-none;
+}
+
+/* Skeleton loading animation */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+.skeleton {
+  @apply rounded-xl bg-brume/50;
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+
 @layer components {
   .btn-primary {
     @apply inline-flex items-center justify-center rounded-full bg-profond px-7 py-3 font-body font-medium text-white transition hover:brightness-95 min-h-[48px];
   }
   .btn-outline {
     @apply inline-flex items-center justify-center rounded-full border border-warda px-7 py-3 font-body font-medium text-warda transition hover:bg-warda hover:text-white min-h-[48px];
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center p-2 rounded-xl text-gris transition-colors duration-200 hover:text-profond hover:bg-brume/40;
+  }
+  .btn-danger {
+    @apply inline-flex items-center justify-center rounded-full bg-rose-600 px-5 py-2.5 font-body font-medium text-white transition hover:bg-rose-700 min-h-[44px];
+  }
+  .btn-sm {
+    @apply inline-flex items-center justify-center rounded-xl border border-brume px-3 py-2 font-body text-sm transition-colors duration-200 hover:bg-petal/60;
+  }
+  .input-field {
+    @apply rounded-xl border border-brume px-4 py-2.5 font-body text-sm bg-white transition-colors duration-200 focus:border-warda focus:ring-2 focus:ring-warda/20 focus:outline-none;
+  }
+  .admin-card {
+    @apply bg-white rounded-2xl border border-brume p-4 sm:p-5;
+  }
+  .admin-badge {
+    @apply inline-block px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  .table-row {
+    @apply border-b border-brume/60 transition-colors duration-150 hover:bg-petal/40;
+  }
+  .drawer-panel {
+    @apply relative bg-white w-full max-w-[460px] h-full overflow-y-auto p-5 shadow-drawer;
+  }
+  .focus-ring {
+    @apply focus-visible:ring-2 focus-visible:ring-warda/30 focus-visible:outline-none;
   }
   .container-page {
     @apply mx-auto w-full max-w-[1200px] px-4 md:px-8;
