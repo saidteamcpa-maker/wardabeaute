@@ -103,7 +103,7 @@ export default function StorePagesList() {
           <button
             key={f.key}
             onClick={() => setFilter(f.key)}
-            className={`px-3 py-1.5 rounded-full text-sm font-body border ${
+            className={`px-3 py-1.5 rounded-lg text-sm font-body border transition-colors duration-200 ${
               filter === f.key ? "bg-profond text-petal border-profond" : "border-brume text-brun hover:border-warda"
             }`}
           >
@@ -157,7 +157,7 @@ export default function StorePagesList() {
             <input
               value={newSlug}
               onChange={(e) => setNewSlug(e.target.value)}
-              className="rounded-xl border border-brume px-3 py-2 text-sm"
+              className="input-field"
               placeholder="ramadan-offer"
             />
           </div>
@@ -166,7 +166,7 @@ export default function StorePagesList() {
             <input
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
-              className="rounded-xl border border-brume px-3 py-2 text-sm"
+              className="input-field"
               placeholder="Ramadan Offer"
             />
           </div>

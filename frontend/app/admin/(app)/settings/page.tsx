@@ -26,7 +26,7 @@ export default function AdminSettings() {
         <button
           onClick={logout}
           disabled={busy}
-          className="px-4 py-2 rounded-full bg-rose-600 text-white text-sm font-medium disabled:opacity-50"
+          className="btn-danger disabled:opacity-50"
         >
           {busy ? "Logging out…" : "Log out"}
         </button>

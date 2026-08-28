@@ -55,7 +55,7 @@ export default function AdminLogin() {
           onChange={(e) => setUsername(e.target.value)}
           placeholder="Username"
           autoComplete="username"
-          className="w-full rounded-xl border border-brume px-4 py-3 mb-3 font-body"
+          className="w-full input-field mb-3"
         />
         <input
           value={password}
@@ -63,9 +63,9 @@ export default function AdminLogin() {
           type="password"
           placeholder="Password"
           autoComplete="current-password"
-          className="w-full rounded-xl border border-brume px-4 py-3 mb-4 font-body"
+          className="w-full input-field mb-4"
         />
-        {error && <p className="text-red-600 text-sm mb-3 text-center">{error}</p>}
+        {error && <p className="text-rose-600 text-sm mb-3 text-center">{error}</p>}
         <button
           type="submit"
           disabled={loading}

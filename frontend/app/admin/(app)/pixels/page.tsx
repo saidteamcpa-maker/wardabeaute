@@ -238,13 +238,13 @@ export default function AdminPixels() {
                     value={newPixelId}
                     onChange={(e) => setNewPixelId(e.target.value)}
                     placeholder={`Pixel ID (${TYPE_PLACEHOLDERS[group.type]})`}
-                    className="w-full rounded-lg border border-profond/15 px-3 py-2 text-sm outline-none focus:border-warda"
+                    className="w-full input-field"
                   />
                   <input
                     value={newLabel}
                     onChange={(e) => setNewLabel(e.target.value)}
                     placeholder="Label (optional)"
-                    className="w-full rounded-lg border border-profond/15 px-3 py-2 text-sm outline-none focus:border-warda"
+                    className="w-full input-field"
                   />
                   <div className="flex gap-2">
                     <button
