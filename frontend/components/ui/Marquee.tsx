@@ -17,6 +17,7 @@ export function Marquee({
   const trackRef = useRef<HTMLDivElement>(null);
   const copyRef = useRef<HTMLDivElement>(null);
   const offset = useRef(0);
+  const copyWidth = useRef(0);
   const raf = useRef<number | null>(null);
 
   useEffect(() => {
@@ -24,19 +25,23 @@ export function Marquee({
     const copy = copyRef.current;
     if (!track || !copy) return;
 
-    let copyWidth = copy.offsetWidth;
-    const measure = () => {
-      copyWidth = copy.offsetWidth;
-    };
-    window.addEventListener("resize", measure);
+    // Measure with ResizeObserver so we never force a synchronous layout
+    // (avoids the read/write layout thrash flagged by Lighthouse).
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        copyWidth.current = entry.contentRect.width || copy.offsetWidth || 0;
+      }
+    });
+    ro.observe(copy);
 
     let last = performance.now();
     const loop = (now: number) => {
       const dt = now - last;
       last = now;
-      if (copyWidth > 0) {
-        offset.current -= (copyWidth / (speed * 1000)) * dt;
-        if (offset.current <= -copyWidth) offset.current += copyWidth;
+      const w = copyWidth.current;
+      if (w > 0) {
+        offset.current -= (w / (speed * 1000)) * dt;
+        if (offset.current <= -w) offset.current += w;
         track.style.transform = `translate3d(${offset.current}px, 0, 0)`;
       }
       raf.current = requestAnimationFrame(loop);
@@ -44,7 +49,7 @@ export function Marquee({
     raf.current = requestAnimationFrame(loop);
 
     return () => {
-      window.removeEventListener("resize", measure);
+      ro.disconnect();
       if (raf.current) cancelAnimationFrame(raf.current);
     };
   }, [speed, children]);

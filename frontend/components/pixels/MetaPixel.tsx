@@ -6,7 +6,7 @@ export function MetaPixel({ id, enabled, scriptId = "fb-pixel" }: { id?: string;
   const finalId = id || process.env.NEXT_PUBLIC_FB_PIXEL_ID;
   if (enabled === false || !finalId) return null;
   return (
-    <Script id={scriptId} strategy="afterInteractive">
+    <Script id={scriptId} strategy="lazyOnload">
       {`
         !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
         n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
