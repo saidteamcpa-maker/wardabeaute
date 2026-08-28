@@ -150,7 +150,7 @@ export default function AdminProductsEditor() {
           value={search}
           onChange={(e) => { setSearch(e.target.value); load(e.target.value); }}
           placeholder="Search by name or SKU…"
-          className="w-full sm:w-72 rounded-xl border border-brume px-3 py-2 text-sm"
+          className="w-full sm:w-72 input-field"
         />
         <button onClick={openCreate} className="btn-primary ml-auto">+ Add product</button>
       </div>
@@ -224,22 +224,22 @@ export default function AdminProductsEditor() {
           <div className="grid sm:grid-cols-2 gap-3">
             {creating && (
               <label className="text-sm sm:col-span-2">Slug (unique product id, e.g. fitgum-coffee)
-                <input type="text" value={form.slug} onChange={(e) => setField("slug", e.target.value)} className="w-full rounded-xl border border-brume px-3 py-2 mt-1" placeholder="e.g. fitgum-coffee" />
+                <input type="text" value={form.slug} onChange={(e) => setField("slug", e.target.value)} className="w-full input-field mt-1" placeholder="e.g. fitgum-coffee" />
               </label>
             )}
             <label className="text-sm">Price (MAD)
-              <input type="number" value={form.price} onChange={(e) => setField("price", e.target.value)} className="w-full rounded-xl border border-brume px-3 py-2 mt-1" />
+              <input type="number" value={form.price} onChange={(e) => setField("price", e.target.value)} className="w-full input-field mt-1" />
             </label>
             <label className="text-sm">Old price (MAD, optional)
-              <input type="number" value={form.oldPrice} onChange={(e) => setField("oldPrice", e.target.value)} className="w-full rounded-xl border border-brume px-3 py-2 mt-1" />
+              <input type="number" value={form.oldPrice} onChange={(e) => setField("oldPrice", e.target.value)} className="w-full input-field mt-1" />
             </label>
             <label className="text-sm">SKU (optional, unique)
-              <input type="text" autoCapitalize="characters" spellCheck={false} value={form.sku} onChange={(e) => setField("sku", e.target.value)} className="w-full rounded-xl border border-brume px-3 py-2 mt-1 uppercase" placeholder="e.g. WB-VELVA-001" />
+              <input type="text" autoCapitalize="characters" spellCheck={false} value={form.sku} onChange={(e) => setField("sku", e.target.value)} className="w-full input-field mt-1 uppercase" placeholder="e.g. WB-VELVA-001" />
               <span className="block mt-1 text-xs text-gris">A unique identifier used to identify and manage this product.</span>
             </label>
             <label className="text-sm sm:col-span-2">Product image
               <div className="flex items-center gap-3 mt-1">
-                <input value={form.image} onChange={(e) => setField("image", e.target.value)} className="w-full rounded-xl border border-brume px-3 py-2" placeholder="/products/... or URL" />
+                <input value={form.image} onChange={(e) => setField("image", e.target.value)} className="w-full input-field" placeholder="/products/... or URL" />
                 <button
                   type="button"
                   onClick={() => fileRef.current?.click()}
@@ -265,19 +265,19 @@ export default function AdminProductsEditor() {
               />
             </label>
             <label className="text-sm">Badge
-              <input value={form.badge} onChange={(e) => setField("badge", e.target.value)} className="w-full rounded-xl border border-brume px-3 py-2 mt-1" />
+              <input value={form.badge} onChange={(e) => setField("badge", e.target.value)} className="w-full input-field mt-1" />
             </label>
             <label className="text-sm">Stock
-              <input type="number" value={form.stockCount} onChange={(e) => setField("stockCount", e.target.value)} className="w-full rounded-xl border border-brume px-3 py-2 mt-1" />
+              <input type="number" value={form.stockCount} onChange={(e) => setField("stockCount", e.target.value)} className="w-full input-field mt-1" />
             </label>
             <label className="text-sm flex items-center gap-2 mt-6">
               <input type="checkbox" checked={form.active} onChange={(e) => setField("active", e.target.checked)} /> Active (visible on storefront)
             </label>
             <label className="text-sm sm:col-span-2">Offers (JSON format: list of objects with qty / price)
-              <textarea value={form.offers} onChange={(e) => setField("offers", e.target.value)} rows={4} className="w-full rounded-xl border border-brume px-3 py-2 mt-1 font-mono text-xs" />
+              <textarea value={form.offers} onChange={(e) => setField("offers", e.target.value)} rows={4} className="w-full input-field mt-1 font-mono text-xs" />
             </label>
             <label className="text-sm sm:col-span-2">Short description
-              <textarea value={form.shortDescription} onChange={(e) => setField("shortDescription", e.target.value)} rows={2} className="w-full rounded-xl border border-brume px-3 py-2 mt-1" />
+              <textarea value={form.shortDescription} onChange={(e) => setField("shortDescription", e.target.value)} rows={2} className="w-full input-field mt-1" />
             </label>
           </div>
           <div className="mt-4 flex gap-3">

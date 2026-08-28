@@ -54,8 +54,8 @@ export default function AdminAnalytics() {
                   return (
                     <div key={step.key} className="flex items-center gap-3">
                       <div className="w-36 text-sm text-gris shrink-0">{step.label}</div>
-                      <div className="flex-1 h-6 bg-petal/40 rounded">
-                        <div className="h-6 bg-warda rounded" style={{ width: `${pct}%` }} />
+                      <div className="flex-1 h-6 bg-petal/40 rounded-lg overflow-hidden">
+                        <div className="h-6 bg-warda rounded-lg transition-all duration-500" style={{ width: `${pct}%` }} />
                       </div>
                       <div className="w-16 text-right text-sm font-medium text-profond">{formatNumber(val)}</div>
                     </div>

@@ -40,13 +40,13 @@ export default function AdminOverview() {
             <div className="lg:col-span-2">
               <RevenueChart data={data!.series} />
             </div>
-            <div className="bg-white rounded-2xl border border-brume p-4 sm:p-5">
+            <div className="bg-white rounded-2xl border border-brume p-4 sm:p-5 transition-shadow duration-200 hover:shadow-card">
               <h3 className="font-display text-profond mb-3">Statuses</h3>
               <div className="space-y-1.5 text-sm">
                 {Object.entries(ov.statusCounts).map(([k, v]) => (
                   <div key={k} className="flex justify-between">
                     <span className="text-gris">{STATUS_LABELS[k] ?? k}</span>
-                    <span className="font-medium text-profond">{formatNumber(v as number)}</span>
+                    <span className="font-medium text-profond tabular-nums">{formatNumber(v as number)}</span>
                   </div>
                 ))}
                 {Object.keys(ov.statusCounts).length === 0 && <p className="text-gris">No orders.</p>}
