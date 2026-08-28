@@ -102,8 +102,10 @@ async def create_order(
     db.flush()  # get order.id
 
     # 6. Create order items (snapshot product SKU at order time)
+    slugs = [l["slug"] for l in lines]
+    product_map = {p.slug: p for p in db.query(Product).filter(Product.slug.in_(slugs)).all()}
     for line in lines:
-        prod = db.query(Product).filter(Product.slug == line["slug"]).first()
+        prod = product_map.get(line["slug"])
         item = OrderItem(
             order_id=order.id,
             slug=line["slug"],
@@ -118,7 +120,7 @@ async def create_order(
     db.refresh(order)
 
     # 7. Sheets webhook (fire-and-forget) — enrich with SKU from admin panel
-    sku_map = {p.slug: p.sku for p in db.query(Product).filter(Product.slug.in_([l["slug"] for l in lines])).all()}
+    sku_map = {slug: prod.sku for slug, prod in product_map.items()}
     lines_for_sheet = [{**l, "sku": sku_map.get(l["slug"])} for l in lines]
     sheet_payload = {
         "order_id": order.reference,

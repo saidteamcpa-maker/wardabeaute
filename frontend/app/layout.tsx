@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import dynamicImport from "next/dynamic";
 import "./globals.css";
 import { StorefrontHeader, StorefrontFooterArea } from "@/components/StorefrontChrome";
 import { MetaPixel } from "@/components/pixels/MetaPixel";
@@ -11,7 +12,8 @@ import { dirFor } from "@/lib/i18n-shared";
 import { getCatalog } from "@/lib/catalog";
 import { CatalogProvider } from "@/lib/catalog-context";
 import { getEnabledPixels, seedPixelsFromEnv } from "@/lib/pixels";
-import { PixelDebug } from "@/components/pixels/PixelDebug";
+
+const PixelDebug = dynamicImport(() => import("@/components/pixels/PixelDebug").then((m) => m.PixelDebug), { ssr: false });
 
 // Render dynamically: catalog/pixels come from the live Postgres DB at request
 // time, so we must not statically prerender (which would query the DB at build).
@@ -59,9 +61,10 @@ export function generateMetadata(): Metadata {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const lang = getLangServer();
-  const catalog = await getCatalog();
-  await seedPixelsFromEnv();
-  const pixels = await getEnabledPixels();
+  const [catalog, pixels] = await Promise.all([
+    getCatalog(),
+    seedPixelsFromEnv().then(() => getEnabledPixels()),
+  ]);
   const metaPixels = pixels.filter((p) => p.type === "meta");
   const tiktokPixels = pixels.filter((p) => p.type === "tiktok");
   const gtmPixels = pixels.filter((p) => p.type === "gtm");

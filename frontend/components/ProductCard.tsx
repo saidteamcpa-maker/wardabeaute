@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useMemo } from "react";
 import { AddToCartButton } from "./AddToCartButton";
 import { localize } from "@/content/products";
 import { useLang } from "@/components/LangProvider";
@@ -16,13 +17,13 @@ export function ProductCard({
 }) {
   const { lang } = useLang();
   const catalog = useCatalog();
-  const p = localize(catalog[slug], lang);
+  const p = useMemo(() => localize(catalog[slug], lang), [catalog, slug, lang]);
 
-  const delivery = (
+  const delivery = useMemo(() => (
     <p className="text-center text-xs text-gris mt-2 flex items-center justify-center gap-1">
       <span>🚚</span> {t(lang, "paymentCOD")} · {t(lang, "freeShipping")}
     </p>
-  );
+  ), [lang]);
 
   if (horizontal) {
     return (

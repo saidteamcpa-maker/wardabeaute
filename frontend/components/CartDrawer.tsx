@@ -13,11 +13,12 @@ export function CartDrawer() {
   const { lang } = useLang();
   const catalog = useCatalog();
   const { items, isCartOpen, closeCart, openCheckout, remove } = useCart();
+
+  if (!isCartOpen) return null;
+
   const validItems = items.filter((i) => i && typeof i.slug === "string" && !!catalog[i.slug]);
   const subtotal = validItems.reduce((s, i) => s + unitPrice(i.slug, i.qty, catalog), 0);
   const cross = Object.keys(catalog).filter((s) => !validItems.find((i) => i.slug === s)).slice(0, 3);
-
-  if (!isCartOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
