@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useAnalytics } from "@/lib/useAnalytics";
 import { RangeSelector } from "@/components/admin/RangeSelector";
-import { KpiCard } from "@/components/admin/KpiCard";
+import { KpiCard, KpiSkeleton } from "@/components/admin/KpiCard";
 import { RevenueChart } from "@/components/admin/Charts";
 import { ProductTable } from "@/components/admin/ProductTable";
 import { formatMAD, formatPct, formatNumber } from "@/lib/format";
@@ -21,7 +21,13 @@ export default function AdminOverview() {
         <RangeSelector value={range} onChange={setRange} />
       </div>
 
-      {loading && <p className="text-gris">Loading…</p>}
+      {loading && (
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <KpiSkeleton key={i} />
+          ))}
+        </div>
+      )}
 
       {ov && (
         <>

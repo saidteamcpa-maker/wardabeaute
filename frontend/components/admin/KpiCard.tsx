@@ -17,3 +17,12 @@ export function KpiCard({
     </div>
   );
 }
+
+export function KpiSkeleton() {
+  return (
+    <div className="bg-white rounded-2xl border border-brume p-4 sm:p-5">
+      <div className="skeleton h-3 w-20 rounded mb-2" />
+      <div className="skeleton h-7 w-16 rounded" />
+    </div>
+  );
+}
