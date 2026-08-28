@@ -1,18 +1,14 @@
 /**
  * Bundle upsell logic for the "Kit Collagène Inside & Outside" promotion.
  *
- * The 49 MAD discount applies ONLY to the CollaGlow + VelvaStretch
- * individual-product combination. The existing kit-collagene product
- * is NOT eligible.
- *
- * All business logic is centralized here — never hardcoded in components.
+ * The 49 MAD discount applies when the cart contains BOTH CollaGlow and
+ * VelvaStretch — even if kit-collagene or SilkStop are also present.
  */
 
 export const BUNDLE_DISCOUNT = 49;
 export const BUNDLE_PRICE = 549; // 319 + 279 - 49
 export const COLLAGLOW_SLUG = "collaglow";
 export const VELVASTRETCH_SLUG = "velvastretch";
-export const KIT_SLUG = "kit-collagene";
 
 export type UpsellType =
   | { eligible: false }
@@ -34,15 +30,11 @@ export function getUpsellInfo(
 ): UpsellType {
   const hasV = cartSlugs.includes(VELVASTRETCH_SLUG);
   const hasC = cartSlugs.includes(COLLAGLOW_SLUG);
-  const hasKit = cartSlugs.includes(KIT_SLUG);
 
-  // Condition 4 & 5: neither product, or has Kit → no popup
-  if (hasKit) return { eligible: false };
   if (!hasV && !hasC) return { eligible: false };
 
-  const originalTotal = 319 + 279; // CollaGlow + VelvaStretch without discount
+  const originalTotal = 319 + 279;
 
-  // Condition 3: already has both → communicate savings
   if (hasV && hasC) {
     return {
       eligible: true,
@@ -52,7 +44,6 @@ export function getUpsellInfo(
     };
   }
 
-  // Condition 1: has CollaGlow only → propose VelvaStretch
   if (hasC && !hasV) {
     return {
       eligible: true,
@@ -64,7 +55,6 @@ export function getUpsellInfo(
     };
   }
 
-  // Condition 2: has VelvaStretch only → propose CollaGlow
   if (hasV && !hasC) {
     return {
       eligible: true,
