@@ -265,8 +265,8 @@ export async function POST(req: NextRequest) {
     postal: created.postal || "",
       items_json: (() => {
         const sheetSku = created.items
-          .map((i: any) => `${(i.qty || 1)} x ${(skuMap.get(i.slug) || (i as any).sku || "")}`)
-          .join(" / ");
+          .map((i: any) => `${(skuMap.get(i.slug) || (i as any).sku || "")}-x${(i.qty || 1)}`)
+          .join("+");
         const totalQty = created.items.reduce((s: number, i: any) => s + (i.qty || 1), 0);
         return [{ slug: "", sku: sheetSku, sku_sheet: sheetSku, qty: totalQty, name: "", unit_price: total }];
       })(),

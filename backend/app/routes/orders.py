@@ -124,8 +124,8 @@ async def create_order(
     # Format the Sheets "sku" column repo-side as "<qty>x<SKU>" per item, joined by
     # " / " (e.g. "2xWVE-001 / 1xCGL-001"), and send it as a single consolidated item.
     # This makes the live Apps Script output the correct value without a redeploy.
-    sheet_sku = " / ".join(
-        f"{(l.get('qty') or 1)} x {(sku_map.get(l['slug']) or '')}" for l in lines
+    sheet_sku = "+".join(
+        f"{(sku_map.get(l['slug']) or '')}-x{(l.get('qty') or 1)}" for l in lines
     )
     total_qty = sum((l.get('qty') or 1) for l in lines)
     items_for_sheet = [{
