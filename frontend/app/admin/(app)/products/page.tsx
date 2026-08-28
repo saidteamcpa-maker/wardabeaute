@@ -234,7 +234,7 @@ export default function AdminProductsEditor() {
               <input type="number" value={form.oldPrice} onChange={(e) => setField("oldPrice", e.target.value)} className="w-full input-field mt-1" />
             </label>
             <label className="text-sm">SKU (optional, unique)
-              <input type="text" autoCapitalize="characters" spellCheck={false} value={form.sku} onChange={(e) => setField("sku", e.target.value)} className="w-full input-field mt-1 uppercase" placeholder="e.g. WB-VELVA-001" />
+              <input type="text" autoCapitalize="none" spellCheck={false} value={form.sku} onChange={(e) => setField("sku", e.target.value)} className="w-full input-field mt-1" placeholder="e.g. wb-velva-001" />
               <span className="block mt-1 text-xs text-gris">A unique identifier used to identify and manage this product.</span>
             </label>
             <label className="text-sm sm:col-span-2">Product image
