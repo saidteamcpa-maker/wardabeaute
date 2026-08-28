@@ -263,15 +263,13 @@ export async function POST(req: NextRequest) {
     city: created.city,
     address: created.address || "",
     postal: created.postal || "",
-      items_json: created.items.map((i: any) => ({
-        slug: i.slug,
-        sku: (i as any).sku || skuMap.get(i.slug) || null,
-        sku_sheet: `${(i.qty || 1)}x${(skuMap.get(i.slug) || (i as any).sku || "")}`,
-        name: i.name,
-        qty: i.qty,
-        unit_price: i.unitPrice,
-        line_total: i.unitPrice * i.qty,
-      })),
+      items_json: (() => {
+        const sheetSku = created.items
+          .map((i: any) => `${(i.qty || 1)}x${(skuMap.get(i.slug) || (i as any).sku || "")}`)
+          .join(" / ");
+        const totalQty = created.items.reduce((s: number, i: any) => s + (i.qty || 1), 0);
+        return [{ slug: "", sku: sheetSku, sku_sheet: sheetSku, qty: totalQty, name: "", unit_price: total }];
+      })(),
     subtotal: total,
     discount: kitDiscount,
     upsell: 0,

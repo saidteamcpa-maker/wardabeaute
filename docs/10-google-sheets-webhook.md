@@ -30,7 +30,7 @@ function doPost(e) {
       return json({ ok: false, error: "order_not_found" });
     }
     var items=data.items_json||[]; var skus=[]; var totalQty=0;
-    for(var i=0;i<items.length;i++){ skus.push(items[i].sku_sheet || ((items[i].qty||1) + "x" + (items[i].sku || items[i].slug || ""))); totalQty+=items[i].qty||1; }
+    for(var i=0;i<items.length;i++){ skus.push(items[i].sku || items[i].slug || ""); totalQty+=items[i].qty||1; }
 
     var dateStr=""; if(data.date){ var d=new Date(data.date); dateStr=d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2)+" "+("0"+d.getHours()).slice(-2)+":"+(("0"+d.getMinutes()).slice(-2)); }
     var address=[data.city, data.address].filter(Boolean).join(", ");
@@ -111,8 +111,7 @@ payload = {
 ```
 
 ## 5. Notes
-- `items_json` is an array of objects: `[{slug, name, qty, unit_price, line_total}]`.
-- The Apps Script formats each line as `<qty>x<sku>` (fallback to `<qty>x<slug>` if SKU empty) and joins them with ` / ` into the `sku` column; it sums `qty` → `qte` column.
+- `items_json` is normally a **single consolidated object** whose `sku` is already formatted repo-side as `<qty>x<SKU>` joined by ` / ` (e.g. `2xWVE-001 / 1xCGL-001`), and `qty` is the total quantity. The Apps Script writes `items[i].sku` straight into the `sku` column and sums `qty` → `qte` column. (If you prefer per-line items, send `[{slug, sku, qty, ...}]` and the script falls back to formatting each line — but the consolidated form is what the backend/frontend currently send so no Apps Script redeploy is required.)
 - For upsell, backend sends `{type:"upsell", order_id, total}` → script finds row by order_id in note and updates.
 - Deploy URL is secret; rotate by re-deploying if leaked.
 - Failures are silent — orders always succeed even if Sheets is down.

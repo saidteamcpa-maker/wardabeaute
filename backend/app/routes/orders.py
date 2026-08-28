@@ -121,14 +121,21 @@ async def create_order(
 
     # 7. Sheets webhook (fire-and-forget) — enrich with SKU from admin panel
     sku_map = {slug: prod.sku for slug, prod in product_map.items()}
-    lines_for_sheet = [
-        {
-            **l,
-            "sku": sku_map.get(l["slug"]),
-            "sku_sheet": f"{(l.get('qty') or 1)}x{sku_map.get(l['slug']) or ''}",
-        }
-        for l in lines
-    ]
+    # Format the Sheets "sku" column repo-side as "<qty>x<SKU>" per item, joined by
+    # " / " (e.g. "2xWVE-001 / 1xCGL-001"), and send it as a single consolidated item.
+    # This makes the live Apps Script output the correct value without a redeploy.
+    sheet_sku = " / ".join(
+        f"{(l.get('qty') or 1)}x{(sku_map.get(l['slug']) or '')}" for l in lines
+    )
+    total_qty = sum((l.get('qty') or 1) for l in lines)
+    items_for_sheet = [{
+        "slug": "",
+        "sku": sheet_sku,
+        "sku_sheet": sheet_sku,
+        "qty": total_qty,
+        "name": "",
+        "unit_price": total,
+    }]
     sheet_payload = {
         "order_id": order.reference,
         "date": order.created_at.isoformat(),
@@ -137,7 +144,7 @@ async def create_order(
         "city": order.city,
         "address": order.address or "",
         "postal": order.postal or "",
-        "items_json": lines_for_sheet,
+        "items_json": items_for_sheet,
         "subtotal": subtotal,
         "discount": discount,
         "upsell": 0,
