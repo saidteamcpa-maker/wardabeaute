@@ -20,13 +20,13 @@ html {
 body {
   background: var(--petal);
   color: var(--brun);
-  font-family: "DM Sans", system-ui, sans-serif;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
   line-height: 1.75;
 }
 
 h1,
 h2 {
-  font-family: "Cormorant Garamond", Georgia, serif;
+  font-family: var(--font-cormorant), Georgia, serif;
   font-weight: 300;
 }
 
@@ -230,13 +230,13 @@ textarea:focus-visible {
 
 /* ===== RTL (Arabic / Darija) ===== */
 html[dir="rtl"] body {
-  font-family: "Cairo", "Amiri", system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: var(--font-cairo), var(--font-amiri), system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 html[dir="rtl"] .font-display {
-  font-family: "Cairo", "Playfair Display", Georgia, serif;
+  font-family: var(--font-cairo), "Playfair Display", Georgia, serif;
 }
 html[dir="rtl"] .font-arabic {
-  font-family: "Amiri", "Cairo", serif;
+  font-family: var(--font-amiri), var(--font-cairo), serif;
 }
 /* Flip the fixed WhatsApp bubble to the inline-start side */
 html[dir="rtl"] .fixed.left-4 {

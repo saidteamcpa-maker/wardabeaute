@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -227,8 +228,8 @@ export function CheckoutPopup() {
                   if (!p) return null;
                   return (
                     <div key={i.slug} className="flex items-center gap-3 py-1">
-                      <div className="w-12 h-12 rounded-lg overflow-hidden bg-brume shrink-0">
-                        <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
+                      <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-brume shrink-0">
+                        <Image src={p.image} alt={p.name} fill sizes="48px" className="w-full h-full object-cover" />
                       </div>
                       <span className="flex-1">
                         {p.name} × {i.qty}

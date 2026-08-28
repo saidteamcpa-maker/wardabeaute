@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ProductCard } from "@/components/ProductCard";
 import { TrustBadges } from "@/components/TrustBadges";
 import { Section } from "@/components/Section";
@@ -45,7 +46,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { prev
           <Reveal delay={0.15} className="order-first md:order-2">
             {ov?.["home.heroImage"] ? (
           <div className="relative overflow-hidden rounded-2xl bg-brume card-hover aspect-[4/5]">
-            <img src={ov["home.heroImage"]} alt="Warda Beauté — Hero" className="absolute inset-0 h-full w-full object-cover" />
+            <Image src={ov["home.heroImage"]} alt="Warda Beauté — Hero" fill sizes="100vw" className="absolute inset-0 h-full w-full object-cover" priority />
           </div>
         ) : (
           <LogoImage alt="Warda Beauté — Hero" containerClassName="aspect-[4/5]" />
@@ -54,7 +55,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { prev
           <Reveal className="md:order-1">
             <div>
               <p className="text-champagne text-sm font-body mb-2">{T("home.heroEyebrow")}</p>
-              <h1 className="text-5xl md:text-6xl leading-tight">
+              <h1 className="text-5xl md:text-6xl leading-tight text-gradient">
                 {T("home.heroH1")}
               </h1>
               {lang === "ar" && <p className="font-arabic text-2xl text-warda mt-3">{T("home.heroAr")}</p>}
@@ -143,10 +144,12 @@ export default async function HomePage({ searchParams }: { searchParams?: { prev
           <div className="container-page text-center">
             <h2 className="text-4xl text-profond mb-2">{T("home.bundleTitle")}</h2>
             <p className="font-body text-brun mb-4">{T("home.bundleSub")}</p>
-            <Link href="/kit-collagene" className="block max-w-md mx-auto mb-6 overflow-hidden rounded-3xl card-hover shadow-lg">
-              <img
+            <Link href="/kit-collagene" className="relative block max-w-md mx-auto mb-6 overflow-hidden rounded-3xl card-hover shadow-lg">
+              <Image
                 src={ov?.["home.bundleImage"] || "/kit-collagene-hero.png"}
                 alt="Kit Collagène Inside & Outside — VelvaStretch™ + CollaGlow™"
+                fill
+                sizes="(max-width: 768px) 100vw, 50vw"
                 className="w-full aspect-[4/5] object-cover"
               />
             </Link>

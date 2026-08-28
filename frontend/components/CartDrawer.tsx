@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Trash2, X } from "lucide-react";
+import { useMemo } from "react";
 import { useCart } from "@/lib/cart";
 import { unitPrice, localize } from "@/content/products";
 import { useLang } from "@/components/LangProvider";
@@ -13,11 +15,12 @@ export function CartDrawer() {
   const { lang } = useLang();
   const catalog = useCatalog();
   const { items, isCartOpen, closeCart, openCheckout, remove } = useCart();
+
+  if (!isCartOpen) return null;
+
   const validItems = items.filter((i) => i && typeof i.slug === "string" && !!catalog[i.slug]);
   const subtotal = validItems.reduce((s, i) => s + unitPrice(i.slug, i.qty, catalog), 0);
   const cross = Object.keys(catalog).filter((s) => !validItems.find((i) => i.slug === s)).slice(0, 3);
-
-  if (!isCartOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
@@ -37,8 +40,8 @@ export function CartDrawer() {
           if (!p) return null;
           return (
             <div key={i.slug} className="flex gap-3 border-b border-brume py-3 transition-colors duration-150 hover:bg-petal/30 rounded-lg">
-              <div className="w-16 h-16 rounded-xl overflow-hidden bg-brume shrink-0">
-                <img src={p.image} alt={p.name} className="w-full h-full object-cover" />
+              <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-brume shrink-0">
+                <Image src={p.image} alt={p.name} fill sizes="64px" className="w-full h-full object-cover" />
               </div>
               <div className="flex-1">
                 <p className="font-body font-medium text-profond">{p.name}</p>
@@ -60,8 +63,8 @@ export function CartDrawer() {
               <div className="grid grid-cols-3 gap-2">
                 {cross.map((s) => (
                   <Link key={s} href={`/${s}`} onClick={closeCart} className="rounded-xl border border-brume p-2 text-center text-xs font-body text-brun hover:border-warda transition-colors duration-200">
-                    <div className="w-full aspect-square rounded-lg overflow-hidden bg-brume mb-1">
-                      <img src={catalog[s].image} alt={catalog[s].name} className="w-full h-full object-cover" />
+                    <div className="relative w-full aspect-square rounded-lg overflow-hidden bg-brume mb-1">
+                      <Image src={catalog[s].image} alt={catalog[s].name} fill sizes="64px" className="w-full h-full object-cover" />
                     </div>
                     {catalog[s].name}
                     <div className="text-profond font-medium">{catalog[s].price} MAD</div>

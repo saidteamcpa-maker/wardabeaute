@@ -1,9 +1,12 @@
 import asyncio
+import datetime
 import uuid
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+
+from sqlalchemy import or_
 
 from .config import settings
 from .db import Base, SessionLocal, engine
@@ -28,18 +31,34 @@ async def _spaceseller_poll_loop():
             db = SessionLocal()
             try:
                 terminal = {"delivered", "cancelled", "returned"}
-                # Find up to 20 orders with externalId not terminal and not synced recently
-                import datetime
                 cutoff = datetime.datetime.utcnow() - datetime.timedelta(minutes=5)
-                q = db.query(Order).filter(Order.external_id.isnot(None), ~Order.status.in_(list(terminal)))
-                pending = [o for o in q.all() if o.last_synced_at is None or o.last_synced_at < cutoff][:20]
+                pending = db.query(Order).filter(
+                    Order.external_id.isnot(None),
+                    ~Order.status.in_(list(terminal)),
+                    or_(Order.last_synced_at.is_(None), Order.last_synced_at < cutoff),
+                ).limit(20).all()
                 if not pending:
                     db.close()
                     await asyncio.sleep(300)
                     continue
-                # Poll each
-                for order in pending:
-                    ext = await ss.fetch_order_status(int(order.external_id))
+
+                async def _fetch_one(order):
+                    try:
+                        return order, await asyncio.wait_for(
+                            ss.fetch_order_status(int(order.external_id)), timeout=15
+                        )
+                    except (asyncio.TimeoutError, Exception):
+                        return order, None
+
+                sem = asyncio.Semaphore(5)
+
+                async def _limited(order):
+                    async with sem:
+                        return await _fetch_one(order)
+
+                results = await asyncio.gather(*[_limited(o) for o in pending])
+
+                for order, ext in results:
                     if not ext:
                         continue
                     order_code = (ext.get("order_status") or {}).get("code")

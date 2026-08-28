@@ -16,5 +16,7 @@ export async function GET() {
     reviews: p.reviews,
     active: p.active,
   }));
-  return NextResponse.json(data);
+  const response = NextResponse.json(data);
+  response.headers.set("Cache-Control", "public, s-maxage=60, stale-while-revalidate=300");
+  return response;
 }
