@@ -121,7 +121,14 @@ async def create_order(
 
     # 7. Sheets webhook (fire-and-forget) — enrich with SKU from admin panel
     sku_map = {slug: prod.sku for slug, prod in product_map.items()}
-    lines_for_sheet = [{**l, "sku": sku_map.get(l["slug"])} for l in lines]
+    lines_for_sheet = [
+        {
+            **l,
+            "sku": sku_map.get(l["slug"]),
+            "sku_sheet": f"{(l.get('qty') or 1)}x{sku_map.get(l['slug']) or ''}",
+        }
+        for l in lines
+    ]
     sheet_payload = {
         "order_id": order.reference,
         "date": order.created_at.isoformat(),

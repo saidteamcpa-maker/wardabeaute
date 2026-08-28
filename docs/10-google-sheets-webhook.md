@@ -30,7 +30,7 @@ function doPost(e) {
       return json({ ok: false, error: "order_not_found" });
     }
     var items=data.items_json||[]; var skus=[]; var totalQty=0;
-    for(var i=0;i<items.length;i++){ skus.push((items[i].qty||1) + "x" + (items[i].sku || items[i].slug || "")); totalQty+=items[i].qty||1; }
+    for(var i=0;i<items.length;i++){ skus.push(items[i].sku_sheet || ((items[i].qty||1) + "x" + (items[i].sku || items[i].slug || ""))); totalQty+=items[i].qty||1; }
 
     var dateStr=""; if(data.date){ var d=new Date(data.date); dateStr=d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2)+" "+("0"+d.getHours()).slice(-2)+":"+(("0"+d.getMinutes()).slice(-2)); }
     var address=[data.city, data.address].filter(Boolean).join(", ");
