@@ -1,5 +1,4 @@
 import { cn } from "@/lib/cn";
-import Image from "next/image";
 import { Reveal } from "./ui/Reveal";
 
 // Text + image section. Desktop alternates sides; mobile always image-top.
@@ -27,7 +26,7 @@ export function Section({
           <div className={cn(imageSide === "right" ? "md:order-2" : "md:order-1")}>
             {imageSrc ? (
               <div className="relative overflow-hidden rounded-2xl aspect-[4/5] bg-brume card-hover">
-                <Image src={imageSrc} alt={imageLabel} fill sizes="(max-width: 768px) 100vw, 50vw" className="absolute inset-0 h-full w-full object-cover" />
+                <img src={imageSrc} alt={imageLabel} className="absolute inset-0 h-full w-full object-cover" />
               </div>
             ) : (
               <div className="rounded-2xl bg-gradient-to-br from-brume via-petal to-warda/30 aspect-[4/5] flex items-center justify-center text-center font-display text-2xl text-brun/70 px-6 card-hover">

@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { DEFAULT_LANG, getLangClient, setLangCookie, type Lang } from "@/lib/lang-client";
 
@@ -30,15 +30,13 @@ export function LangProvider({
     document.body.classList.toggle("lang-ar", lang === "ar");
   }, [lang]);
 
-  const setLang = useCallback((l: Lang) => {
+  const setLang = (l: Lang) => {
     setLangCookie(l);
     setLangState(l);
     router.refresh();
-  }, [router]);
+  };
 
-  const value = useMemo(() => ({ lang, setLang }), [lang, setLang]);
-
-  return <LangContext.Provider value={value}>{children}</LangContext.Provider>;
+  return <LangContext.Provider value={{ lang, setLang }}>{children}</LangContext.Provider>;
 }
 
 export function useLang() {

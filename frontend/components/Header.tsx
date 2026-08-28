@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { useEffect, useState, type ComponentType } from "react";
 import { createPortal } from "react-dom";
 import { ShoppingCart, Menu, X, ChevronDown } from "lucide-react";
@@ -84,7 +83,7 @@ export function Header() {
           style={{ fontFamily: '"Cairo", "Playfair Display", Georgia, serif' }}
           className="order-2 mx-auto flex items-center gap-2 font-display text-2xl text-profond"
         >
-          <Image src={logoUrl || "/header-logo.png"} alt="Warda Beauté" width={120} height={40} className="w-7 h-7 object-contain" />
+          <img src={logoUrl || "/header-logo.png"} alt="Warda Beauté" className="w-7 h-7 object-contain" />
           Warda Beauté
         </Link>
 

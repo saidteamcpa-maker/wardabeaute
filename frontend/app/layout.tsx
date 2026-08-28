@@ -1,6 +1,4 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, DM_Sans, Cairo, Amiri } from "next/font/google";
-import dynamicImport from "next/dynamic";
 import "./globals.css";
 import { StorefrontHeader, StorefrontFooterArea } from "@/components/StorefrontChrome";
 import { MetaPixel } from "@/components/pixels/MetaPixel";
@@ -13,34 +11,7 @@ import { dirFor } from "@/lib/i18n-shared";
 import { getCatalog } from "@/lib/catalog";
 import { CatalogProvider } from "@/lib/catalog-context";
 import { getEnabledPixels, seedPixelsFromEnv } from "@/lib/pixels";
-
-const PixelDebug = dynamicImport(() => import("@/components/pixels/PixelDebug").then((m) => m.PixelDebug), { ssr: false });
-
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["300", "400"],
-  style: ["normal", "italic"],
-  display: "swap",
-  variable: "--font-cormorant",
-});
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  weight: ["300", "400", "500"],
-  display: "swap",
-  variable: "--font-dm-sans",
-});
-const cairo = Cairo({
-  subsets: ["arabic"],
-  weight: ["400", "600", "700"],
-  display: "swap",
-  variable: "--font-cairo",
-});
-const amiri = Amiri({
-  subsets: ["arabic"],
-  weight: ["400", "700"],
-  display: "swap",
-  variable: "--font-amiri",
-});
+import { PixelDebug } from "@/components/pixels/PixelDebug";
 
 // Render dynamically: catalog/pixels come from the live Postgres DB at request
 // time, so we must not statically prerender (which would query the DB at build).
@@ -88,15 +59,22 @@ export function generateMetadata(): Metadata {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const lang = getLangServer();
-  const [catalog, pixels] = await Promise.all([
-    getCatalog(),
-    seedPixelsFromEnv().then(() => getEnabledPixels()),
-  ]);
+  const catalog = await getCatalog();
+  await seedPixelsFromEnv();
+  const pixels = await getEnabledPixels();
   const metaPixels = pixels.filter((p) => p.type === "meta");
   const tiktokPixels = pixels.filter((p) => p.type === "tiktok");
   const gtmPixels = pixels.filter((p) => p.type === "gtm");
   return (
-    <html lang={lang === "ar" ? "ar-MA" : "fr"} dir={dirFor(lang)} className={`${cormorant.variable} ${dmSans.variable} ${cairo.variable} ${amiri.variable}`}>
+    <html lang={lang === "ar" ? "ar-MA" : "fr"} dir={dirFor(lang)}>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Cairo:wght@400;600;700&family=Amiri:wght@400;700&display=swap"
+          rel="stylesheet"
+        />
+      </head>
       <body className="font-body">
         {gtmPixels.map((p) => (
           <GoogleTag key={p.id} id={p.pixelId} scriptId={`gtm-${p.id}`} />
