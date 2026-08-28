@@ -77,16 +77,16 @@ export function Footer() {
             {(social.instagram || social.facebook || social.tiktok || social.whatsapp) && (
               <div className="flex gap-4 mt-3 text-petal/80">
                 {social.whatsapp && (
-                  <a href={`https://wa.me/${social.whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer" className="hover:text-warda" aria-label="WhatsApp">💬</a>
+                  <a href={`https://wa.me/${social.whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer" className="hover:text-warda transition-colors duration-200" aria-label="WhatsApp">💬</a>
                 )}
                 {social.instagram && (
-                  <a href={social.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-warda" aria-label="Instagram">📸</a>
+                  <a href={social.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-warda transition-colors duration-200" aria-label="Instagram">📸</a>
                 )}
                 {social.tiktok && (
-                  <a href={social.tiktok} target="_blank" rel="noopener noreferrer" className="hover:text-warda" aria-label="TikTok">🎵</a>
+                  <a href={social.tiktok} target="_blank" rel="noopener noreferrer" className="hover:text-warda transition-colors duration-200" aria-label="TikTok">🎵</a>
                 )}
                 {social.facebook && (
-                  <a href={social.facebook} target="_blank" rel="noopener noreferrer" className="hover:text-warda" aria-label="Facebook">📘</a>
+                  <a href={social.facebook} target="_blank" rel="noopener noreferrer" className="hover:text-warda transition-colors duration-200" aria-label="Facebook">📘</a>
                 )}
               </div>
             )}
@@ -112,7 +112,7 @@ export function Footer() {
                     <Link
                       href={it.href}
                       aria-label={label(it)}
-                      className="hover:text-warda transition flex items-center gap-1"
+                      className="hover:text-warda transition-colors duration-200 flex items-center gap-1"
                     >
                       {"icon" in it && it.icon ? (
                         <>

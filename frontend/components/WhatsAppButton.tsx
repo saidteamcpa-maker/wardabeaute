@@ -13,7 +13,7 @@ export function WhatsAppButton() {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="WhatsApp"
-      className="fixed bottom-4 left-4 z-[9999] bg-[#25D366] text-white w-14 h-14 rounded-full grid place-items-center text-2xl shadow-soft hover:scale-105 transition"
+      className="fixed bottom-4 left-4 z-[9999] bg-[#25D366] text-white w-14 h-14 rounded-full grid place-items-center text-2xl shadow-soft hover:scale-105 active:scale-95 transition-transform duration-200"
     >
       <FaWhatsapp className="w-7 h-7" />
     </a>

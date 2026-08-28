@@ -89,7 +89,7 @@ export function Header() {
 
         <div className="flex items-center gap-2 order-3">
           <LangToggle />
-          <button onClick={openCart} aria-label={t(lang, "cartAria")} className="relative text-2xl text-profond hover:scale-110 transition">
+          <button onClick={openCart} aria-label={t(lang, "cartAria")} className="relative text-2xl text-profond hover:scale-110 active:scale-95 transition-transform duration-200">
             <ShoppingCart className="w-7 h-7" strokeWidth={1.6} />
             {count > 0 && (
               <span className="absolute -top-2 -right-2 bg-profond text-white text-xs rounded-full w-5 h-5 grid place-items-center animate-pulseSoft">
