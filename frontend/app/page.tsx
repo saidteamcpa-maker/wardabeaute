@@ -144,13 +144,13 @@ export default async function HomePage({ searchParams }: { searchParams?: { prev
           <div className="container-page text-center">
             <h2 className="text-4xl text-profond mb-2">{T("home.bundleTitle")}</h2>
             <p className="font-body text-brun mb-4">{T("home.bundleSub")}</p>
-            <Link href="/kit-collagene" className="block max-w-md mx-auto mb-6 overflow-hidden rounded-3xl card-hover shadow-lg relative">
+            <Link href="/kit-collagene" className="block max-w-md mx-auto mb-6 overflow-hidden rounded-3xl card-hover shadow-lg relative aspect-[4/5]">
               <Image
                 src={ov?.["home.bundleImage"] || "/kit-collagene-hero.png"}
                 alt="Kit Collagène Inside & Outside — VelvaStretch™ + CollaGlow™"
                 fill
                 sizes="(max-width: 768px) 100vw, 448px"
-                className="w-full aspect-[4/5] object-cover"
+                className="object-cover"
               />
             </Link>
             <div className="inline-flex flex-wrap justify-center gap-3 mb-4">

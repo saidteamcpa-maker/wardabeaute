@@ -76,14 +76,14 @@ export async function KitPage({ preview = false }: { preview?: boolean }) {
           </Reveal>
 
           <Reveal delay={0.15} className="order-first md:order-2">
-            <div className="overflow-hidden rounded-3xl card-hover shadow-lg relative">
+            <div className="overflow-hidden rounded-3xl card-hover shadow-lg relative aspect-[4/5]">
               <Image
                 src={ov?.["kit.heroImage"] || "/kit-collagene-hero.png"}
                 alt="Kit Collagène Inside & Outside — VelvaStretch™ + CollaGlow™"
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority
-                className="w-full aspect-[4/5] object-cover"
+                className="object-cover"
               />
             </div>
             <p className="text-center text-xs text-gris mt-2">
