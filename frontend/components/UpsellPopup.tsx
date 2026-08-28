@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { X } from "lucide-react";
 import { useLang } from "@/components/LangProvider";
 import { t } from "@/content/ui";
 import type { UpsellType } from "@/lib/upsell";
@@ -67,8 +68,8 @@ export function UpsellPopup({ info, productName, productImage, preDiscountTotal,
           />
         </div>
 
-        <button onClick={handleReject} className="absolute top-3 right-4 text-2xl text-brun z-10">
-          ✕
+        <button onClick={handleReject} className="absolute top-3 right-4 btn-ghost z-10">
+          <X className="w-5 h-5" />
         </button>
 
         <div className="mt-3 text-center">

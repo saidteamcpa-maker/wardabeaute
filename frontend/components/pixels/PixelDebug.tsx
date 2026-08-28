@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { X } from "lucide-react";
 import { track } from "@/lib/pixels";
 
 interface Row {
@@ -73,7 +74,7 @@ export function PixelDebug() {
       <div className="bg-white w-full max-w-2xl rounded-2xl p-5 max-h-[90vh] overflow-auto">
         <div className="flex justify-between items-center mb-3">
           <h3 className="font-display text-xl text-profond">Test des pixels</h3>
-          <button onClick={close} className="text-2xl text-brun leading-none">✕</button>
+          <button onClick={close} className="btn-ghost"><X className="w-5 h-5" /></button>
         </div>
 
         <div className="flex flex-wrap gap-2 mb-3 text-sm">

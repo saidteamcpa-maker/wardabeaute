@@ -66,10 +66,10 @@ export function AddToCartButton({
                 setTier(o.qty);
                 setStoreTier(slug, o.qty);
               }}
-              className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition ${
+              className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition-all duration-200 ${
                 tier === o.qty
                   ? "border-profond bg-profond text-white"
-                  : "border-brume bg-white text-brun hover:border-warda"
+                  : "border-brume bg-white text-brun hover:border-warda active:scale-[0.98]"
               }`}
             >
               <span className={`flex items-center gap-0.5 ${tier === o.qty ? "text-or-doux" : "text-warda"}`}>

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { X } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import { createOrder, checkGeo } from "@/lib/api";
 import { track } from "@/lib/pixels";
@@ -206,7 +207,9 @@ export function CheckoutPopup() {
     <div className="fixed inset-0 z-[60] flex items-end md:items-center justify-center p-0 md:p-4">
       <div className="absolute inset-0 bg-brun/50" onClick={closeCheckout} />
       <div className="relative bg-petal w-full max-w-[480px] max-h-[95vh] overflow-y-auto rounded-t-2xl md:rounded-2xl p-5">
-        <button onClick={closeCheckout} className="absolute top-3 right-4 text-2xl text-brun">✕</button>
+        <button onClick={closeCheckout} className="absolute top-3 right-4 btn-ghost">
+          <X className="w-5 h-5" />
+        </button>
 
         {step === "form" && (
           <>
@@ -245,25 +248,25 @@ export function CheckoutPopup() {
               <input
                 {...register("customer_name")}
                 placeholder={Co("co.name")}
-                className="w-full rounded-xl border border-brume px-3 py-3"
+                className="w-full input-field"
               />
               {formState.errors.customer_name && (
-                <p className="text-red-600 text-xs">{formState.errors.customer_name.message}</p>
+                <p className="text-rose-600 text-xs">{formState.errors.customer_name.message}</p>
               )}
 
               <div>
                 <input
                   {...register("phone")}
                   placeholder={Co("co.phone")}
-                  className="w-full rounded-xl border border-brume px-3 py-3"
+                  className="w-full input-field"
                 />
                 <p className="text-xs text-gris mt-1">{Co("co.phonePh")}</p>
               </div>
               {formState.errors.phone && (
-                <p className="text-red-600 text-xs">{formState.errors.phone.message}</p>
+                <p className="text-rose-600 text-xs">{formState.errors.phone.message}</p>
               )}
 
-              <input {...register("city")} placeholder={Co("co.city")} className="w-full rounded-xl border border-brume px-3 py-3" />
+              <input {...register("city")} placeholder={Co("co.city")} className="w-full input-field" />
 
               <button type="submit" disabled={loading} className="btn-primary w-full disabled:opacity-60">
                 {loading ? "..." : `🌹 ${Co("co.submit")} — ${Co("co.cod")}`}
