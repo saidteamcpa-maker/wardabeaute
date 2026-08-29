@@ -42,7 +42,7 @@ export async function ProductPage({ slug, preview = false }: { slug: string; pre
           <Reveal className="md:order-1">
             <div>
               <p className="text-champagne text-sm font-body mb-2 tracking-wide uppercase">{p.hero.eyebrow}</p>
-              <h1 className="text-4xl md:text-5xl leading-tight">
+              <h1 className="text-4xl md:text-5xl leading-[1.1]">
                 <span className="text-gradient">{p.hero.h1}</span>
               </h1>
               {lang === "ar" && <p className="font-arabic text-2xl text-warda mt-2">{p.hero.h1Ar}</p>}
@@ -84,7 +84,7 @@ export async function ProductPage({ slug, preview = false }: { slug: string; pre
       <section className="section bg-white">
         <div className="container-page">
           <Reveal>
-            <h2 className="text-3xl text-profond mb-6">{T("pp.whyLove")}</h2>
+            <h2 className="text-3xl leading-snug text-profond mb-6">{T("pp.whyLove")}</h2>
           </Reveal>
           <ul className="grid md:grid-cols-2 gap-3 font-body text-brun">
             {p.benefits.map((b, i) => (
@@ -103,7 +103,7 @@ export async function ProductPage({ slug, preview = false }: { slug: string; pre
       <section className="section bg-petal/40">
         <div className="container-page">
           <Reveal>
-            <h2 className="text-3xl text-profond mb-4">{T("pp.comparisonTitle")}</h2>
+            <h2 className="text-3xl leading-snug text-profond mb-4">{T("pp.comparisonTitle")}</h2>
           </Reveal>
           <ComparisonTable slug={slug} />
         </div>
@@ -133,7 +133,7 @@ export async function ProductPage({ slug, preview = false }: { slug: string; pre
       <section className="section">
         <div className="container-page">
           <Reveal>
-            <h2 className="text-3xl text-profond mb-6">{T("pp.testimonials")}</h2>
+            <h2 className="text-3xl leading-snug text-profond mb-6">{T("pp.testimonials")}</h2>
           </Reveal>
           <TestimonialGrid items={p.testimonials} />
         </div>
@@ -143,7 +143,7 @@ export async function ProductPage({ slug, preview = false }: { slug: string; pre
       <section className="section bg-white">
         <Reveal>
           <div className="container-page text-center">
-            <h2 className="text-3xl text-profond mb-3">{T("pp.moreResults")}</h2>
+            <h2 className="text-3xl leading-snug text-profond mb-3">{T("pp.moreResults")}</h2>
             <p className="font-body text-brun mb-4">{p.upsellCopy}</p>
             <div className="max-w-xs mx-auto">
               {p.upsellSlugs ? (
@@ -160,7 +160,7 @@ export async function ProductPage({ slug, preview = false }: { slug: string; pre
       <section className="section">
         <Reveal>
           <div className="container-page">
-            <h2 className="text-3xl text-profond mb-3">{T("pp.alsoBought").replace("{name}", p.name)}</h2>
+            <h2 className="text-3xl leading-snug text-profond mb-3">{T("pp.alsoBought").replace("{name}", p.name)}</h2>
             <div className="rounded-2xl border border-brume p-5 flex flex-col sm:flex-row items-center justify-between gap-4 card-hover bg-gradient-to-r from-white to-petal/30">
               <div>
                 <p className="font-display text-xl text-profond">{localize(catalog[p.crossSell.slug], lang).name}</p>
@@ -185,7 +185,7 @@ export async function ProductPage({ slug, preview = false }: { slug: string; pre
       <section className="section bg-white">
         <div className="container-page">
           <Reveal>
-            <h2 className="text-3xl text-profond mb-6">{T("pp.faq")}</h2>
+            <h2 className="text-3xl leading-snug text-profond mb-6">{T("pp.faq")}</h2>
           </Reveal>
           <Faq items={p.faq} />
         </div>

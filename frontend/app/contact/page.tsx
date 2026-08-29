@@ -27,7 +27,7 @@ export default async function ContactPage({ searchParams }: { searchParams?: { p
         </div>
       )}
       <div className="container-page max-w-2xl">
-        <h1 className="text-4xl text-profond mb-4">{T("contact.title")}</h1>
+        <h1 className="text-4xl leading-snug text-profond mb-4">{T("contact.title")}</h1>
         <p className="font-body text-brun mb-6">{T("contact.sub")}</p>
         <div className="space-y-4 font-body text-brun">
           <a

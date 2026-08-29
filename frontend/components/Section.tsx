@@ -37,7 +37,7 @@ export function Section({
           </div>
           <div className={cn(imageSide === "right" ? "md:order-1" : "md:order-2")}>
             {eyebrow && <p className="text-champagne text-sm font-body uppercase tracking-wide mb-2">{eyebrow}</p>}
-            {title && <h2 className="text-3xl md:text-4xl text-profond mb-4">{title}</h2>}
+            {title && <h2 className="text-3xl md:text-4xl leading-snug text-profond mb-4">{title}</h2>}
             <div className="font-body text-brun space-y-3">{children}</div>
           </div>
         </div>

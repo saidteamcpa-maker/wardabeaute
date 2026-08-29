@@ -24,7 +24,7 @@ export default async function CollectionPage({ searchParams }: { searchParams?: 
         </div>
       )}
       <div className="container-page">
-        <h1 className="text-4xl text-profond mb-2">{T("collection.title")}</h1>
+        <h1 className="text-4xl leading-snug text-profond mb-2">{T("collection.title")}</h1>
         <p className="font-body text-brun mb-6">{T("collection.sub")}</p>
         <div className="grid md:grid-cols-3 gap-6">
           {Object.keys(catalog).map((s) => <ProductCard key={s} slug={s} />)}

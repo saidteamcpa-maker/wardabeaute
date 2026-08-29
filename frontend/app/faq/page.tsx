@@ -22,7 +22,7 @@ export default async function FaqPage({ searchParams }: { searchParams?: { previ
         </div>
       )}
       <div className="container-page max-w-3xl">
-        <h1 className="text-4xl text-profond mb-2">{T("faqPage.title")}</h1>
+        <h1 className="text-4xl leading-snug text-profond mb-2">{T("faqPage.title")}</h1>
         <p className="font-body text-brun mb-6">{T("faqPage.sub")}</p>
         <Faq items={all} />
       </div>

@@ -55,8 +55,8 @@ export default async function HomePage({ searchParams }: { searchParams?: { prev
           <Reveal immediate className="md:order-1">
             <div>
               <p className="text-champagne text-sm font-body mb-2 tracking-wide uppercase">{T("home.heroEyebrow")}</p>
-              <h1 className="text-5xl md:text-6xl leading-tight">
-                {T("home.heroH1")}
+              <h1 className="text-5xl md:text-6xl leading-[1.1]">
+                <span className="text-gradient">{T("home.heroH1")}</span>
               </h1>
               {lang === "ar" && <p className="font-arabic text-2xl text-warda mt-3">{T("home.heroAr")}</p>}
               <div className="mt-6 flex gap-3 flex-wrap">
@@ -101,7 +101,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { prev
         <div className="container-page">
           <Reveal>
             <p className="text-champagne text-sm font-body uppercase">{T("home.featuredEyebrow")}</p>
-            <h2 className="text-4xl text-profond mb-6">{T("home.featuredTitle")}</h2>
+            <h2 className="text-4xl leading-snug text-profond mb-6">{T("home.featuredTitle")}</h2>
           </Reveal>
           <div className="grid md:grid-cols-3 gap-6">
             {featured.map((s, idx) => (
@@ -118,7 +118,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { prev
         <div className="container-page">
           <Reveal>
             <p className="text-champagne text-sm font-body uppercase text-center tracking-wide">{T("home.scienceEyebrow")}</p>
-            <h2 className="text-4xl text-profond mb-8 text-center">{T("home.scienceTitle")}</h2>
+            <h2 className="text-4xl leading-snug text-profond mb-8 text-center">{T("home.scienceTitle")}</h2>
           </Reveal>
           <div className="grid md:grid-cols-3 gap-5">
             {[
@@ -142,7 +142,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { prev
       <section className="section">
         <Reveal>
           <div className="container-page text-center">
-            <h2 className="text-4xl text-profond mb-2">{T("home.bundleTitle")}</h2>
+            <h2 className="text-4xl leading-snug text-profond mb-2">{T("home.bundleTitle")}</h2>
             <p className="font-body text-brun mb-4">{T("home.bundleSub")}</p>
             <Link href="/kit-collagene" className="block max-w-md mx-auto mb-6 overflow-hidden rounded-3xl shadow-elevated relative aspect-[4/5]">
               <Image
@@ -167,7 +167,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { prev
       <section className="section bg-white">
         <div className="container-page">
           <Reveal>
-            <h2 className="text-4xl text-profond mb-8 text-center">{T("home.howTitle")}</h2>
+            <h2 className="text-4xl leading-snug text-profond mb-8 text-center">{T("home.howTitle")}</h2>
           </Reveal>
           <div className="grid md:grid-cols-3 gap-6 text-center">
             {[
@@ -194,7 +194,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { prev
       <section className="section overflow-hidden">
         <div className="container-page">
           <Reveal>
-            <h2 className="text-4xl text-profond mb-2 text-center">
+            <h2 className="text-4xl leading-snug text-profond mb-2 text-center">
               Plus de <CountUp to={2400} suffix={T("home.socialSuffix")} className="text-gradient font-display" /> satisfaites
             </h2>
             <div className="flex flex-wrap justify-center gap-2 mt-4">
@@ -233,7 +233,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { prev
       <section className="section bg-white">
         <div className="container-page">
           <Reveal>
-            <h2 className="text-4xl text-profond mb-8 text-center">{T("home.whyTitle")}</h2>
+            <h2 className="text-4xl leading-snug text-profond mb-8 text-center">{T("home.whyTitle")}</h2>
           </Reveal>
           <div className="grid md:grid-cols-3 gap-5">
             {why.map((w, idx) => (
@@ -258,7 +258,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { prev
         <FloatingPetals count={8} />
         <div className="container-page relative">
           <Reveal>
-            <h2 className="text-4xl font-display">{T("home.finalTitle")}</h2>
+            <h2 className="text-4xl font-display leading-snug text-petal">{T("home.finalTitle")}</h2>
             <p className="font-body mt-3 max-w-xl mx-auto leading-relaxed">{T("home.finalBody")}</p>
             <div className="mt-5 flex gap-3 justify-center flex-wrap">
               <Link href="/collection" className="btn-primary btn-glow">{T("home.finalCta1")}</Link>

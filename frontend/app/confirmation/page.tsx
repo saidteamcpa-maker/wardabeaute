@@ -153,7 +153,7 @@ export default function ConfirmationPage() {
                 <Image src={ov[lang]["confirm.bannerImage"]} alt="" fill sizes="(max-width: 768px) 100vw, 700px" className="object-cover rounded-3xl" />
               </div>
             )}
-            <h1 className="font-display text-5xl text-profond mb-2">
+            <h1 className="font-display text-5xl leading-[1.1] text-profond mb-2">
               {C("confirm.title", "مرسي", "Merci")} {firstName} ! 🌹
             </h1>
             <p className="text-lg">{C("confirm.message", "الكوماندة ديالك مؤكدة.", "Votre commande est confirmée.")}</p>
@@ -172,7 +172,7 @@ export default function ConfirmationPage() {
 
         {/* 3. ORDER SUMMARY */}
         <div className="rounded-2xl bg-white border border-brume p-5 mt-6">
-          <h2 className="font-display text-2xl text-profond mb-3">
+          <h2 className="font-display text-2xl leading-snug text-profond mb-3">
             {A("الكوماندة ديالك", "Votre commande")}
           </h2>
           <div className="divide-y divide-brume">
@@ -243,7 +243,7 @@ export default function ConfirmationPage() {
 
         {/* 4. TIMELINE — what happens now */}
         <div className="mt-8">
-          <h2 className="font-display text-2xl text-profond text-center mb-4">
+          <h2 className="font-display text-2xl leading-snug text-profond text-center mb-4">
             {A("شنو كيطرا دابا ✨", "Ce qui se passe maintenant ✨")}
           </h2>
           <ol className="space-y-3">
@@ -352,7 +352,7 @@ export default function ConfirmationPage() {
 
         {/* 6. SOCIAL PROOF */}
         <div className="mt-10">
-          <h2 className="font-display text-2xl text-profond text-center mb-2">
+          <h2 className="font-display text-2xl leading-snug text-profond text-center mb-2">
             {A("هوما قالو ولة لـ Warda 🌹", "Elles ont dit oui à Warda 🌹")}
           </h2>
           <div className="flex flex-wrap justify-center gap-2 mb-4">
@@ -374,7 +374,7 @@ export default function ConfirmationPage() {
         {/* 7. CROSS-SELL — exclude ordered products */}
         {suggestions.length > 0 && (
           <div className="mt-10">
-            <h2 className="font-display text-2xl text-profond text-center mb-1">
+            <h2 className="font-display text-2xl leading-snug text-profond text-center mb-1">
               {A("كمّلي الروتين ديالك 🌿", "Complétez votre rituel 🌿")}
             </h2>
             <p className="text-center text-gris text-sm mb-4">
@@ -393,7 +393,7 @@ export default function ConfirmationPage() {
 
         {suggestions.length === 0 && (
           <div className="mt-10 rounded-2xl bg-or-doux p-5 text-center">
-            <h2 className="font-display text-2xl text-profond mb-2">
+            <h2 className="font-display text-2xl leading-snug text-profond mb-2">
               {A("الروتين الكامل : ", "Le rituel complet : ")}
               {bundle.name}
             </h2>

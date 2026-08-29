@@ -48,7 +48,7 @@ export async function KitPage({ preview = false }: { preview?: boolean }) {
           <Reveal className="md:order-1">
             <div>
               <p className="text-champagne text-sm font-body mb-2 tracking-wide uppercase">{kit.hero.eyebrow}</p>
-              <h1 className="text-4xl md:text-5xl leading-tight">
+              <h1 className="text-4xl md:text-5xl leading-[1.1]">
                 <span className="text-gradient">{kit.hero.h1}</span>
               </h1>
               {lang === "ar" && (
@@ -136,7 +136,7 @@ export async function KitPage({ preview = false }: { preview?: boolean }) {
       <section className="section bg-white">
         <div className="container-page">
           <Reveal>
-            <h2 className="text-3xl text-profond mb-6 text-center">{T("kit.authorityTitle")}</h2>
+            <h2 className="text-3xl leading-snug text-profond mb-6 text-center">{T("kit.authorityTitle")}</h2>
           </Reveal>
           <div className="flex flex-wrap justify-center gap-3">
             {[1, 2, 3, 4, 5, 6].map((n) => (
@@ -165,7 +165,7 @@ export async function KitPage({ preview = false }: { preview?: boolean }) {
       <section className="section bg-white">
         <div className="container-page">
           <Reveal>
-            <h2 className="text-3xl text-profond mb-6">{T("kit.benefitsTitle")}</h2>
+            <h2 className="text-3xl leading-snug text-profond mb-6">{T("kit.benefitsTitle")}</h2>
           </Reveal>
           <ul className="grid md:grid-cols-2 gap-3 font-body text-brun">
             {kit.benefits.map((b, i) => (
@@ -184,7 +184,7 @@ export async function KitPage({ preview = false }: { preview?: boolean }) {
       <section className="section bg-petal/40">
         <div className="container-page">
           <Reveal>
-            <h2 className="text-3xl text-profond mb-4">{t(lang, "pp.comparisonTitle")}</h2>
+            <h2 className="text-3xl leading-snug text-profond mb-4">{t(lang, "pp.comparisonTitle")}</h2>
           </Reveal>
           <ComparisonTable slug="kit-collagene" />
         </div>
@@ -194,7 +194,7 @@ export async function KitPage({ preview = false }: { preview?: boolean }) {
       <section className="section">
         <div className="container-page">
           <Reveal>
-            <h2 className="text-3xl text-profond mb-3 text-center">{T("kit.socialTitle")}</h2>
+            <h2 className="text-3xl leading-snug text-profond mb-3 text-center">{T("kit.socialTitle")}</h2>
           </Reveal>
           <div className="flex flex-wrap justify-center gap-2 mb-6">
             {[1, 2, 3].map((n) => (
@@ -221,7 +221,7 @@ export async function KitPage({ preview = false }: { preview?: boolean }) {
       <section className="section bg-white">
         <div className="container-page">
           <Reveal>
-            <h2 className="text-3xl text-profond mb-6">{T("kit.faqTitle")}</h2>
+            <h2 className="text-3xl leading-snug text-profond mb-6">{T("kit.faqTitle")}</h2>
           </Reveal>
           <Faq items={kit.faq} />
         </div>
@@ -235,7 +235,7 @@ export async function KitPage({ preview = false }: { preview?: boolean }) {
           <Reveal>
             <div className="rounded-3xl bg-gradient-to-br from-profond via-warda to-champagne/40 text-petal p-8 max-w-2xl mx-auto shadow-elevated">
               <Award className="w-10 h-10 mx-auto mb-3" />
-              <h2 className="font-display text-3xl mb-2">{T("kit.riskTitle")}</h2>
+              <h2 className="font-display text-3xl leading-snug text-petal mb-2">{T("kit.riskTitle")}</h2>
               <p className="font-body text-petal/85 leading-relaxed">{T("kit.riskBody")}</p>
             </div>
           </Reveal>
@@ -246,7 +246,7 @@ export async function KitPage({ preview = false }: { preview?: boolean }) {
       <section className="section bg-white">
         <div className="container-page text-center">
           <Reveal>
-            <h2 className="text-4xl font-display text-profond mb-2">
+            <h2 className="text-4xl font-display leading-snug text-profond mb-2">
               {T("kit.finalTitle")} <span className="text-gradient">Inside &amp; Outside</span>
             </h2>
             <p className="font-body text-brun mb-3 leading-relaxed">{T("kit.finalSub")}</p>

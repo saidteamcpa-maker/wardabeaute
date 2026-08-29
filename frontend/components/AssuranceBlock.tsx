@@ -10,7 +10,7 @@ export function AssuranceBlock() {
     <section className="section bg-white">
       <div className="container-page">
         <Reveal>
-          <h2 className="text-3xl text-profond mb-2 text-center">{t(lang, "ab.title")}</h2>
+          <h2 className="text-3xl leading-snug text-profond mb-2 text-center">{t(lang, "ab.title")}</h2>
           <p className="font-body text-gris text-center mb-8">{t(lang, "ab.sub")}</p>
         </Reveal>
 

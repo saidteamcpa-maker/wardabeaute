@@ -136,7 +136,7 @@ export default async function PolitiqueRetour({ searchParams }: { searchParams?:
       )}
       <div className="container-page max-w-3xl font-body text-brun space-y-6">
         <div>
-          <h1 className="text-4xl text-profond">{T("policy.title", "returnPage.title")}</h1>
+          <h1 className="text-4xl leading-snug text-profond">{T("policy.title", "returnPage.title")}</h1>
           {bodyHtml ? (
             <div className="space-y-4" dangerouslySetInnerHTML={{ __html: sanitizeHtml(bodyHtml) }} />
           ) : lang === "ar" ? ar : fr}

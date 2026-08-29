@@ -20,7 +20,7 @@ export default async function NotreHistoirePage({ searchParams }: { searchParams
             <div className="aspect-[3/4] w-full max-w-md rounded-2xl bg-brume mx-auto" />
           )}
           <div className="text-center md:text-left">
-            <h1 className="text-5xl text-profond mb-4">{T("story.title")}</h1>
+            <h1 className="text-5xl leading-[1.1] text-profond mb-4">{T("story.title")}</h1>
             {lang === "ar" && <p className="font-arabic text-xl text-warda mb-6">{T("story.quote")}</p>}
             <p className="font-body text-brun mb-4">{T("story.p1")}</p>
             <p className="font-body text-brun mb-4">{T("story.p2")}</p>

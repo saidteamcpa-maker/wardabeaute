@@ -34,7 +34,7 @@ export default function SuiviCommande() {
     <div className="section relative overflow-hidden">
       <FloatingPetals />
       <div className="container-page max-w-2xl font-body text-brun relative">
-        <h1 className="text-4xl text-profond mb-2">{lang === "ar" ? "متبوع الكوماندة 🌹" : "Suivi de commande 🌹"}</h1>
+        <h1 className="text-4xl leading-snug text-profond mb-2">{lang === "ar" ? "متبوع الكوماندة 🌹" : "Suivi de commande 🌹"}</h1>
         <p className="mb-5">
           {lang === "ar"
             ? "هاك كيفاش كتمشي التوصيل ديال الكوماندة ديالك، من الكليك حتال الباب ديالك."
