@@ -100,7 +100,12 @@ export default function AdminProductsEditor() {
         setMsg(`Upload failed (${r.status}): ${d.error || r.statusText}`);
       } else if (d.url) {
         setField("image", d.url);
-        setMsg("Image uploadée ✓ — n'oubliez pas de cliquer « Save »");
+        if (creating) {
+          setMsg("Image uploadée ✓ — n'oubliez pas de cliquer « Save » pour créer le produit");
+        } else {
+          setMsg("Image uploadée ✓");
+          await save(d.url, true);
+        }
       } else {
         setMsg("Upload failed: " + (d.error || "réponse invalide"));
       }
@@ -111,7 +116,7 @@ export default function AdminProductsEditor() {
     }
   }
 
-  async function save() {
+  async function save(imageOverride?: string, keepOpen = false) {
     setSaving(true);
     setMsg("");
     if (creating && !String(form.slug || "").trim()) {
@@ -121,6 +126,7 @@ export default function AdminProductsEditor() {
     }
     const payload = {
       ...form,
+      image: imageOverride ?? form.image,
       price: Number(form.price),
       oldPrice: form.oldPrice === "" ? null : Number(form.oldPrice),
       stockCount: form.stockCount === "" ? null : Number(form.stockCount),
@@ -133,10 +139,15 @@ export default function AdminProductsEditor() {
     });
     setSaving(false);
     if (res.ok) {
-      setMsg(creating ? "Product created ✓" : "Saved ✓");
-      setCreating(false);
-      setEditing(null);
-      await load();
+      setMsg(keepOpen ? "Image enregistrée ✓" : creating ? "Product created ✓" : "Saved ✓");
+      if (keepOpen) {
+        if (imageOverride) setField("image", imageOverride);
+        await load();
+      } else {
+        setCreating(false);
+        setEditing(null);
+        await load();
+      }
     } else {
       const j = await res.json().catch(() => ({}));
       if (j.detail === "sku_not_unique") setMsg(j.message || "This SKU is already in use. Please choose a different SKU.");
@@ -293,7 +304,7 @@ export default function AdminProductsEditor() {
             </label>
           </div>
           <div className="mt-4 flex gap-3">
-            <button onClick={save} disabled={saving} className="btn-primary disabled:opacity-60">
+            <button onClick={() => save()} disabled={saving} className="btn-primary disabled:opacity-60">
               {saving ? "…" : "Save"}
             </button>
             <button onClick={() => setEditing(null)} className="btn-outline">Cancel</button>
