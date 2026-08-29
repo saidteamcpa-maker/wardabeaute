@@ -25,7 +25,7 @@ export default function SuiviCommande() {
   const { lang } = useLang();
   const STEPS = lang === "ar" ? STEPS_AR : STEPS_FR;
 
-  const wa = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "212600000000";
+  const wa = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "212779754660";
   const waHref = `https://wa.me/${wa}?text=${encodeURIComponent(
     "سلام 🌹 Je souhaite suivre ma commande Warda Beauté"
   )}`;

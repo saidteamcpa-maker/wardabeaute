@@ -14,8 +14,8 @@ export default async function ContactPage({ searchParams }: { searchParams?: { p
   const lang = getLangServer();
   const ov = await getPageOverride("contact", lang, searchParams?.preview === "1");
   const T = (k: string) => ov?.[k] ?? t(lang, k);
-  const wa = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "212600000000";
-  const ig = "https://instagram.com/wardabeaute";
+  const wa = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "212779754660";
+  const ig = "https://instagram.com/wardabeaute.ma";
   const tiktok = "https://tiktok.com/@wardabeaute";
   return (
     <div className="section">
@@ -61,7 +61,7 @@ export default async function ContactPage({ searchParams }: { searchParams?: { p
           </a>
 
           <a
-            href="mailto:hello@wardabeaute.com"
+            href="mailto:contact@wardabeaute.com"
             className="flex items-center gap-3 rounded-2xl border border-brume p-5 hover:border-warda"
           >
             <FaEnvelope className="w-6 h-6 text-warda" />

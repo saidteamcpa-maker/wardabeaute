@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { FaWhatsapp } from "react-icons/fa";
 
 export function WhatsAppButton() {
-  const number = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "212600000000";
+  const number = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "212779754660";
   useEffect(() => {}, []);
   const href = `https://wa.me/${number}?text=${encodeURIComponent("سلام 🌹 Warda Beauté — بغيت نعرف معلومات على المنتوجات")}`;
   return (

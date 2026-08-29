@@ -77,7 +77,7 @@ export default function ConfirmationPage() {
     return hour >= 9 && hour < 22;
   })();
 
-  const waNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "212600000000";
+  const waNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "212779754660";
 
   const buildMsg = () => {
     const lines = [A("🌹 سلام Warda Beauté، هادا متابعة لكوماندة ديالي", "🌹 Bonjour Warda Beauté, c'est suite à ma commande")];

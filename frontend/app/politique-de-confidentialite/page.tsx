@@ -67,7 +67,7 @@ export default async function PolitiqueConfidentialite({ searchParams }: { searc
       </section>
       <section>
         <h2 className="text-2xl text-profond mb-2">Section 12 – Coordonnées</h2>
-        <p>Pour toute question relative aux présentes Conditions, contactez-nous sur <a href="mailto:hello@wardabeaute.com" className="underline text-warda">hello@wardabeaute.com</a> ou via WhatsApp. Warda Beauté — Casablanca, Maroc.</p>
+        <p>Pour toute question relative aux présentes Conditions, contactez-nous sur <a href="mailto:contact@wardabeaute.com" className="underline text-warda">contact@wardabeaute.com</a> ou via WhatsApp. Warda Beauté — Casablanca, Maroc.</p>
       </section>
     </>
   );
@@ -125,7 +125,7 @@ export default async function PolitiqueConfidentialite({ searchParams }: { searc
       </section>
       <section>
         <h2 className="text-2xl text-profond mb-2">القسم 12 – التواصل</h2>
-        <p>أي سؤال على هاد الشروط، تواصلي معانا على <a href="mailto:hello@wardabeaute.com" className="underline text-warda">hello@wardabeaute.com</a> ولا عبر واتساب. Warda Beauté — الدار البيضاء، المغرب.</p>
+        <p>أي سؤال على هاد الشروط، تواصلي معانا على <a href="mailto:contact@wardabeaute.com" className="underline text-warda">contact@wardabeaute.com</a> ولا عبر واتساب. Warda Beauté — الدار البيضاء، المغرب.</p>
       </section>
     </>
   );

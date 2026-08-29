@@ -53,9 +53,13 @@ export function Footer() {
 
   const description = pick(footer?.description, lang);
   const copyright = pick(footer?.copyright, lang) || t(lang, "footer.copy");
-  const email = footer?.email;
-  const phone = footer?.phone;
-  const social = footer?.social || {};
+  const email = footer?.email || "contact@wardabeaute.com";
+  const phone = footer?.phone || "212779754660";
+  const social = footer?.social || {
+    whatsapp: "212779754660",
+    instagram: "https://instagram.com/wardabeaute.ma",
+    tiktok: "https://tiktok.com/@wardabeaute",
+  };
 
   return (
     <footer className="bg-gradient-to-b from-brun to-[#2a151c] text-petal mt-12">
