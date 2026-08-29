@@ -17,6 +17,7 @@ export type CatalogProduct = Omit<StaticProduct, "oldPrice"> & {
 function resolveImage(dbImage: string | null, staticImage: string): string {
   if (!dbImage) return staticImage;
   if (dbImage.startsWith("http")) return dbImage;
+  if (dbImage.startsWith("/uploads/")) return staticImage;
   if (dbImage.startsWith("/")) {
     const disk = path.join(process.cwd(), "public", dbImage);
     if (fs.existsSync(disk)) return dbImage;
