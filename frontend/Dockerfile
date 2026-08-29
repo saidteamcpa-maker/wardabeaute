@@ -56,6 +56,8 @@ COPY --from=builder /app/prisma ./prisma
 # Next.js runtime) can write to node_modules / .next at runtime.
 RUN chown -R nextjs:nodejs /app
 
+VOLUME /app/public/uploads
+
 USER nextjs
 EXPOSE 3000
 CMD ["sh", "-c", "./node_modules/.bin/prisma db push --skip-generate --accept-data-loss && npm run start"]

@@ -1,5 +1,7 @@
 import { products as STATIC_PRODUCTS, type Product as StaticProduct } from "@/content/products";
 import { prisma } from "@/lib/db";
+import fs from "fs";
+import path from "path";
 
 export type CatalogOffer = { qty: number; price: number; save?: number };
 export type CatalogProduct = Omit<StaticProduct, "oldPrice"> & {
@@ -11,6 +13,17 @@ export type CatalogProduct = Omit<StaticProduct, "oldPrice"> & {
   offers: CatalogOffer[];
   isBundle: boolean;
 };
+
+function resolveImage(dbImage: string | null, staticImage: string): string {
+  if (!dbImage) return staticImage;
+  if (dbImage.startsWith("http")) return dbImage;
+  if (dbImage.startsWith("/")) {
+    const disk = path.join(process.cwd(), "public", dbImage);
+    if (fs.existsSync(disk)) return dbImage;
+    return staticImage;
+  }
+  return dbImage;
+}
 
 export async function getCatalog(): Promise<Record<string, CatalogProduct>> {
   const dbProducts = await prisma.product.findMany();
@@ -31,7 +44,7 @@ export async function getCatalog(): Promise<Record<string, CatalogProduct>> {
       ...base,
       price: db ? db.price : base.price,
       oldPrice: db ? (db.oldPrice ?? base.oldPrice) : base.oldPrice,
-      image: db?.image ?? base.image,
+      image: resolveImage(db?.image ?? null, base.image),
       active: db ? db.active : true,
       stockCount: db?.stockCount ?? base.stockCount ?? null,
       badge: db?.badge ?? base.badge ?? null,
