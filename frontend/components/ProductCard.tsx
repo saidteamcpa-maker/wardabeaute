@@ -28,7 +28,7 @@ export function ProductCard({
 
   if (horizontal) {
     return (
-      <div className="rounded-2xl bg-white border border-brume p-4 flex gap-4 shadow-soft card-hover">
+      <div className="rounded-2xl bg-white border border-brume p-4 flex gap-4 shadow-elevated card-hover">
         <Link href={`/${slug}`} className="shrink-0 w-1/3 max-w-[170px]">
           <div className="overflow-hidden rounded-xl relative aspect-video">
             <Image
@@ -36,20 +36,20 @@ export function ProductCard({
               alt={p.name}
               fill
               sizes="(max-width: 768px) 100vw, 170px"
-              className="object-cover transition-transform duration-300 hover:scale-105"
+              className="object-cover transition-transform duration-500 ease-out-expo hover:scale-105"
             />
           </div>
         </Link>
         <div className="flex flex-col flex-1 min-w-0">
           <Link href={`/${slug}`} className="flex flex-col flex-1">
             <span className="badge-pill self-start mb-2">{p.badge}</span>
-            <h3 className="font-display text-2xl text-profond hover:text-warda">
+            <h3 className="font-display text-2xl text-profond hover:text-warda transition-colors duration-200">
               {p.name}
             </h3>
             {lang === "ar" && <p className="font-arabic text-gris text-sm">{p.arSub}</p>}
             <p className="text-sm text-brun mt-2 line-clamp-2">{p.benefits[0]}</p>
             <div className="flex items-center gap-2 mt-2 text-champagne text-sm">
-              {"★".repeat(5)}{" "}
+              <span className="tracking-tight">{"★".repeat(5)}</span>
               <span className="text-gris">
                 {p.stars} ({p.reviews} {t(lang, "reviews")})
               </span>
@@ -73,7 +73,7 @@ export function ProductCard({
   }
 
   return (
-    <div className="rounded-2xl bg-white border border-brume p-4 flex flex-col shadow-soft card-hover">
+    <div className="rounded-2xl bg-white border border-brume p-4 flex flex-col shadow-elevated card-hover">
         <Link href={`/${slug}`} className="flex flex-col flex-1">
           <span className="badge-pill self-start mb-2">{p.badge}</span>
           <div className="overflow-hidden rounded-xl relative aspect-square">
@@ -82,16 +82,16 @@ export function ProductCard({
               alt={p.name}
               fill
               sizes="(max-width: 768px) 100vw, 320px"
-              className="object-cover transition-transform duration-300 hover:scale-105"
+              className="object-cover transition-transform duration-500 ease-out-expo hover:scale-105"
             />
           </div>
-        <h3 className="font-display text-2xl text-profond mt-3 hover:text-warda">
+        <h3 className="font-display text-2xl text-profond mt-3 hover:text-warda transition-colors duration-200">
           {p.name}
         </h3>
         {lang === "ar" && <p className="font-arabic text-gris text-sm">{p.arSub}</p>}
         <p className="text-sm text-brun mt-2 line-clamp-2">{p.benefits[0]}</p>
         <div className="flex items-center gap-2 mt-2 text-champagne text-sm">
-          {"★".repeat(5)}{" "}
+          <span className="tracking-tight">{"★".repeat(5)}</span>
           <span className="text-gris">
             {p.stars} ({p.reviews} {t(lang, "reviews")})
           </span>

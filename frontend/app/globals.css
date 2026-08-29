@@ -22,12 +22,16 @@ body {
   color: var(--brun);
   font-family: var(--font-dm-sans), system-ui, sans-serif;
   line-height: 1.75;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 h1,
 h2 {
   font-family: var(--font-cormorant), Georgia, serif;
   font-weight: 300;
+  letter-spacing: -0.015em;
 }
 
 /* Tap target + input size rules for Morocco mobile */
@@ -65,22 +69,22 @@ textarea:focus-visible {
 
 @layer components {
   .btn-primary {
-    @apply inline-flex items-center justify-center rounded-full bg-profond px-7 py-3 font-body font-medium text-white transition hover:brightness-95 min-h-[48px];
+    @apply inline-flex items-center justify-center rounded-full bg-profond px-7 py-3 font-body font-medium text-white transition-all duration-250 ease-out-expo hover:brightness-110 hover:shadow-glow active:scale-[0.97] min-h-[48px];
   }
   .btn-outline {
-    @apply inline-flex items-center justify-center rounded-full border border-warda px-7 py-3 font-body font-medium text-warda transition hover:bg-warda hover:text-white min-h-[48px];
+    @apply inline-flex items-center justify-center rounded-full border border-warda px-7 py-3 font-body font-medium text-warda transition-all duration-250 ease-out-expo hover:bg-warda hover:text-white hover:shadow-glow active:scale-[0.97] min-h-[48px];
   }
   .btn-ghost {
-    @apply inline-flex items-center justify-center p-2 rounded-xl text-gris transition-colors duration-200 hover:text-profond hover:bg-brume/40;
+    @apply inline-flex items-center justify-center p-2 rounded-xl text-gris transition-all duration-200 ease-out-expo hover:text-profond hover:bg-brume/40 active:scale-95;
   }
   .btn-danger {
-    @apply inline-flex items-center justify-center rounded-full bg-rose-600 px-5 py-2.5 font-body font-medium text-white transition hover:bg-rose-700 min-h-[44px];
+    @apply inline-flex items-center justify-center rounded-full bg-rose-600 px-5 py-2.5 font-body font-medium text-white transition-all duration-250 hover:bg-rose-700 hover:shadow-md active:scale-[0.97] min-h-[44px];
   }
   .btn-sm {
-    @apply inline-flex items-center justify-center rounded-xl border border-brume px-3 py-2 font-body text-sm transition-colors duration-200 hover:bg-petal/60;
+    @apply inline-flex items-center justify-center rounded-xl border border-brume px-3 py-2 font-body text-sm transition-all duration-200 hover:bg-petal/60 hover:border-warda/30 active:scale-[0.97];
   }
   .input-field {
-    @apply rounded-xl border border-brume px-4 py-2.5 font-body text-sm bg-white transition-colors duration-200 focus:border-warda focus:ring-2 focus:ring-warda/20 focus:outline-none;
+    @apply rounded-xl border border-brume px-4 py-3 font-body text-sm bg-white transition-all duration-250 focus:border-warda focus:ring-2 focus:ring-warda/20 focus:outline-none focus:shadow-glow;
   }
   .admin-card {
     @apply bg-white rounded-2xl border border-brume p-4 sm:p-5;
@@ -104,7 +108,7 @@ textarea:focus-visible {
     @apply py-12 md:py-24;
   }
   .badge-pill {
-    @apply inline-block rounded-full bg-ordoux px-3 py-1 text-sm font-body font-medium text-brun;
+    @apply inline-block rounded-full bg-ordoux/80 backdrop-blur-sm px-3 py-1 text-sm font-body font-medium text-brun border border-champagne/20 transition-colors duration-200;
   }
 }
 
@@ -151,24 +155,29 @@ textarea:focus-visible {
     display: none;
   }
   .text-gradient {
-    background: linear-gradient(120deg, #8a3d52 0%, #c17a82 45%, #c4993a 100%);
+    background: linear-gradient(120deg, #8a3d52 0%, #c17a82 40%, #c4993a 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
   .glass {
-    background: rgba(251, 242, 239, 0.72);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
+    background: rgba(251, 242, 239, 0.82);
+    backdrop-filter: blur(16px) saturate(1.4);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    border-bottom: 1px solid rgba(237, 213, 205, 0.5);
   }
   .btn-glow {
     position: relative;
     overflow: hidden;
-    transition: transform 0.2s ease, filter 0.2s ease;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, filter 0.25s ease;
   }
   .btn-glow:hover {
     transform: translateY(-2px);
-    filter: brightness(1.05);
+    filter: brightness(1.06);
+    box-shadow: 0 8px 25px -5px rgba(138, 61, 82, 0.4);
+  }
+  .btn-glow:active {
+    transform: translateY(0) scale(0.98);
   }
   .btn-glow::after {
     content: "";
@@ -215,17 +224,52 @@ textarea:focus-visible {
     pointer-events: none;
   }
   .card-hover {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   }
   .card-hover:hover {
     transform: translateY(-6px);
-    box-shadow: 0 22px 45px -18px rgba(138, 61, 82, 0.35);
+    box-shadow: 0 22px 45px -18px rgba(138, 61, 82, 0.35), 0 0 0 1px rgba(193, 122, 130, 0.1);
   }
 }
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(8px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* FAQ details open animation */
+@keyframes faqOpen {
+  from { opacity: 0; max-height: 0; }
+  to { opacity: 1; max-height: 500px; }
+}
+details[open] > summary ~ * {
+  animation: faqOpen 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Smooth page transitions */
+@layer utilities {
+  .page-enter {
+    animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+}
+
+/* Refined image hover zoom (used inside overflow-hidden containers) */
+.img-zoom {
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.img-zoom:hover {
+  transform: scale(1.04);
+}
+
+/* Gold shimmer for premium accents */
+@keyframes goldShimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.gold-shimmer {
+  background: linear-gradient(90deg, var(--champagne) 0%, var(--or-doux) 50%, var(--champagne) 100%);
+  background-size: 200% auto;
+  animation: goldShimmer 3s linear infinite;
 }
 
 /* ===== RTL (Arabic / Darija) ===== */

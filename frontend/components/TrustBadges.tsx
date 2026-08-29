@@ -17,7 +17,7 @@ export function TrustBadges() {
         return (
           <div
             key={k}
-            className="rounded-xl bg-white/70 border border-brume px-3 py-4 flex flex-col items-center gap-2 text-center hover:border-warda transition-colors duration-200"
+            className="rounded-xl bg-white/80 backdrop-blur-sm border border-brume/70 px-3 py-4 flex flex-col items-center gap-2 text-center hover:border-warda/50 hover:shadow-subtle hover:-translate-y-0.5 transition-all duration-300 ease-out-expo"
           >
             <IconBadge icon={Icon} tone="warda" />
             <span className="text-sm font-body text-brun leading-tight">{t(lang, k)}</span>

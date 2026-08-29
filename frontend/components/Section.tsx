@@ -26,11 +26,11 @@ export function Section({
         <div className="container-page grid md:grid-cols-2 gap-8 items-center">
           <div className={cn(imageSide === "right" ? "md:order-2" : "md:order-1")}>
             {imageSrc ? (
-              <div className="relative overflow-hidden rounded-2xl aspect-[4/5] bg-brume card-hover">
-                <Image src={imageSrc} alt={imageLabel} fill sizes="(max-width: 768px) 100vw, 50vw" className="absolute inset-0 h-full w-full object-cover" />
+              <div className="relative overflow-hidden rounded-2xl aspect-[4/5] bg-brume shadow-elevated">
+                <Image src={imageSrc} alt={imageLabel} fill sizes="(max-width: 768px) 100vw, 50vw" className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out-expo hover:scale-[1.03]" />
               </div>
             ) : (
-              <div className="rounded-2xl bg-gradient-to-br from-brume via-petal to-warda/30 aspect-[4/5] flex items-center justify-center text-center font-display text-2xl text-brun/70 px-6 card-hover">
+              <div className="rounded-2xl bg-gradient-to-br from-brume via-petal to-warda/30 aspect-[4/5] flex items-center justify-center text-center font-display text-2xl text-brun/70 px-6 shadow-subtle">
                 {imageLabel}
               </div>
             )}

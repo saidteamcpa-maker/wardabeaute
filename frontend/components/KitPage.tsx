@@ -47,20 +47,20 @@ export async function KitPage({ preview = false }: { preview?: boolean }) {
         <div className="container-page grid md:grid-cols-2 gap-8 items-center relative">
           <Reveal className="md:order-1">
             <div>
-              <p className="text-champagne text-sm font-body mb-2">{kit.hero.eyebrow}</p>
+              <p className="text-champagne text-sm font-body mb-2 tracking-wide uppercase">{kit.hero.eyebrow}</p>
               <h1 className="text-4xl md:text-5xl leading-tight">
                 <span className="text-gradient">{kit.hero.h1}</span>
               </h1>
               {lang === "ar" && (
                 <p className="font-arabic text-2xl text-warda mt-2">{kit.hero.h1Ar}</p>
               )}
-              <p className="font-body text-brun mt-4">{kit.hero.sub}</p>
+              <p className="font-body text-brun mt-4 leading-relaxed">{kit.hero.sub}</p>
 
               <div className="my-4 flex items-center gap-3">
                 <span className="text-3xl font-display text-profond">{kit.price} MAD</span>
                 <span className="line-through text-gris">{kit.oldPrice} MAD</span>
-                <span className="text-champagne text-sm">
-                  ★ {kit.stars} ({kit.reviews})
+                <span className="text-champagne text-sm tracking-tight">
+                  {"★".repeat(5)} {kit.stars} ({kit.reviews})
                 </span>
               </div>
               <p className="text-warda font-medium text-sm mb-4">
@@ -76,14 +76,14 @@ export async function KitPage({ preview = false }: { preview?: boolean }) {
           </Reveal>
 
           <Reveal delay={0.15} className="order-first md:order-2">
-            <div className="overflow-hidden rounded-3xl card-hover shadow-lg relative aspect-[4/5]">
+            <div className="overflow-hidden rounded-3xl shadow-elevated relative aspect-[4/5]">
               <Image
                 src={ov?.["kit.heroImage"] || "/kit-collagene-hero.png"}
                 alt="Kit Collagène Inside & Outside — VelvaStretch™ + CollaGlow™"
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority
-                className="object-cover"
+                className="object-cover transition-transform duration-700 ease-out-expo hover:scale-[1.03]"
               />
             </div>
             <p className="text-center text-xs text-gris mt-2">
@@ -96,9 +96,9 @@ export async function KitPage({ preview = false }: { preview?: boolean }) {
       {/* PROBLEM / EMPATHY */}
       <section className="container-page">
         <Reveal>
-          <div className="bg-profond text-petal rounded-3xl p-8 md:p-12 text-center">
-            <p className="font-display text-3xl mb-4">{T("kit.problemTitle")}</p>
-            <p className="font-body text-petal/90 max-w-2xl mx-auto">{T("kit.problemBody")}</p>
+          <div className="bg-gradient-to-br from-profond to-[#6b2d42] text-petal rounded-3xl p-8 md:p-12 text-center shadow-elevated">
+            <p className="font-display text-3xl mb-4 leading-snug">{T("kit.problemTitle")}</p>
+            <p className="font-body text-petal/85 max-w-2xl mx-auto leading-relaxed">{T("kit.problemBody")}</p>
             <p className="font-arabic text-2xl text-or-doux mt-4">{T("kit.problemMicro")}</p>
           </div>
         </Reveal>
@@ -111,23 +111,23 @@ export async function KitPage({ preview = false }: { preview?: boolean }) {
           {T("kit.sci2")}
         </p>
         <div className="grid sm:grid-cols-2 gap-3 mb-4">
-          <div className="rounded-2xl border border-brume p-4">
+          <div className="rounded-2xl border border-brume p-4 bg-gradient-to-b from-white to-petal/30">
             <p className="font-display text-xl text-profond mb-1">{T("kit.extTitle")}</p>
-            <p className="text-sm text-brun">{T("kit.extBody")}</p>
+            <p className="text-sm text-brun leading-relaxed">{T("kit.extBody")}</p>
           </div>
-          <div className="rounded-2xl border border-brume p-4">
+          <div className="rounded-2xl border border-brume p-4 bg-gradient-to-b from-white to-petal/30">
             <p className="font-display text-xl text-profond mb-1">{T("kit.intTitle")}</p>
-            <p className="text-sm text-brun">{T("kit.intBody")}</p>
+            <p className="text-sm text-brun leading-relaxed">{T("kit.intBody")}</p>
           </div>
         </div>
-        <div className="rounded-2xl bg-or-doux p-5">
-          <p className="font-body text-brun mb-2">
+        <div className="rounded-2xl bg-or-doux/60 p-5 border border-champagne/20">
+          <p className="font-body text-brun mb-2 leading-relaxed">
             <strong className="text-profond">{lang === "ar" ? "البحث واضح :" : "La recherche est claire :"}</strong>{" "}
             {T("kit.sci3")}
           </p>
           <div className="flex items-start gap-3 mt-3">
             <IconBadge icon={Microscope} tone="warda" />
-            <p className="text-sm text-brun">{T("kit.synergy")}</p>
+            <p className="text-sm text-brun leading-relaxed">{T("kit.synergy")}</p>
           </div>
         </div>
       </Section>
@@ -170,9 +170,9 @@ export async function KitPage({ preview = false }: { preview?: boolean }) {
           <ul className="grid md:grid-cols-2 gap-3 font-body text-brun">
             {kit.benefits.map((b, i) => (
               <Reveal key={i} delay={(i % 2) * 0.08}>
-                <li className="flex items-start gap-3 rounded-xl border border-brume p-3 card-hover">
+                <li className="flex items-start gap-3 rounded-xl border border-brume p-3 card-hover bg-gradient-to-r from-white to-petal/20">
                   <IconBadge icon={BENEFIT_ICONS[i % BENEFIT_ICONS.length]} tone="warda" size="sm" />
-                  <span>{b}</span>
+                  <span className="leading-relaxed">{b}</span>
                 </li>
               </Reveal>
             ))}
@@ -209,10 +209,10 @@ export async function KitPage({ preview = false }: { preview?: boolean }) {
       <Section eyebrow={T("kit.ritualEyebrow")} title={T("kit.ritualTitle")} imageLabel="Application" imageSrc={ov?.["kit.ritualImage"]} imageSide="right">
         <ol className="list-decimal list-inside space-y-2 font-body text-brun">
           {kit.howTo.map((h, i) => (
-            <li key={i}>{h}</li>
+            <li key={i} className="leading-relaxed">{h}</li>
           ))}
         </ol>
-        <div className="mt-4 rounded-2xl bg-or-doux p-4">
+        <div className="mt-4 rounded-2xl bg-or-doux/60 p-4 border border-champagne/20">
           <p className="font-body text-profond">{T("kit.ritualNote")}</p>
         </div>
       </Section>
@@ -233,10 +233,10 @@ export async function KitPage({ preview = false }: { preview?: boolean }) {
       <section className="section">
         <div className="container-page text-center">
           <Reveal>
-            <div className="rounded-3xl bg-gradient-to-br from-profond to-warda text-petal p-8 max-w-2xl mx-auto">
+            <div className="rounded-3xl bg-gradient-to-br from-profond via-warda to-champagne/40 text-petal p-8 max-w-2xl mx-auto shadow-elevated">
               <Award className="w-10 h-10 mx-auto mb-3" />
               <h2 className="font-display text-3xl mb-2">{T("kit.riskTitle")}</h2>
-              <p className="font-body text-petal/90">{T("kit.riskBody")}</p>
+              <p className="font-body text-petal/85 leading-relaxed">{T("kit.riskBody")}</p>
             </div>
           </Reveal>
         </div>
@@ -249,12 +249,12 @@ export async function KitPage({ preview = false }: { preview?: boolean }) {
             <h2 className="text-4xl font-display text-profond mb-2">
               {T("kit.finalTitle")} <span className="text-gradient">Inside &amp; Outside</span>
             </h2>
-            <p className="font-body text-brun mb-3">{T("kit.finalSub")}</p>
+            <p className="font-body text-brun mb-3 leading-relaxed">{T("kit.finalSub")}</p>
             <div className="text-3xl font-display text-profond mb-1">
               {kit.price} MAD{" "}
               <span className="line-through text-gris text-lg">{kit.oldPrice} MAD</span>
             </div>
-            <p className="text-champagne text-sm mb-4">
+            <p className="text-champagne text-sm mb-4 font-medium">
               {T("kit.save")} {kit.oldPrice - kit.price} MAD · {T("kit.urgency")}
             </p>
             <div className="max-w-xs mx-auto">

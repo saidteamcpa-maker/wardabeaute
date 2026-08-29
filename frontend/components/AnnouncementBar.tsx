@@ -20,14 +20,15 @@ export function AnnouncementBar() {
   }, [override]);
   const text = override ?? t(lang, KEYS[i]);
   return (
-    <div className="bg-gradient-to-r from-profond via-warda to-profond text-petal text-center text-sm py-2 px-4 font-body overflow-hidden relative">
+    <div className="bg-gradient-to-r from-profond via-warda to-champagne/80 text-petal text-center text-sm py-2.5 px-4 font-body overflow-hidden relative tracking-wide">
       <AnimatePresence mode="wait">
         <motion.p
           key={override ? "override" : i}
           initial={{ y: 14, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -14, opacity: 0 }}
-          transition={{ duration: 0.45 }}
+          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+          className="font-medium"
         >
           {text}
         </motion.p>

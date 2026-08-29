@@ -56,22 +56,22 @@ export function ComparisonTable({ slug }: { slug: string }) {
   return (
     <div className="mt-4">
       <p className="text-sm text-gris italic mb-3">{data.vs}</p>
-      <div className="overflow-hidden rounded-2xl border border-brume">
-        <div className="grid grid-cols-3 bg-brume/40 text-profond font-display text-sm rounded-t-xl">
-          <div className="p-3">{t(lang, "cmp.criterion")}</div>
-          <div className="p-3 text-warda">Warda Beauté</div>
-          <div className="p-3">{t(lang, "cmp.alt")}</div>
+      <div className="overflow-hidden rounded-2xl border border-brume shadow-subtle">
+        <div className="grid grid-cols-3 bg-gradient-to-r from-brume/50 to-petal text-profond font-display text-sm rounded-t-xl">
+          <div className="p-3.5 font-medium">{t(lang, "cmp.criterion")}</div>
+          <div className="p-3.5 text-warda font-medium">Warda Beauté</div>
+          <div className="p-3.5 font-medium">{t(lang, "cmp.alt")}</div>
         </div>
         {data.rows.map((r, i) => (
-          <div key={r.criterion} className={`grid grid-cols-3 text-sm border-t border-brume ${i % 2 ? "bg-white" : "bg-petal/40"}`}>
-            <div className="p-3 font-medium text-brun">{r.criterion}</div>
-            <div className="p-3 text-brun flex items-start gap-2">
+          <div key={r.criterion} className={`grid grid-cols-3 text-sm border-t border-brume/50 transition-colors duration-150 hover:bg-petal/40 ${i % 2 ? "bg-white" : "bg-petal/20"}`}>
+            <div className="p-3.5 font-medium text-brun">{r.criterion}</div>
+            <div className="p-3.5 text-brun flex items-start gap-2">
               <IconBadge icon={Check} tone="warda" size="sm" />
-              <span>{r.warda}</span>
+              <span className="leading-relaxed">{r.warda}</span>
             </div>
-            <div className="p-3 text-gris flex items-start gap-2">
+            <div className="p-3.5 text-gris flex items-start gap-2">
               <IconBadge icon={X} tone="profond" size="sm" />
-              <span>{r.other}</span>
+              <span className="leading-relaxed">{r.other}</span>
             </div>
           </div>
         ))}

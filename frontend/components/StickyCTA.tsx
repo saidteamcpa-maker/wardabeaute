@@ -64,14 +64,14 @@ export function StickyCTA({ slug }: { slug: string }) {
       className="md:hidden fixed bottom-0 inset-x-0 z-40 cursor-pointer group select-none"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      <div className="bg-profond/95 backdrop-blur-md border-t border-white/10 shadow-[0_-10px_30px_rgba(0,0,0,0.28)] px-4 pt-3 pb-3">
+      <div className="bg-profond/95 backdrop-blur-md border-t border-white/10 shadow-[0_-10px_30px_rgba(0,0,0,0.28)] px-4 pt-3 pb-4">
         <div className="flex items-center gap-3">
           <Image
             src={p.image}
             alt={p.name}
             width={48}
             height={48}
-            className="w-12 h-12 rounded-xl object-cover border border-white/10 shrink-0"
+            className="w-12 h-12 rounded-xl object-cover border border-white/15 shrink-0 shadow-subtle"
           />
             <div className="min-w-0 flex-1 leading-tight">
               <div className="text-white text-sm font-body truncate">{p.name}</div>

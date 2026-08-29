@@ -41,18 +41,18 @@ export async function ProductPage({ slug, preview = false }: { slug: string; pre
         <div className="container-page grid md:grid-cols-2 gap-8 items-center relative">
           <Reveal className="md:order-1">
             <div>
-              <p className="text-champagne text-sm font-body mb-2">{p.hero.eyebrow}</p>
+              <p className="text-champagne text-sm font-body mb-2 tracking-wide uppercase">{p.hero.eyebrow}</p>
               <h1 className="text-4xl md:text-5xl leading-tight">
                 <span className="text-gradient">{p.hero.h1}</span>
               </h1>
               {lang === "ar" && <p className="font-arabic text-2xl text-warda mt-2">{p.hero.h1Ar}</p>}
-              <p className="font-body text-brun mt-4">{p.hero.sub}</p>
+              <p className="font-body text-brun mt-4 leading-relaxed">{p.hero.sub}</p>
               {lang === "ar" && <p className="font-arabic text-gris mt-1">{p.hero.subAr}</p>}
 
               <div className="my-4 flex items-center gap-3">
                 <span className="text-2xl font-display text-profond">{p.price} MAD</span>
                 <span className="line-through text-gris">{p.oldPrice} MAD</span>
-                <span className="text-champagne text-sm">★ {p.stars} ({p.reviews} {t(lang, "reviews")})</span>
+                <span className="text-champagne text-sm tracking-tight">{"★".repeat(5)} {p.stars} ({p.reviews} {t(lang, "reviews")})</span>
               </div>
 
               <TrustBadges />
@@ -63,8 +63,8 @@ export async function ProductPage({ slug, preview = false }: { slug: string; pre
             </div>
           </Reveal>
           <Reveal delay={0.15} className="order-first md:order-2">
-            <div className="overflow-hidden rounded-2xl card-hover relative aspect-[4/5]">
-              <Image src={ov?.["pp.heroImage"] || p.image} alt={p.name} fill sizes="(max-width: 768px) 100vw, 50vw" priority className="object-cover" />
+            <div className="overflow-hidden rounded-3xl shadow-elevated relative aspect-[4/5]">
+              <Image src={ov?.["pp.heroImage"] || p.image} alt={p.name} fill sizes="(max-width: 768px) 100vw, 50vw" priority className="object-cover transition-transform duration-700 ease-out-expo hover:scale-[1.03]" />
             </div>
           </Reveal>
         </div>
@@ -72,7 +72,7 @@ export async function ProductPage({ slug, preview = false }: { slug: string; pre
 
       {/* HOOK */}
       <section className="container-page">
-        <p className="font-body text-brun text-lg italic border-s-4 border-warda ps-4">{p.hook}</p>
+        <p className="font-body text-brun text-lg italic border-s-4 border-warda ps-5 leading-relaxed">{p.hook}</p>
       </section>
 
       {/* DESCRIPTION */}
@@ -89,9 +89,9 @@ export async function ProductPage({ slug, preview = false }: { slug: string; pre
           <ul className="grid md:grid-cols-2 gap-3 font-body text-brun">
             {p.benefits.map((b, i) => (
               <Reveal key={i} delay={(i % 2) * 0.08}>
-                <li className="flex items-start gap-3 rounded-xl border border-brume p-3 card-hover">
+                <li className="flex items-start gap-3 rounded-xl border border-brume p-3 card-hover bg-gradient-to-r from-white to-petal/20">
                   <IconBadge icon={BENEFIT_ICONS[i % BENEFIT_ICONS.length]} tone="warda" size="sm" />
-                  <span>{b}</span>
+                  <span className="leading-relaxed">{b}</span>
                 </li>
               </Reveal>
             ))}
@@ -112,20 +112,20 @@ export async function ProductPage({ slug, preview = false }: { slug: string; pre
       {/* INGREDIENTS */}
       <Section eyebrow={T("pp.science")} title={T("pp.ingredients")} imageLabel="Ingrédients" imageSrc={ov?.["pp.ingredientsImage"]} imageSide="left">
         <IngredientTable items={p.ingredients} />
-        <details className="mt-3">
-          <summary className="font-body text-warda cursor-pointer">{T("pp.viewInci")}</summary>
-          <p className="text-sm text-gris mt-2">{p.inci}</p>
+        <details className="mt-3 group">
+          <summary className="font-body text-warda cursor-pointer hover:text-profond transition-colors duration-200">{T("pp.viewInci")}</summary>
+          <p className="text-sm text-gris mt-2 leading-relaxed">{p.inci}</p>
         </details>
       </Section>
 
       {/* HOW TO */}
       <Section eyebrow={T("pp.howTo")} title={T("pp.steps")} imageLabel="Application" imageSrc={ov?.["pp.howToImage"]} imageSide="right">
-        <ol className="list-decimal list-inside space-y-1">
-          {p.howTo.map((h, i) => <li key={i}>{h}</li>)}
+        <ol className="list-decimal list-inside space-y-2">
+          {p.howTo.map((h, i) => <li key={i} className="leading-relaxed">{h}</li>)}
         </ol>
-        <div className="mt-3">
+        <div className="mt-4 rounded-2xl bg-or-doux/50 p-4">
           <p className="font-medium text-profond">{T("pp.forYouIf")}</p>
-          <ul>{p.whoFor.map((w, i) => <li key={i}>• {w}</li>)}</ul>
+          <ul className="mt-1">{p.whoFor.map((w, i) => <li key={i} className="leading-relaxed">• {w}</li>)}</ul>
         </div>
       </Section>
 
@@ -161,7 +161,7 @@ export async function ProductPage({ slug, preview = false }: { slug: string; pre
         <Reveal>
           <div className="container-page">
             <h2 className="text-3xl text-profond mb-3">{T("pp.alsoBought").replace("{name}", p.name)}</h2>
-            <div className="rounded-2xl border border-brume p-4 flex flex-col sm:flex-row items-center justify-between gap-4 card-hover">
+            <div className="rounded-2xl border border-brume p-5 flex flex-col sm:flex-row items-center justify-between gap-4 card-hover bg-gradient-to-r from-white to-petal/30">
               <div>
                 <p className="font-display text-xl text-profond">{localize(catalog[p.crossSell.slug], lang).name}</p>
                 {lang === "ar" ? (

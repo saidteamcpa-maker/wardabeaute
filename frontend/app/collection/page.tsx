@@ -19,7 +19,7 @@ export default async function CollectionPage({ searchParams }: { searchParams?: 
       {ov?.["collection.bannerImage"] && (
         <div className="container-page mb-6">
           <div className="relative w-full aspect-[21/9]">
-            <Image src={ov["collection.bannerImage"]} alt="" fill sizes="(max-width: 768px) 100vw, 1000px" className="object-cover rounded-3xl" />
+            <Image src={ov["collection.bannerImage"]} alt="" fill sizes="(max-width: 768px) 100vw, 1000px" className="object-cover rounded-3xl shadow-elevated" />
           </div>
         </div>
       )}
@@ -29,11 +29,11 @@ export default async function CollectionPage({ searchParams }: { searchParams?: 
         <div className="grid md:grid-cols-3 gap-6">
           {Object.keys(catalog).map((s) => <ProductCard key={s} slug={s} />)}
         </div>
-        <div className="mt-10 text-center bg-white rounded-2xl border border-brume p-8">
+        <div className="mt-10 text-center bg-gradient-to-b from-white to-petal/50 rounded-3xl border border-brume p-8 shadow-subtle">
           <h2 className="text-3xl text-profond mb-2">{kit.name}</h2>
           {lang === "ar" && <p className="font-arabic text-gris mb-3">{kit.arSub}</p>}
           <p className="text-2xl font-display text-profond">{kitPrice} MAD <span className="line-through text-gris text-base">{kitOld} MAD</span></p>
-          <Link href="/kit-collagene" className="btn-primary mt-4 inline-flex">{t(lang, "home.bundleCta")}</Link>
+          <Link href="/kit-collagene" className="btn-primary btn-glow mt-4 inline-flex">{t(lang, "home.bundleCta")}</Link>
         </div>
       </div>
     </div>

@@ -27,6 +27,20 @@ const config: Config = {
         soft: "0 10px 30px -12px rgba(60,33,40,0.25)",
         drawer: "0 0 40px rgba(60,33,40,0.18)",
         card: "0 2px 12px rgba(60,33,40,0.08)",
+        glow: "0 0 20px rgba(193,122,130,0.35)",
+        "glow-lg": "0 0 40px rgba(193,122,130,0.3)",
+        subtle: "0 1px 3px rgba(60,33,40,0.06)",
+        elevated: "0 4px 20px -4px rgba(60,33,40,0.15), 0 1px 3px rgba(60,33,40,0.06)",
+      },
+      borderRadius: {
+        "4xl": "2rem",
+      },
+      transitionDuration: {
+        250: "250ms",
+        350: "350ms",
+      },
+      transitionTimingFunction: {
+        "out-expo": "cubic-bezier(0.16, 1, 0.3, 1)",
       },
     },
   },

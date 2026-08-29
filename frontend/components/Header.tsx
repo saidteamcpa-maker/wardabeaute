@@ -65,13 +65,13 @@ export function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-40 transition-all duration-300 ${
-        scrolled ? "glass border-b border-brume shadow-soft" : "bg-petal border-b border-transparent"
+      className={`sticky top-0 z-40 transition-all duration-350 ease-out-expo ${
+        scrolled ? "glass shadow-elevated" : "bg-petal border-b border-transparent"
       }`}
     >
       <div className="container-page flex items-center justify-between h-16 gap-2">
         <button
-          className="order-1 text-2xl text-profond"
+          className="order-1 text-2xl text-profond hover:text-warda active:scale-95 transition-all duration-200"
           aria-label={t(lang, "menu")}
           onClick={() => setMenuOpen(true)}
         >
@@ -82,7 +82,7 @@ export function Header() {
           href="/"
           dir="ltr"
           style={{ fontFamily: '"Cairo", "Playfair Display", Georgia, serif' }}
-          className="order-2 mx-auto flex items-center gap-2 font-display text-2xl text-profond"
+          className="order-2 mx-auto flex items-center gap-2 font-display text-2xl text-profond hover:text-warda transition-colors duration-300"
         >
           <Image src={logoUrl || "/header-logo.png"} alt="Warda Beauté" width={28} height={28} className="w-7 h-7 object-contain" />
           Warda Beauté
@@ -90,10 +90,10 @@ export function Header() {
 
         <div className="flex items-center gap-2 order-3">
           <LangToggle />
-          <button onClick={openCart} aria-label={t(lang, "cartAria")} className="relative text-2xl text-profond hover:scale-110 active:scale-95 transition-transform duration-200">
+          <button onClick={openCart} aria-label={t(lang, "cartAria")} className="relative text-2xl text-profond hover:text-warda hover:scale-110 active:scale-95 transition-all duration-200">
             <ShoppingCart className="w-7 h-7" strokeWidth={1.6} />
             {count > 0 && (
-              <span className="absolute -top-2 -right-2 bg-profond text-white text-xs rounded-full w-5 h-5 grid place-items-center animate-pulseSoft">
+              <span className="absolute -top-2 -right-2 bg-profond text-white text-[11px] font-medium rounded-full w-5 h-5 grid place-items-center animate-pulseSoft shadow-glow">
                 {count}
               </span>
             )}
@@ -105,10 +105,10 @@ export function Header() {
         typeof document !== "undefined" &&
         createPortal(
           <div className="fixed inset-0 z-50">
-            <div className="absolute inset-0 bg-brun/40" onClick={() => setMenuOpen(false)} />
+            <div className="absolute inset-0 bg-brun/50 backdrop-blur-sm" onClick={() => setMenuOpen(false)} />
             <div className="absolute left-0 top-0 h-full w-72 bg-petal p-6 shadow-soft overflow-y-auto">
               <div className="flex justify-end">
-                <button onClick={() => setMenuOpen(false)} aria-label={t(lang, "close")}>
+                <button onClick={() => setMenuOpen(false)} aria-label={t(lang, "close")} className="hover:text-warda active:scale-95 transition-all duration-200">
                   <X className="w-7 h-7 text-profond" />
                 </button>
               </div>
@@ -119,12 +119,12 @@ export function Header() {
                       <button
                         type="button"
                         onClick={() => setOpenMenus((s) => ({ ...s, [m.label]: !s[m.label] }))}
-                        className="flex w-full items-center justify-between py-3 hover:text-warda"
+                        className="flex w-full items-center justify-between py-3.5 hover:text-warda transition-colors duration-200"
                         aria-expanded={!!openMenus[m.label]}
                       >
                          <span>{labelOf(m.key, m.label)}</span>
                         <ChevronDown
-                          className={`w-5 h-5 transition-transform ${openMenus[m.label] ? "rotate-180" : ""}`}
+                          className={`w-5 h-5 transition-transform duration-300 ease-out-expo ${openMenus[m.label] ? "rotate-180" : ""}`}
                         />
                       </button>
                       {openMenus[m.label] && (
@@ -134,7 +134,7 @@ export function Header() {
                               key={c.label}
                               href={c.href}
                               onClick={() => setMenuOpen(false)}
-                              className="flex items-center gap-2 hover:text-warda"
+                              className="flex items-center gap-2 hover:text-warda transition-colors duration-200"
                             >
                               {c.icon && <c.icon className="w-4 h-4" aria-hidden />}
                                <span>{labelOf(c.key, c.label)}</span>
@@ -148,7 +148,7 @@ export function Header() {
                       key={m.label}
                       href={m.href!}
                       onClick={() => setMenuOpen(false)}
-                      className="py-3 border-b border-brume/60 hover:text-warda"
+                      className="py-3.5 border-b border-brume/60 hover:text-warda transition-colors duration-200"
                     >
                       {labelOf(m.key, m.label)}
                     </Link>

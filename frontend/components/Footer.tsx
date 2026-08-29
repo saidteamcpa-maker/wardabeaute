@@ -58,16 +58,16 @@ export function Footer() {
   const social = footer?.social || {};
 
   return (
-    <footer className="bg-brun text-petal mt-12">
+    <footer className="bg-gradient-to-b from-brun to-[#2a151c] text-petal mt-12">
       <div className="container-page pt-12">
         {description && (
           <div className="max-w-xl mb-10">
-            <p className="font-display text-2xl mb-2">Warda Beauté</p>
-            <p className="font-body text-petal/80 text-sm">{description}</p>
+            <p className="font-display text-2xl mb-2 text-ordoux">Warda Beauté</p>
+            <p className="font-body text-petal/75 text-sm leading-relaxed">{description}</p>
             {(email || phone) && (
-              <p className="font-body text-petal/70 text-sm mt-3">
+              <p className="font-body text-petal/65 text-sm mt-3">
                 {email && (
-                  <a href={`mailto:${email}`} className="hover:text-warda mr-4">
+                  <a href={`mailto:${email}`} className="hover:text-warda transition-colors duration-250 mr-4">
                     {email}
                   </a>
                 )}
@@ -75,18 +75,18 @@ export function Footer() {
               </p>
             )}
             {(social.instagram || social.facebook || social.tiktok || social.whatsapp) && (
-              <div className="flex gap-4 mt-3 text-petal/80">
+              <div className="flex gap-4 mt-4 text-petal/70">
                 {social.whatsapp && (
-                  <a href={`https://wa.me/${social.whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer" className="hover:text-warda transition-colors duration-200" aria-label="WhatsApp">💬</a>
+                  <a href={`https://wa.me/${social.whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer" className="hover:text-warda hover:scale-110 active:scale-95 transition-all duration-250" aria-label="WhatsApp">💬</a>
                 )}
                 {social.instagram && (
-                  <a href={social.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-warda transition-colors duration-200" aria-label="Instagram">📸</a>
+                  <a href={social.instagram} target="_blank" rel="noopener noreferrer" className="hover:text-warda hover:scale-110 active:scale-95 transition-all duration-250" aria-label="Instagram">📸</a>
                 )}
                 {social.tiktok && (
-                  <a href={social.tiktok} target="_blank" rel="noopener noreferrer" className="hover:text-warda transition-colors duration-200" aria-label="TikTok">🎵</a>
+                  <a href={social.tiktok} target="_blank" rel="noopener noreferrer" className="hover:text-warda hover:scale-110 active:scale-95 transition-all duration-250" aria-label="TikTok">🎵</a>
                 )}
                 {social.facebook && (
-                  <a href={social.facebook} target="_blank" rel="noopener noreferrer" className="hover:text-warda transition-colors duration-200" aria-label="Facebook">📘</a>
+                  <a href={social.facebook} target="_blank" rel="noopener noreferrer" className="hover:text-warda hover:scale-110 active:scale-95 transition-all duration-250" aria-label="Facebook">📘</a>
                 )}
               </div>
             )}
@@ -101,18 +101,18 @@ export function Footer() {
               key={ci}
               className={isContact ? "col-span-2 md:col-span-1 text-center md:text-left" : ""}
             >
-              <h4 className={`font-body font-medium text-ordoux mb-3 ${isContact ? "text-center md:text-left" : ""}`}>
+              <h4 className={`font-body font-medium text-ordoux mb-4 ${isContact ? "text-center md:text-left" : ""}`}>
                 {t(lang, c.titleKey)}
               </h4>
               <ul
-                className={`space-y-2 text-sm ${isContact ? "flex flex-row flex-nowrap items-center justify-between w-full gap-x-1 text-[11px] md:block md:text-sm md:space-y-2" : ""}`}
+                className={`space-y-2.5 text-sm ${isContact ? "flex flex-row flex-nowrap items-center justify-between w-full gap-x-1 text-[11px] md:block md:text-sm md:space-y-2.5" : ""}`}
               >
                 {c.items.map((it, idx) => (
                   <li key={idx} className={isContact ? "whitespace-nowrap" : ""}>
                     <Link
                       href={it.href}
                       aria-label={label(it)}
-                      className="hover:text-warda transition-colors duration-200 flex items-center gap-1"
+                      className="hover:text-warda transition-colors duration-250 flex items-center gap-1.5"
                     >
                       {"icon" in it && it.icon ? (
                         <>
@@ -127,13 +127,13 @@ export function Footer() {
                 ))}
               </ul>
               {"badgeKey" in c && c.badgeKey && (
-                <p className="mt-3 text-champagne text-sm">{t(lang, c.badgeKey)}</p>
+                <p className="mt-4 text-champagne text-sm font-medium">{t(lang, c.badgeKey)}</p>
               )}
             </div>
           );
         })}
       </div>
-      <div className="border-t border-petal/20 text-center text-xs py-4 text-petal/70">
+      <div className="border-t border-petal/15 text-center text-xs py-4 text-petal/60">
         {copyright}
       </div>
     </footer>
