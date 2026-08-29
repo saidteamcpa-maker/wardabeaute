@@ -58,7 +58,7 @@ export function Footer() {
   const social = footer?.social || {
     whatsapp: "212779754660",
     instagram: "https://instagram.com/wardabeaute.ma",
-    tiktok: "https://tiktok.com/@wardabeaute",
+    tiktok: "https://tiktok.com/@wardabeaute.ma",
   };
 
   return (

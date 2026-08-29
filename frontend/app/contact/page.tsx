@@ -16,7 +16,7 @@ export default async function ContactPage({ searchParams }: { searchParams?: { p
   const T = (k: string) => ov?.[k] || t(lang, k);
   const wa = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "212779754660";
   const ig = "https://instagram.com/wardabeaute.ma";
-  const tiktok = "https://tiktok.com/@wardabeaute";
+  const tiktok = "https://tiktok.com/@wardabeaute.ma";
   return (
     <div className="section">
       {ov?.["contact.bannerImage"] && (
