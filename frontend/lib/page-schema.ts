@@ -209,6 +209,13 @@ export function schemaFor(slug: string): PageTypeDef {
   return PAGE_TYPES[pageTypeOf(slug)];
 }
 
+// Editor-only view: keeps only image-kind blocks so admins can edit images
+// and nothing else (text/url/textarea fields are hidden from the dashboard).
+export function schemaForImagesOnly(slug: string): PageTypeDef {
+  const s = schemaFor(slug);
+  return { ...s, blocks: s.blocks.filter((b) => b.kind === "image") };
+}
+
 export interface SiteContentData {
   header: {
     logoUrl?: string;

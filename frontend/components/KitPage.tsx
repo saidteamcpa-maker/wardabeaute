@@ -32,7 +32,7 @@ const BENEFIT_ICONS = [Check, Sparkles, FlaskConical, Truck, ShieldCheck, Heart]
 export async function KitPage({ preview = false }: { preview?: boolean }) {
   const lang = getLangServer();
   const ov = await getPageOverride("kit-collagene", lang, preview);
-  const T = (k: string) => ov?.[k] ?? t(lang, k);
+  const T = (k: string) => ov?.[k] || t(lang, k);
   const kit = localize(products["kit-collagene"], lang);
   const testimonials = [
     ...localize(products.velvastretch, lang).testimonials,

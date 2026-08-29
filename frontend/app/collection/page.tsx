@@ -10,7 +10,7 @@ import { getPageOverride } from "@/lib/store-content";
 export default async function CollectionPage({ searchParams }: { searchParams?: { preview?: string } }) {
   const lang = getLangServer();
   const ov = await getPageOverride("collection", lang, searchParams?.preview === "1");
-  const T = (k: string) => ov?.[k] ?? t(lang, k);
+  const T = (k: string) => ov?.[k] || t(lang, k);
   const catalog = await getCatalog();
   const { price: kitPrice, oldPrice: kitOld } = getBundleFromCatalog(catalog);
   const kit = localize(catalog["kit-collagene"], lang);

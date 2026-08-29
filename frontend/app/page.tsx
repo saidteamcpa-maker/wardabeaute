@@ -21,7 +21,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { prev
   const lang = getLangServer();
   const preview = searchParams?.preview === "1";
   const ov = await getPageOverride("home", lang, preview);
-  const T = (k: string) => ov?.[k] ?? t(lang, k);
+  const T = (k: string) => ov?.[k] || t(lang, k);
   const catalog = await getCatalog();
   const { price: bundlePrice, oldPrice: bundleOld, save: bundleSave } = getBundleFromCatalog(catalog);
   const featured = Object.keys(catalog).filter((s) => s !== "kit-collagene");

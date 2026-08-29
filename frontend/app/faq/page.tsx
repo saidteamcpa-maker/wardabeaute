@@ -9,7 +9,7 @@ import Image from "next/image";
 export default async function FaqPage({ searchParams }: { searchParams?: { preview?: string } }) {
   const lang = getLangServer();
   const ov = await getPageOverride("faq", lang, searchParams?.preview === "1");
-  const T = (k: string) => ov?.[k] ?? t(lang, k);
+  const T = (k: string) => ov?.[k] || t(lang, k);
   const catalog = await getCatalog();
   const all = Object.values(catalog).flatMap((p) => localize(p, lang).faq);
   return (

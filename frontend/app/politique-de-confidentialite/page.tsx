@@ -7,7 +7,7 @@ import Image from "next/image";
 export default async function PolitiqueConfidentialite({ searchParams }: { searchParams?: { preview?: string } }) {
   const lang = getLangServer();
   const ov = await getPageOverride("privacy", lang, searchParams?.preview === "1");
-  const T = (k: string, fk?: string) => ov?.[k] ?? t(lang, fk ?? k);
+  const T = (k: string, fk?: string) => ov?.[k] || t(lang, fk ?? k);
   const bodyHtml = ov?.["policy.body"];
   const fr = (
     <>

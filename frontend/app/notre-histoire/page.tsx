@@ -7,7 +7,7 @@ import Image from "next/image";
 export default async function NotreHistoirePage({ searchParams }: { searchParams?: { preview?: string } }) {
   const lang = getLangServer();
   const ov = await getPageOverride("notre-histoire", lang, searchParams?.preview === "1");
-  const T = (k: string) => ov?.[k] ?? t(lang, k);
+  const T = (k: string) => ov?.[k] || t(lang, k);
   return (
     <div>
       <section className="section">

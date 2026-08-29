@@ -24,7 +24,7 @@ const BENEFIT_ICONS = [Check, Sparkles, FlaskConical, Truck, ShieldCheck, Check]
 export async function ProductPage({ slug, preview = false }: { slug: string; preview?: boolean }) {
   const lang = getLangServer();
   const ov = await getPageOverride(slug, lang, preview);
-  const T = (k: string) => ov?.[k] ?? t(lang, k);
+  const T = (k: string) => ov?.[k] || t(lang, k);
   const catalog = await getCatalog();
   const raw = catalog[slug];
   if (!raw) {

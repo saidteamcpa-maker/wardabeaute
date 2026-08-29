@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Eye, Save, UploadCloud, ArrowUp, ArrowDown, Power } from "lucide-react";
-import { schemaFor, KNOWN_PAGES, type BlockDef } from "@/lib/page-schema";
+import { schemaFor, schemaForImagesOnly, KNOWN_PAGES, type BlockDef } from "@/lib/page-schema";
 
 type Lang = "fr" | "ar";
 type Rec = Record<string, string>;
@@ -31,7 +31,7 @@ interface PagePayload {
 
 export default function PageEditor({ params }: { params: { slug: string } }) {
   const slug = params.slug;
-  const schema = useMemo(() => schemaFor(slug), [slug]);
+  const schema = useMemo(() => schemaForImagesOnly(slug), [slug]);
   const known = KNOWN_PAGES.find((p) => p.slug === slug);
   const previewRoute = known?.route || `/p/${slug}`;
 
@@ -240,6 +240,7 @@ export default function PageEditor({ params }: { params: { slug: string } }) {
   const requiredMissing = schema.blocks.filter(
     (b) => b.required && (!data.fr[b.key] || !data.ar[b.key])
   );
+  const hasRequiredFields = schema.blocks.some((b) => b.required);
 
   if (loading) {
     return <div className="font-body text-gris p-8">Loading…</div>;
@@ -287,14 +288,14 @@ export default function PageEditor({ params }: { params: { slug: string } }) {
       {error && <div className="mb-3 rounded-xl bg-rose-50 text-rose-700 px-3 py-2 text-sm font-body">{error}</div>}
       {dirty && <div className="mb-3 text-xs text-amber-600 font-body">Unsaved changes… (auto-saving)</div>}
       {lastSaved && !dirty && <div className="mb-3 text-xs text-gris font-body">Last draft: {lastSaved}</div>}
-      {requiredMissing.length > 0 && (
+      {hasRequiredFields && requiredMissing.length > 0 && (
         <div className="mb-3 rounded-xl bg-amber-50 text-amber-800 px-3 py-2 text-sm font-body">
           ⚠ Missing required fields (FR or AR): {requiredMissing.map((b) => b.label).join(", ")}
         </div>
       )}
 
       <div className="flex gap-2 mb-4 border-b border-brume">
-        {(["content", "seo", "versions", "settings"] as const).map((t) => (
+        {(["content", "versions"] as const).map((t) => (
           <button
             key={t}
             onClick={() => setTab(t)}
@@ -302,7 +303,7 @@ export default function PageEditor({ params }: { params: { slug: string } }) {
               tab === t ? "border-b-2 border-warda text-profond" : "text-gris"
             }`}
           >
-            {t === "content" ? "Content" : t === "seo" ? "SEO" : t === "versions" ? "Versions" : "Settings"}
+            {t === "content" ? "Images" : "Versions"}
           </button>
         ))}
       </div>

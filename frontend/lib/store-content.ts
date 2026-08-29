@@ -1,4 +1,5 @@
 import { prisma } from "./db";
+import { revalidatePath } from "next/cache";
 import { getAdminSessionFromCookies } from "./auth";
 import { KNOWN_PAGES, PAGE_TYPES, pageTypeOf, schemaFor, type BlockDef, type SiteContentData } from "./page-schema";
 import type { Lang } from "./i18n-shared";
@@ -162,9 +163,10 @@ export async function saveDraft(slug: string, data: PageContentData, seo: PageSe
 
 export async function publishPage(slug: string, data: PageContentData, seo: PageSeo, title?: string) {
   const row = await prisma.pageContent.findUnique({ where: { slug } });
-  const nextVersion = row
-    ? (await prisma.pageVersion.count({ where: { pageId: row.id } })) + 1
-    : 1;
+  const maxVersion = row
+    ? (await prisma.pageVersion.aggregate({ where: { pageId: row.id }, _max: { version: true } }))._max.version ?? 0
+    : 0;
+  const nextVersion = maxVersion + 1;
   const snapshot = JSON.stringify(data);
   const update = {
     type: row?.type ?? pageTypeOf(slug),
@@ -182,7 +184,17 @@ export async function publishPage(slug: string, data: PageContentData, seo: Page
     indexable: seo.indexable ?? true,
   };
   if (!row) {
-    await prisma.pageContent.create({ data: { slug, ...update } });
+    const created = await prisma.pageContent.create({ data: { slug, ...update } });
+    await prisma.pageVersion.create({
+      data: {
+        pageId: created.id,
+        version: nextVersion,
+        status: "published",
+        content: snapshot,
+        seoJson: JSON.stringify(seo),
+        label: `v${nextVersion}`,
+      },
+    });
   } else {
     await prisma.pageContent.update({ where: { slug }, data: update });
     await prisma.pageVersion.create({
@@ -196,7 +208,15 @@ export async function publishPage(slug: string, data: PageContentData, seo: Page
       },
     });
   }
+  revalidateSlug(slug);
   return getPage(slug);
+}
+
+function revalidateSlug(slug: string) {
+  revalidatePath("/");
+  if (slug !== "home") revalidatePath(`/${slug}`);
+  revalidatePath("/admin/store-pages");
+  revalidatePath(`/admin/store-pages/${slug}`);
 }
 
 export async function setStatus(slug: string, status: string) {
@@ -215,7 +235,9 @@ export async function restoreVersion(slug: string, versionId: string) {
   if (!v || v.pageId !== row.id) throw new Error("Version introuvable");
   const data = parseJSON<PageContentData>(v.content, defaultContentFor(row.type)) ?? defaultContentFor(row.type);
   const seo = parseJSON<PageSeo>(v.seoJson, {}) ?? {};
-  return publishPage(slug, data, seo, row.title);
+  const page = await publishPage(slug, data, seo, row.title);
+  revalidateSlug(slug);
+  return page;
 }
 
 export async function getPageOverride(
