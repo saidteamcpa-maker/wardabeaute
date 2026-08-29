@@ -13,7 +13,7 @@ import Image from "next/image";
 export default async function ContactPage({ searchParams }: { searchParams?: { preview?: string } }) {
   const lang = getLangServer();
   const ov = await getPageOverride("contact", lang, searchParams?.preview === "1");
-  const T = (k: string) => ov?.[k] ?? t(lang, k);
+  const T = (k: string) => ov?.[k] || t(lang, k);
   const wa = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "212779754660";
   const ig = "https://instagram.com/wardabeaute.ma";
   const tiktok = "https://tiktok.com/@wardabeaute";
