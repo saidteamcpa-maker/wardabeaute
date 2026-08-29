@@ -17,10 +17,11 @@ export type CatalogProduct = Omit<StaticProduct, "oldPrice"> & {
 function resolveImage(dbImage: string | null, staticImage: string): string {
   if (!dbImage) return staticImage;
   if (dbImage.startsWith("http")) return dbImage;
-  if (dbImage.startsWith("/uploads/")) return staticImage;
   if (dbImage.startsWith("/")) {
     const disk = path.join(process.cwd(), "public", dbImage);
     if (fs.existsSync(disk)) return dbImage;
+    // Admin uploads live in /uploads/ which is ephemeral on Docker without a mounted volume — fall back to the
+    // baked-in static image (which has optimized WebP variants via image-loader) so the storefront never 404s.
     return staticImage;
   }
   return dbImage;

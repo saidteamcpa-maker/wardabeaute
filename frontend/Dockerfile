@@ -52,12 +52,14 @@ COPY --from=builder /app/next.config.js ./next.config.js
 COPY --from=builder /app/image-loader.js ./image-loader.js
 COPY --from=builder /app/prisma ./prisma
 
-# App runs as non-root "nextjs"; give it ownership so prisma db push (and
-# Next.js runtime) can write to node_modules / .next at runtime.
-RUN chown -R nextjs:nodejs /app
+# Ensure uploads directory exists and is owned by the runtime user.
+# VOLUME is declared so EasyPanel can mount a persistent volume here. The
+# mkdir+chown before VOLUME seeds the volume; a runtime chown in CMD handles
+# anonymous volumes that Docker creates as root.
+RUN mkdir -p /app/public/uploads && chown -R nextjs:nodejs /app
 
 VOLUME /app/public/uploads
 
 USER nextjs
 EXPOSE 3000
-CMD ["sh", "-c", "./node_modules/.bin/prisma db push --skip-generate --accept-data-loss && npm run start"]
+CMD ["sh", "-c", "mkdir -p /app/public/uploads 2>/dev/null || true; ./node_modules/.bin/prisma db push --skip-generate --accept-data-loss && npm run start"]

@@ -90,13 +90,25 @@ export default function AdminProductsEditor() {
 
   async function uploadImage(file: File) {
     setUploading(true);
-    const fd = new FormData();
-    fd.append("file", file);
-    const r = await fetch("/api/admin/upload", { method: "POST", body: fd });
-    const d = await r.json();
-    setUploading(false);
-    if (d.url) setField("image", d.url);
-    else setMsg("Upload failed: " + (d.error || "error"));
+    setMsg("");
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const r = await fetch("/api/admin/upload", { method: "POST", body: fd });
+      const d = await r.json().catch(() => ({} as any));
+      if (!r.ok) {
+        setMsg(`Upload failed (${r.status}): ${d.error || r.statusText}`);
+      } else if (d.url) {
+        setField("image", d.url);
+        setMsg("Image uploadée ✓ — n'oubliez pas de cliquer « Save »");
+      } else {
+        setMsg("Upload failed: " + (d.error || "réponse invalide"));
+      }
+    } catch (e: any) {
+      setMsg("Upload failed: " + (e?.message || "network error"));
+    } finally {
+      setUploading(false);
+    }
   }
 
   async function save() {
