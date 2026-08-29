@@ -89,23 +89,25 @@ export default function AdminProductsEditor() {
   }
 
   async function uploadImage(file: File) {
+    // Pre-flight size check (save a roundtrip)
+    if (file.size > 8 * 1024 * 1024) {
+      setMsg(`Upload failed: fichier ${(file.size / 1024 / 1024).toFixed(1)} Mo trop volumineux (8 Mo max)`);
+      return;
+    }
     setUploading(true);
     setMsg("");
     try {
       const fd = new FormData();
       fd.append("file", file);
-      const r = await fetch("/api/admin/upload", { method: "POST", body: fd });
+      const r = await fetch("/api/admin/upload", { method: "POST", body: fd, credentials: "include" });
       const d = await r.json().catch(() => ({} as any));
       if (!r.ok) {
-        setMsg(`Upload failed (${r.status}): ${d.error || r.statusText}`);
+        const detail = d.error || r.statusText || "erreur inconnue";
+        if (r.status === 401) setMsg(`Non autorisé — reconnectez-vous puis réessayez: ${detail}`);
+        else setMsg(`Upload failed (${r.status}): ${detail}`);
       } else if (d.url) {
         setField("image", d.url);
-        if (creating) {
-          setMsg("Image uploadée ✓ — n'oubliez pas de cliquer « Save » pour créer le produit");
-        } else {
-          setMsg("Image uploadée ✓");
-          await save(d.url, true);
-        }
+        setMsg("Image uploadée ✓ — n'oubliez pas de cliquer « Save »");
       } else {
         setMsg("Upload failed: " + (d.error || "réponse invalide"));
       }
@@ -116,7 +118,7 @@ export default function AdminProductsEditor() {
     }
   }
 
-  async function save(imageOverride?: string, keepOpen = false) {
+  async function save() {
     setSaving(true);
     setMsg("");
     if (creating && !String(form.slug || "").trim()) {
@@ -126,7 +128,6 @@ export default function AdminProductsEditor() {
     }
     const payload = {
       ...form,
-      image: imageOverride ?? form.image,
       price: Number(form.price),
       oldPrice: form.oldPrice === "" ? null : Number(form.oldPrice),
       stockCount: form.stockCount === "" ? null : Number(form.stockCount),
@@ -139,15 +140,10 @@ export default function AdminProductsEditor() {
     });
     setSaving(false);
     if (res.ok) {
-      setMsg(keepOpen ? "Image enregistrée ✓" : creating ? "Product created ✓" : "Saved ✓");
-      if (keepOpen) {
-        if (imageOverride) setField("image", imageOverride);
-        await load();
-      } else {
-        setCreating(false);
-        setEditing(null);
-        await load();
-      }
+      setMsg(creating ? "Product created ✓" : "Saved ✓");
+      setCreating(false);
+      setEditing(null);
+      await load();
     } else {
       const j = await res.json().catch(() => ({}));
       if (j.detail === "sku_not_unique") setMsg(j.message || "This SKU is already in use. Please choose a different SKU.");
@@ -178,7 +174,17 @@ export default function AdminProductsEditor() {
         <button onClick={openCreate} className="btn-primary ml-auto">+ Add product</button>
       </div>
 
-      {msg && <p className="text-sm text-emerald-700 mb-3">{msg}</p>}
+      {msg && (
+        <p
+          className={`text-sm mb-3 rounded-xl px-3 py-2 font-body ${
+            /fail|error|non autorisé|trop volumineux|vide/i.test(msg)
+              ? "bg-rose-50 text-rose-700 border border-rose-200"
+              : "bg-emerald-50 text-emerald-700 border border-emerald-200"
+          }`}
+        >
+          {msg}
+        </p>
+      )}
 
       <div className="bg-white rounded-2xl border border-brume overflow-x-auto">
         <table className="w-full text-sm">
@@ -304,7 +310,7 @@ export default function AdminProductsEditor() {
             </label>
           </div>
           <div className="mt-4 flex gap-3">
-            <button onClick={() => save()} disabled={saving} className="btn-primary disabled:opacity-60">
+            <button onClick={save} disabled={saving} className="btn-primary disabled:opacity-60">
               {saving ? "…" : "Save"}
             </button>
             <button onClick={() => setEditing(null)} className="btn-outline">Cancel</button>

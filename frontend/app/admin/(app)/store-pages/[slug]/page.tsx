@@ -111,14 +111,27 @@ export default function PageEditor({ params }: { params: { slug: string } }) {
   }
 
   async function uploadImage(file: File, lang: Lang, key: string) {
+    if (file.size > 8 * 1024 * 1024) {
+      setError(`Fichier ${(file.size / 1024 / 1024).toFixed(1)} Mo trop volumineux (8 Mo max)`);
+      return;
+    }
     setSaving(true);
-    const fd = new FormData();
-    fd.append("file", file);
-    const r = await fetch("/api/admin/upload", { method: "POST", body: fd });
-    const d = await r.json();
-    setSaving(false);
-    if (d.url) setField(lang, key, d.url);
-    else setError(d.error || "Upload failed");
+    setError(null);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const r = await fetch("/api/admin/upload", { method: "POST", body: fd, credentials: "include" });
+      const d = await r.json().catch(() => ({} as any));
+      if (!r.ok) {
+        const detail = (d as any).error || r.statusText || "erreur inconnue";
+        setError(r.status === 401 ? `Non autorisé — reconnectez-vous: ${detail}` : `Upload failed (${r.status}): ${detail}`);
+      } else if ((d as any).url) setField(lang, key, (d as any).url);
+      else setError((d as any).error || "Upload failed: réponse invalide");
+    } catch (e: any) {
+      setError("Upload failed: " + (e?.message || "network error"));
+    } finally {
+      setSaving(false);
+    }
   }
   function pickImage(key: string) {
     setUploadTarget(key);
