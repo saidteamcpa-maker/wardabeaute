@@ -24,7 +24,7 @@ export function LinkedPricingCards({
   dir?: "ltr" | "rtl";
   lang?: string;
 }) {
-  const defaultTier = slug === "kit-collagene" ? 1 : slug === "silkstop" ? 3 : 2;
+  const defaultTier = slug === "kit-collagene" ? 1 : 2;
   const setTier = useCart((s) => s.setTier);
   const selectedTier = useCart((s) => s.selectedTier[slug] ?? defaultTier);
 
