@@ -392,7 +392,7 @@ export default function ConfirmationPage() {
         )}
 
         {suggestions.length === 0 && (
-          <div className="mt-10 rounded-2xl bg-or-doux p-5 text-center">
+          <div className="mt-10 rounded-2xl bg-ordoux p-5 text-center">
             <h2 className="font-display text-2xl leading-snug text-profond mb-2">
               {A("الروتين الكامل : ", "Le rituel complet : ")}
               {bundle.name}

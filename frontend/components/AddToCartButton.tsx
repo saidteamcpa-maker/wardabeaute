@@ -69,7 +69,7 @@ export function AddToCartButton({
                   : "border-brume bg-white text-brun hover:border-warda active:scale-[0.98]"
               }`}
             >
-              <span className={`flex items-center gap-0.5 ${tier === o.qty ? "text-or-doux" : "text-warda"}`}>
+              <span className={`flex items-center gap-0.5 ${tier === o.qty ? "text-ordoux" : "text-warda"}`}>
                 {Array.from({ length: o.qty }).map((_, i) => (
                   <Package key={i} className="w-5 h-5" strokeWidth={1.6} />
                 ))}

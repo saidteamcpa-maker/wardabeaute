@@ -123,7 +123,7 @@ export async function ProductPage({ slug, preview = false }: { slug: string; pre
         <ol className="list-decimal list-inside space-y-2">
           {p.howTo.map((h, i) => <li key={i} className="leading-relaxed">{h}</li>)}
         </ol>
-        <div className="mt-4 rounded-2xl bg-or-doux/50 p-4">
+        <div className="mt-4 rounded-2xl bg-ordoux/50 p-4">
           <p className="font-medium text-profond">{T("pp.forYouIf")}</p>
           <ul className="mt-1">{p.whoFor.map((w, i) => <li key={i} className="leading-relaxed">• {w}</li>)}</ul>
         </div>

@@ -55,7 +55,7 @@ export function LinkedPricingCards({
               {(card as any).badge && (
                 <span
                   className={`absolute -top-3 px-3 py-1 rounded-full text-xs font-semibold shadow-subtle ${dir === "rtl" ? "left-4" : "right-4"} ${
-                    featured ? "bg-or-doux text-profond border border-champagne/20" : "bg-champagne text-white"
+                    featured ? "bg-ordoux text-profond border border-champagne/20" : "bg-champagne text-white"
                   }`}
                 >
                   {(card as any).badge}
@@ -72,7 +72,7 @@ export function LinkedPricingCards({
                 type="button"
                 onClick={() => handleClick(i)}
                 className={`mt-auto w-full rounded-full px-5 py-3 text-sm font-semibold text-center transition-all ${
-                  isActive ? "bg-white text-profond hover:bg-or-doux shadow-glow" : "bg-profond text-white hover:brightness-110"
+                  isActive ? "bg-white text-profond hover:bg-ordoux shadow-glow" : "bg-profond text-white hover:brightness-110"
                 }`}
               >
                 {card.cta}

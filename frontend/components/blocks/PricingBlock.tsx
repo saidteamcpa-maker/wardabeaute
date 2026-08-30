@@ -107,14 +107,14 @@ export function PricingBlock({ slug, offers: propOffers, lang: propLang, title, 
                     <span
                       className={`absolute -top-3 px-3 py-1 rounded-full text-xs font-body font-semibold shadow-subtle ${
                         dir === "rtl" ? "left-4" : "right-4"
-                      } ${isActive ? "bg-or-doux text-profond border border-champagne/20" : "bg-champagne text-white"}`}
+                      } ${isActive ? "bg-ordoux text-profond border border-champagne/20" : "bg-champagne text-white"}`}
                     >
                       {lang === "ar" ? `وفّري ${savings} MAD` : `-${savings} MAD`}
                     </span>
                   )}
 
                   <div className="flex items-center gap-2">
-                    <span className={`flex items-center gap-0.5 ${isActive ? "text-or-doux" : "text-warda"}`} aria-hidden="true">
+                    <span className={`flex items-center gap-0.5 ${isActive ? "text-ordoux" : "text-warda"}`} aria-hidden="true">
                       {Array.from({ length: o.qty }).map((_, i) => (
                         <Package key={i} className="w-5 h-5" strokeWidth={1.6} />
                       ))}
@@ -137,7 +137,7 @@ export function PricingBlock({ slug, offers: propOffers, lang: propLang, title, 
                       {o.qty === 1 ? (lang === "ar" ? " / وحدة" : " / unité") : lang === "ar" ? " للمجموع" : " total"}
                     </div>
                     {hasSavings ? (
-                      <div className={`font-body text-xs font-medium mt-1 ${isActive ? "text-or-doux" : "text-champagne"}`}>
+                      <div className={`font-body text-xs font-medium mt-1 ${isActive ? "text-ordoux" : "text-champagne"}`}>
                         {lang === "ar" ? `توفير ${savings} MAD` : `Économisez ${savings} MAD`}
                       </div>
                     ) : (
@@ -156,7 +156,7 @@ export function PricingBlock({ slug, offers: propOffers, lang: propLang, title, 
                       handleAdd(o.qty);
                     }}
                     className={`w-full mt-1 rounded-full px-5 py-3 text-sm font-body font-semibold transition-all duration-250 ${
-                      isActive ? "bg-white text-profond hover:bg-or-doux hover:shadow-glow" : "bg-profond text-white hover:brightness-110 hover:shadow-glow"
+                      isActive ? "bg-white text-profond hover:bg-ordoux hover:shadow-glow" : "bg-profond text-white hover:brightness-110 hover:shadow-glow"
                     }`}
                   >
                     {lang === "ar" ? "اطلبي الآن" : "Commander"} — {o.price} MAD

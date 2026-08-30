@@ -84,7 +84,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { prev
           <div className="bg-gradient-to-br from-profond to-[#6b2d42] text-petal rounded-3xl p-8 md:p-12 text-center shadow-elevated">
             <p className="font-display text-3xl mb-4 leading-snug">{T("home.problemTitle")}</p>
             <p className="font-body text-petal/85 max-w-2xl mx-auto leading-relaxed">{T("home.problemBody")}</p>
-            {lang === "ar" && <p className="font-arabic text-2xl text-or-doux mt-4">{T("home.problemMicro")}</p>}
+            {lang === "ar" && <p className="font-arabic text-2xl text-ordoux mt-4">{T("home.problemMicro")}</p>}
           </div>
         </Reveal>
       </section>

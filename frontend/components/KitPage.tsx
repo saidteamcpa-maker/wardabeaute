@@ -99,7 +99,7 @@ export async function KitPage({ preview = false }: { preview?: boolean }) {
           <div className="bg-gradient-to-br from-profond to-[#6b2d42] text-petal rounded-3xl p-8 md:p-12 text-center shadow-elevated">
             <p className="font-display text-3xl mb-4 leading-snug">{T("kit.problemTitle")}</p>
             <p className="font-body text-petal/85 max-w-2xl mx-auto leading-relaxed">{T("kit.problemBody")}</p>
-            <p className="font-arabic text-2xl text-or-doux mt-4">{T("kit.problemMicro")}</p>
+            <p className="font-arabic text-2xl text-ordoux mt-4">{T("kit.problemMicro")}</p>
           </div>
         </Reveal>
       </section>
@@ -120,7 +120,7 @@ export async function KitPage({ preview = false }: { preview?: boolean }) {
             <p className="text-sm text-brun leading-relaxed">{T("kit.intBody")}</p>
           </div>
         </div>
-        <div className="rounded-2xl bg-or-doux/60 p-5 border border-champagne/20">
+          <div className="rounded-2xl bg-ordoux/60 p-5 border border-champagne/20">
           <p className="font-body text-brun mb-2 leading-relaxed">
             <strong className="text-profond">{lang === "ar" ? "البحث واضح :" : "La recherche est claire :"}</strong>{" "}
             {T("kit.sci3")}
@@ -212,7 +212,7 @@ export async function KitPage({ preview = false }: { preview?: boolean }) {
             <li key={i} className="leading-relaxed">{h}</li>
           ))}
         </ol>
-        <div className="mt-4 rounded-2xl bg-or-doux/60 p-4 border border-champagne/20">
+        <div className="mt-4 rounded-2xl bg-ordoux/60 p-4 border border-champagne/20">
           <p className="font-body text-profond">{T("kit.ritualNote")}</p>
         </div>
       </Section>

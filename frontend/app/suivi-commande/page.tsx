@@ -40,7 +40,7 @@ export default function SuiviCommande() {
             ? "هاك كيفاش كتمشي التوصيل ديال الكوماندة ديالك، من الكليك حتال الباب ديالك."
             : "Voici comment se déroule la livraison de votre commande, du clic à votre porte."}
         </p>
-        <p className="mb-5 inline-flex items-center gap-2 rounded-full bg-or-doux px-4 py-2 text-profond font-medium">
+        <p className="mb-5 inline-flex items-center gap-2 rounded-full bg-ordoux px-4 py-2 text-profond font-medium">
           {lang === "ar" ? "⏱ التوصيل 24 لـ 48 ساعة فكل المغرب" : "⏱ Livraison 24h – 48h partout au Maroc"}
         </p>
 
