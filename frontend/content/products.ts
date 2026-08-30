@@ -298,7 +298,10 @@ const kitCollagene: Product = {
     oldPrice: 848,
     stars: 5.0,
     reviews: 1459,
-    offers: [{ qty: 1, price: 549, save: 299 }],
+    offers: [
+      { qty: 1, price: 549, save: 299 },
+      { qty: 2, price: 999, save: 99 },
+    ],
     stockCount: 40,
     hero: {
       eyebrow: "✦ Marque marocaine · Collagène de l'intérieur et de l'extérieur ✦",
