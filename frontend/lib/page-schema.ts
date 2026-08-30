@@ -225,7 +225,8 @@ export const PAGE_TYPES: Record<string, PageTypeDef> = {
       b("story.p1", "Paragraphe 1", "textarea"),
       b("story.p2", "Paragraphe 2", "textarea"),
       b("story.quote", "Citation", "textarea"),
-      b("story.image", "Image de page", "image"),
+      b("story.image", "Image de page (hero)", "image"),
+      b("story.secImage", "Labo — image", "image"),
     ],
   },
 };

@@ -27,7 +27,13 @@ export default async function NotreHistoirePage({ searchParams }: { searchParams
           </div>
         </div>
       </section>
-      <Section eyebrow={T("story.secEyebrow")} title={T("story.secTitle")} imageLabel="Lab Casablanca" imageSide="right">
+      <Section
+        eyebrow={T("story.secEyebrow")}
+        title={T("story.secTitle")}
+        imageLabel="Lab Casablanca"
+        imageSide="right"
+        imageSrc={ov?.["story.secImage"] || "/images/story-labo.jpg"}
+      >
         <p>{T("story.sec1")}</p>
         <p>{T("story.sec2")}</p>
       </Section>
