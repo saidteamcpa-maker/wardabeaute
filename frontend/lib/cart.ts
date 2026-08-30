@@ -73,9 +73,11 @@ export const useCart = create<CartState>()(
             state.isCheckoutOpen = false;
           }
         }
-        // Fix silkstop default was 3 but should be 2 — correct persisted value
-        if (state && state.selectedTier && state.selectedTier["silkstop"] === 3) {
-          state.selectedTier["silkstop"] = 2;
+        // Fix collaglow default was 3 but should be 2 — correct persisted value (silkstop already fixed in v3)
+        if (state && state.selectedTier) {
+          if (state.selectedTier["silkstop"] === 3) state.selectedTier["silkstop"] = 2;
+          if (state.selectedTier["collaglow"] === 3) state.selectedTier["collaglow"] = 2;
+          if (state.selectedTier["velvastretch"] === 3) state.selectedTier["velvastretch"] = 2;
         }
         // Always start with UI closed on rehydrate
         if (state) {
@@ -83,7 +85,7 @@ export const useCart = create<CartState>()(
           state.isCheckoutOpen = false;
         }
       },
-      version: 3,
+      version: 4,
       migrate: (persistedState: any, version: number) => {
         if (version < 2) {
           // v1 stored isCartOpen/isCheckoutOpen — drop them
@@ -101,6 +103,13 @@ export const useCart = create<CartState>()(
           const s = persistedState as any;
           if (s && s.selectedTier && s.selectedTier["silkstop"] === 3) {
             s.selectedTier["silkstop"] = 2;
+          }
+        }
+        if (version < 4) {
+          const s = persistedState as any;
+          if (s && s.selectedTier) {
+            if (s.selectedTier["collaglow"] === 3) s.selectedTier["collaglow"] = 2;
+            if (s.selectedTier["velvastretch"] === 3) s.selectedTier["velvastretch"] = 2;
           }
         }
         return persistedState as CartState;
