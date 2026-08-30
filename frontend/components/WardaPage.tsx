@@ -13,6 +13,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { IconBadge } from "@/components/ui/IconBadge";
 import { Check } from "lucide-react";
 import { AddToCartButton } from "@/components/AddToCartButton";
+import { LinkedPricingCards } from "@/components/blocks/LinkedPricingCards";
 import { WHATSAPP_NUMBER } from "@/lib/config";
 
 const HERO_IMAGES: Record<string, string> = {
@@ -156,39 +157,14 @@ export async function WardaPage({ slug }: { slug: string }) {
       {/* 10 CTA Mid #2 */}
       <CtaMidBlock ctaLabel={c.ctaMid2.cta} trust={c.ctaMid2.trust} lang={lang} />
 
-      {/* 11 Pricing / Offres — now near bottom (swapped) */}
+      {/* 11 Pricing / Offres — linked to bundle selector */}
       <section dir={dir} className="section bg-petal/30">
         <div className="container-page">
           <Reveal>
             <p className="text-champagne text-sm font-body uppercase tracking-wide mb-2 text-center">{c.pricing.eyebrow}</p>
             <h2 className={`text-3xl md:text-4xl leading-snug text-profond mb-8 text-center ${lang === "ar" ? "font-arabic" : ""}`}>{c.pricing.h2}</h2>
           </Reveal>
-          <div className="grid md:grid-cols-3 gap-4">
-            {c.pricing.cards.map((card, i) => (
-              <Reveal key={i} delay={i * 0.06}>
-                <div
-                  className={`relative rounded-2xl border-2 p-5 flex flex-col gap-3 h-full ${
-                    (card as any).isFeatured ? "border-profond bg-profond text-white shadow-elevated scale-[1.02]" : "border-brume bg-white text-brun"
-                  }`}
-                >
-                  {(card as any).badge && (
-                    <span className={`absolute -top-3 px-3 py-1 rounded-full text-xs font-semibold shadow-subtle ${dir === "rtl" ? "left-4" : "right-4"} ${(card as any).isFeatured ? "bg-or-doux text-profond" : "bg-champagne text-white"}`}>
-                      {(card as any).badge}
-                    </span>
-                  )}
-                  <h3 className={`font-display text-lg ${ (card as any).isFeatured ? "text-white" : "text-profond"}`}>{card.title}</h3>
-                  <div>
-                    <div className={`font-display text-2xl ${(card as any).isFeatured ? "text-white" : "text-profond"}`}>{card.price} MAD</div>
-                    <div className={`font-body text-xs ${(card as any).isFeatured ? "text-white/80" : "text-gris"}`}>{card.size} · {card.duration}</div>
-                  </div>
-                  <a href="#order" className={`mt-auto w-full rounded-full px-5 py-3 text-sm font-semibold text-center transition-all ${ (card as any).isFeatured ? "bg-white text-profond hover:bg-or-doux" : "bg-profond text-white hover:brightness-110"}`}>
-                    {card.cta}
-                  </a>
-                  {(card as any).isPlaceholder && <p className="text-[10px] text-center opacity-60">TODO: prix à confirmer</p>}
-                </div>
-              </Reveal>
-            ))}
-          </div>
+          <LinkedPricingCards slug={slug} cards={c.pricing.cards as any} dir={dir} lang={lang} />
           <p className="font-body text-gris text-xs text-center mt-4">{c.pricing.trust}</p>
         </div>
       </section>
