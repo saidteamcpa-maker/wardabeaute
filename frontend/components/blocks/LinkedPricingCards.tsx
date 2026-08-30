@@ -20,13 +20,13 @@ export function LinkedPricingCards({
   slug,
   cards,
   dir = "ltr",
-  imageSrc,
+  images = [],
 }: {
   slug: string;
   cards: Card[];
   dir?: "ltr" | "rtl";
   lang?: string;
-  imageSrc?: string;
+  images?: (string | undefined)[];
 }) {
   const defaultTier = slug === "kit-collagene" ? 1 : 2;
   const setTier = useCart((s) => s.setTier);
@@ -72,10 +72,10 @@ export function LinkedPricingCards({
                   isActive ? "border-profond bg-profond text-white shadow-elevated scale-[1.02]" : "border-brume bg-white text-brun"
                 }`}
               >
-                {imageSrc && (
+                {images[i] && (
                   <div className="absolute right-4 top-1/2 -translate-y-1/2 w-28 h-28 md:w-32 md:h-32 overflow-hidden rounded-xl bg-petal/60 border border-brume/60">
                     <Image
-                      src={imageSrc}
+                      src={images[i] as string}
                       alt=""
                       fill
                       sizes="128px"
@@ -83,7 +83,7 @@ export function LinkedPricingCards({
                     />
                   </div>
                 )}
-                <div className={imageSrc ? "pr-32" : ""}>
+                <div className={images[i] ? "pr-32" : ""}>
                   {(card as any).badge && (
                     <span
                       className={`absolute -top-3 px-3 py-1 rounded-full text-xs font-semibold shadow-subtle ${dir === "rtl" ? "left-4" : "right-4"} ${
