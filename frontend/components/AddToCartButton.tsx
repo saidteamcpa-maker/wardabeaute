@@ -25,7 +25,7 @@ export function AddToCartButton({
   const raw = catalog[slug];
   if (!raw) return null;
   const p = localize(raw, lang);
-  const defaultTier = slug === "kit-collagene" ? 1 : 2;
+  const defaultTier = slug === "kit-collagene" ? 1 : slug === "silkstop" ? 3 : 2;
   const tier = useCart((s) => s.selectedTier[slug] ?? defaultTier);
   const setTier = useCart((s) => s.setTier);
   const add = useCart((s) => s.add);
