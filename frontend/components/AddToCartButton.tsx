@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { ShoppingBag, Package } from "lucide-react";
 import { useCart } from "@/lib/cart";
 import { track } from "@/lib/pixels";
@@ -26,10 +25,11 @@ export function AddToCartButton({
   const raw = catalog[slug];
   if (!raw) return null;
   const p = localize(raw, lang);
-  const [tier, setTier] = useState(1);
+  const defaultTier = slug === "kit-collagene" ? 1 : 2;
+  const tier = useCart((s) => s.selectedTier[slug] ?? defaultTier);
+  const setTier = useCart((s) => s.setTier);
   const add = useCart((s) => s.add);
   const openCart = useCart((s) => s.openCart);
-  const setStoreTier = useCart((s) => s.setTier);
 
   const onClick = () => {
     if (bundleSlugs && bundleSlugs.length) {
@@ -62,10 +62,7 @@ export function AddToCartButton({
             <button
               key={o.qty}
               type="button"
-              onClick={() => {
-                setTier(o.qty);
-                setStoreTier(slug, o.qty);
-              }}
+              onClick={() => setTier(slug, o.qty)}
               className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left transition-all duration-200 ${
                 tier === o.qty
                   ? "border-profond bg-profond text-white"
