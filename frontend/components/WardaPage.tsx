@@ -13,9 +13,7 @@ import { AssuranceBlock } from "@/components/AssuranceBlock";
 import { Reveal } from "@/components/ui/Reveal";
 import { IconBadge } from "@/components/ui/IconBadge";
 import { Check } from "lucide-react";
-import { AddToCartButton } from "@/components/AddToCartButton";
 import { LinkedPricingCards } from "@/components/blocks/LinkedPricingCards";
-import { WHATSAPP_NUMBER } from "@/lib/config";
 
 const HERO_IMAGES: Record<string, string> = {
   velvastretch: "/images/velvastretch.png",
@@ -59,28 +57,15 @@ export async function WardaPage({ slug, preview = false }: { slug: string; previ
         lang={lang}
       />
 
-      {/* 02 Add to cart / bundles — below hero (swapped with Pricing) */}
-      <section dir={dir} id="order" className="section bg-white scroll-mt-6">
-        <div className="container-page max-w-xl text-center">
+      {/* 02 Offers / bundle selector — directly below the hero */}
+      <section dir={dir} id="order" className="section bg-petal/30 scroll-mt-6">
+        <div className="container-page">
           <Reveal>
-            {c.orderForm.eyebrow && <p className="text-champagne text-sm font-body uppercase tracking-wide mb-2">{c.orderForm.eyebrow}</p>}
-            <h2 className={`text-3xl md:text-4xl leading-snug text-profond mb-2 ${lang === "ar" ? "font-arabic" : ""}`}>{c.orderForm.h2}</h2>
-            <p className="font-body text-brun mb-6">{c.orderForm.para}</p>
+            <p className="text-champagne text-sm font-body uppercase tracking-wide mb-2 text-center">{c.pricing.eyebrow}</p>
+            <h2 className={`text-3xl md:text-4xl leading-snug text-profond mb-8 text-center ${lang === "ar" ? "font-arabic" : ""}`}>{c.pricing.h2}</h2>
           </Reveal>
-          <Reveal delay={0.06}>
-            <div className="max-w-sm mx-auto">
-              <AddToCartButton slug={slug} withTier />
-            </div>
-            <p className="font-body text-gris text-xs mt-3">{c.orderForm.badges?.join(" · ") || "✓ Paiement à la livraison · 🚚 24–48h · 🔒 Confidentialité"}</p>
-            <a
-              href={`https://wa.me/${WHATSAPP_NUMBER || "212779754660"}?text=${encodeURIComponent(`Hi, I want to order ${slug}`)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-4 inline-flex items-center gap-2 rounded-full border border-[#25D366] text-[#25D366] px-6 py-3 font-body text-sm font-medium hover:bg-[#25D366] hover:text-white transition-colors"
-            >
-              💬 {lang === "ar" ? "اطلبي عبر واتساب" : "Commander via WhatsApp"}
-            </a>
-          </Reveal>
+          <LinkedPricingCards slug={slug} cards={c.pricing.cards as any} dir={dir} lang={lang} />
+          <p className="font-body text-gris text-xs text-center mt-4">{c.pricing.trust}</p>
         </div>
       </section>
 
@@ -163,19 +148,7 @@ export async function WardaPage({ slug, preview = false }: { slug: string; previ
       {/* 10 CTA Mid #2 */}
       <CtaMidBlock ctaLabel={c.ctaMid2.cta} trust={c.ctaMid2.trust} lang={lang} />
 
-      {/* 11 Pricing / Offres — linked to bundle selector */}
-      <section dir={dir} className="section bg-petal/30">
-        <div className="container-page">
-          <Reveal>
-            <p className="text-champagne text-sm font-body uppercase tracking-wide mb-2 text-center">{c.pricing.eyebrow}</p>
-            <h2 className={`text-3xl md:text-4xl leading-snug text-profond mb-8 text-center ${lang === "ar" ? "font-arabic" : ""}`}>{c.pricing.h2}</h2>
-          </Reveal>
-          <LinkedPricingCards slug={slug} cards={c.pricing.cards as any} dir={dir} lang={lang} />
-          <p className="font-body text-gris text-xs text-center mt-4">{c.pricing.trust}</p>
-        </div>
-      </section>
-
-      {/* 12 FAQ */}
+      {/* 11 FAQ */}
       <section dir={dir} className="section bg-white">
         <div className="container-page max-w-3xl">
           <Reveal>

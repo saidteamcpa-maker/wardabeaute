@@ -1,6 +1,7 @@
 "use client";
 
 import { useCart } from "@/lib/cart";
+import { track } from "@/lib/pixels";
 import { Reveal } from "@/components/ui/Reveal";
 
 type Card = {
@@ -26,17 +27,23 @@ export function LinkedPricingCards({
 }) {
   const defaultTier = slug === "kit-collagene" ? 1 : 2;
   const setTier = useCart((s) => s.setTier);
+  const add = useCart((s) => s.add);
+  const openCart = useCart((s) => s.openCart);
   const selectedTier = useCart((s) => s.selectedTier[slug] ?? defaultTier);
 
-  const handleClick = (idx: number) => {
+  const handleSelect = (idx: number) => {
     // Infer qty from card title/position: 1st -> 1, 2nd -> 2, 3rd -> 3
     // For velvastretch/silkstop/collaglow this matches offers qty 1/2/3
     const qty = idx + 1;
     setTier(slug, qty);
-    // scroll to order (top AddToCart)
-    const el = document.getElementById("order");
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-    else window.location.hash = "#order";
+  };
+
+  const handleAdd = (idx: number, price: number) => {
+    const qty = idx + 1;
+    setTier(slug, qty);
+    add({ slug, qty });
+    track("AddToCart", { content_ids: [slug], value: price, currency: "MAD" });
+    openCart();
   };
 
   return (
@@ -48,6 +55,16 @@ export function LinkedPricingCards({
         return (
           <Reveal key={i} delay={i * 0.06}>
             <div
+              role="radio"
+              aria-checked={isActive}
+              tabIndex={0}
+              onClick={() => handleSelect(i)}
+              onKeyDown={(event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  handleSelect(i);
+                }
+              }}
               className={`relative rounded-2xl border-2 p-5 flex flex-col gap-3 h-full ${
                 isActive ? "border-profond bg-profond text-white shadow-elevated scale-[1.02]" : "border-brume bg-white text-brun"
               }`}
@@ -70,7 +87,10 @@ export function LinkedPricingCards({
               </div>
               <button
                 type="button"
-                onClick={() => handleClick(i)}
+                onClick={(event) => {
+                  event.stopPropagation();
+                  handleAdd(i, card.price);
+                }}
                 className={`mt-auto w-full rounded-full px-5 py-3 text-sm font-semibold text-center transition-all ${
                   isActive ? "bg-white text-profond hover:bg-ordoux shadow-glow" : "bg-profond text-white hover:brightness-110"
                 }`}
