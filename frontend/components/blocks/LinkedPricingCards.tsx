@@ -113,7 +113,6 @@ export function LinkedPricingCards({
                     {card.cta}
                   </button>
                 </div>
-                {(card as any).isPlaceholder && <p className="text-[10px] text-center opacity-60">TODO: prix à confirmer</p>}
               </div>
             </Reveal>
           );
