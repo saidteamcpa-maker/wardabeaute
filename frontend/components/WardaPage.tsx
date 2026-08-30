@@ -52,40 +52,28 @@ export async function WardaPage({ slug }: { slug: string }) {
         lang={lang}
       />
 
-      {/* 02 Pricing — below hero */}
-      <section dir={dir} className="section bg-petal/30">
-        <div className="container-page">
+      {/* 02 Add to cart / bundles — below hero (swapped with Pricing) */}
+      <section dir={dir} id="order" className="section bg-white scroll-mt-6">
+        <div className="container-page max-w-xl text-center">
           <Reveal>
-            <p className="text-champagne text-sm font-body uppercase tracking-wide mb-2 text-center">{c.pricing.eyebrow}</p>
-            <h2 className={`text-3xl md:text-4xl leading-snug text-profond mb-8 text-center ${lang === "ar" ? "font-arabic" : ""}`}>{c.pricing.h2}</h2>
+            {c.orderForm.eyebrow && <p className="text-champagne text-sm font-body uppercase tracking-wide mb-2">{c.orderForm.eyebrow}</p>}
+            <h2 className={`text-3xl md:text-4xl leading-snug text-profond mb-2 ${lang === "ar" ? "font-arabic" : ""}`}>{c.orderForm.h2}</h2>
+            <p className="font-body text-brun mb-6">{c.orderForm.para}</p>
           </Reveal>
-          <div className="grid md:grid-cols-3 gap-4">
-            {c.pricing.cards.map((card, i) => (
-              <Reveal key={i} delay={i * 0.06}>
-                <div
-                  className={`relative rounded-2xl border-2 p-5 flex flex-col gap-3 h-full ${
-                    (card as any).isFeatured ? "border-profond bg-profond text-white shadow-elevated scale-[1.02]" : "border-brume bg-white text-brun"
-                  }`}
-                >
-                  {(card as any).badge && (
-                    <span className={`absolute -top-3 px-3 py-1 rounded-full text-xs font-semibold shadow-subtle ${dir === "rtl" ? "left-4" : "right-4"} ${(card as any).isFeatured ? "bg-or-doux text-profond" : "bg-champagne text-white"}`}>
-                      {(card as any).badge}
-                    </span>
-                  )}
-                  <h3 className={`font-display text-lg ${ (card as any).isFeatured ? "text-white" : "text-profond"}`}>{card.title}</h3>
-                  <div>
-                    <div className={`font-display text-2xl ${(card as any).isFeatured ? "text-white" : "text-profond"}`}>{card.price} MAD</div>
-                    <div className={`font-body text-xs ${(card as any).isFeatured ? "text-white/80" : "text-gris"}`}>{card.size} · {card.duration}</div>
-                  </div>
-                  <a href="#order" className={`mt-auto w-full rounded-full px-5 py-3 text-sm font-semibold text-center transition-all ${ (card as any).isFeatured ? "bg-white text-profond hover:bg-or-doux" : "bg-profond text-white hover:brightness-110"}`}>
-                    {card.cta}
-                  </a>
-                  {(card as any).isPlaceholder && <p className="text-[10px] text-center opacity-60">TODO: prix à confirmer</p>}
-                </div>
-              </Reveal>
-            ))}
-          </div>
-          <p className="font-body text-gris text-xs text-center mt-4">{c.pricing.trust}</p>
+          <Reveal delay={0.06}>
+            <div className="max-w-sm mx-auto">
+              <AddToCartButton slug={slug} withTier />
+            </div>
+            <p className="font-body text-gris text-xs mt-3">{c.orderForm.badges?.join(" · ") || "✓ Paiement à la livraison · 🚚 24–48h · 🔒 Confidentialité"}</p>
+            <a
+              href={`https://wa.me/${WHATSAPP_NUMBER || "212779754660"}?text=${encodeURIComponent(`Hi, I want to order ${slug}`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-4 inline-flex items-center gap-2 rounded-full border border-[#25D366] text-[#25D366] px-6 py-3 font-body text-sm font-medium hover:bg-[#25D366] hover:text-white transition-colors"
+            >
+              💬 {lang === "ar" ? "اطلبي عبر واتساب" : "Commander via WhatsApp"}
+            </a>
+          </Reveal>
         </div>
       </section>
 
@@ -168,28 +156,40 @@ export async function WardaPage({ slug }: { slug: string }) {
       {/* 10 CTA Mid #2 */}
       <CtaMidBlock ctaLabel={c.ctaMid2.cta} trust={c.ctaMid2.trust} lang={lang} />
 
-      {/* 11 Order — add to cart / popup checkout */}
-      <section dir={dir} id="order" className="section bg-white scroll-mt-6">
-        <div className="container-page max-w-xl text-center">
+      {/* 11 Pricing / Offres — now near bottom (swapped) */}
+      <section dir={dir} className="section bg-petal/30">
+        <div className="container-page">
           <Reveal>
-            {c.orderForm.eyebrow && <p className="text-champagne text-sm font-body uppercase tracking-wide mb-2">{c.orderForm.eyebrow}</p>}
-            <h2 className={`text-3xl md:text-4xl leading-snug text-profond mb-2 ${lang === "ar" ? "font-arabic" : ""}`}>{c.orderForm.h2}</h2>
-            <p className="font-body text-brun mb-6">{c.orderForm.para}</p>
+            <p className="text-champagne text-sm font-body uppercase tracking-wide mb-2 text-center">{c.pricing.eyebrow}</p>
+            <h2 className={`text-3xl md:text-4xl leading-snug text-profond mb-8 text-center ${lang === "ar" ? "font-arabic" : ""}`}>{c.pricing.h2}</h2>
           </Reveal>
-          <Reveal delay={0.06}>
-            <div className="max-w-sm mx-auto">
-              <AddToCartButton slug={slug} withTier />
-            </div>
-            <p className="font-body text-gris text-xs mt-3">{c.orderForm.badges?.join(" · ") || "✓ Paiement à la livraison · 🚚 24–48h · 🔒 Confidentialité"}</p>
-            <a
-              href={`https://wa.me/${WHATSAPP_NUMBER || "212779754660"}?text=${encodeURIComponent(`Hi, I want to order ${slug}`)}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-4 inline-flex items-center gap-2 rounded-full border border-[#25D366] text-[#25D366] px-6 py-3 font-body text-sm font-medium hover:bg-[#25D366] hover:text-white transition-colors"
-            >
-              💬 {lang === "ar" ? "اطلبي عبر واتساب" : "Commander via WhatsApp"}
-            </a>
-          </Reveal>
+          <div className="grid md:grid-cols-3 gap-4">
+            {c.pricing.cards.map((card, i) => (
+              <Reveal key={i} delay={i * 0.06}>
+                <div
+                  className={`relative rounded-2xl border-2 p-5 flex flex-col gap-3 h-full ${
+                    (card as any).isFeatured ? "border-profond bg-profond text-white shadow-elevated scale-[1.02]" : "border-brume bg-white text-brun"
+                  }`}
+                >
+                  {(card as any).badge && (
+                    <span className={`absolute -top-3 px-3 py-1 rounded-full text-xs font-semibold shadow-subtle ${dir === "rtl" ? "left-4" : "right-4"} ${(card as any).isFeatured ? "bg-or-doux text-profond" : "bg-champagne text-white"}`}>
+                      {(card as any).badge}
+                    </span>
+                  )}
+                  <h3 className={`font-display text-lg ${ (card as any).isFeatured ? "text-white" : "text-profond"}`}>{card.title}</h3>
+                  <div>
+                    <div className={`font-display text-2xl ${(card as any).isFeatured ? "text-white" : "text-profond"}`}>{card.price} MAD</div>
+                    <div className={`font-body text-xs ${(card as any).isFeatured ? "text-white/80" : "text-gris"}`}>{card.size} · {card.duration}</div>
+                  </div>
+                  <a href="#order" className={`mt-auto w-full rounded-full px-5 py-3 text-sm font-semibold text-center transition-all ${ (card as any).isFeatured ? "bg-white text-profond hover:bg-or-doux" : "bg-profond text-white hover:brightness-110"}`}>
+                    {card.cta}
+                  </a>
+                  {(card as any).isPlaceholder && <p className="text-[10px] text-center opacity-60">TODO: prix à confirmer</p>}
+                </div>
+              </Reveal>
+            ))}
+          </div>
+          <p className="font-body text-gris text-xs text-center mt-4">{c.pricing.trust}</p>
         </div>
       </section>
 
