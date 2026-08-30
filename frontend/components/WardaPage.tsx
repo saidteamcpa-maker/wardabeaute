@@ -4,7 +4,6 @@ import { HeroBlock } from "@/components/blocks/HeroBlock";
 import { ProblemBlock } from "@/components/blocks/ProblemBlock";
 import { TimelineBlock } from "@/components/blocks/TimelineBlock";
 import { CtaMidBlock } from "@/components/blocks/CtaMidBlock";
-import { GalleryBlock } from "@/components/blocks/GalleryBlock";
 import { OrderFormBlock } from "@/components/blocks/OrderFormBlock";
 import { Section } from "@/components/Section";
 import { IngredientTable } from "@/components/IngredientTable";
@@ -159,14 +158,10 @@ export async function WardaPage({ slug }: { slug: string }) {
         </div>
       </section>
 
-      {/* 11 Gallery */}
-      <GalleryBlock images={c.gallery} lang={lang} />
-
-      {/* Sticky mobile bar is global via StickyCTA, but we also ensure OrderForm is next */}
-      {/* 12 Order Form */}
+      {/* 11 Order Form */}
       <OrderFormBlock slug={slug} eyebrow={c.orderForm.eyebrow} h2={c.orderForm.h2} badges={c.orderForm.badges} lang={lang} whatsappNumber={WHATSAPP_NUMBER} />
 
-      {/* 13 FAQ */}
+      {/* 12 FAQ */}
       <section dir={dir} className="section bg-white">
         <div className="container-page max-w-3xl">
           <Reveal>
