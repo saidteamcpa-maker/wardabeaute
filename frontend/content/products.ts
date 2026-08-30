@@ -250,7 +250,7 @@ export const products: Record<string, Product> = {
       "Acide Hyaluronique — hydrate de l'intérieur",
       "Vitamine C — cofacteur OBLIGATOIRE de la synthèse du collagène",
       "Renforce cheveux et ongles (biotine + zinc)",
-      "30 gummies par boîte (30 jours)",
+      "25 gummies par boîte (25 jours)",
       "Goût grenade naturel · Halal & Vegan (pectine, sans gélatine)",
     ],
     ingredients: [
@@ -265,7 +265,7 @@ export const products: Record<string, Product> = {
       "2 gummies par jour",
       "Avec le petit-déjeuner ou à tout moment",
       "30 jours pour les premiers résultats (éclat, hydratation)",
-      "90 jours (3 boîtes) pour l'effet complet (rides, fermeté)",
+      "75 jours (3 boîtes) pour l'effet complet (rides, fermeté)",
       "Température ambiante, à l'abri de la lumière",
     ],
     whoFor: ["À partir de 25 ans", "Votre peau paraît fatiguée", "Vous voulez un résultat de l'intérieur et de l'extérieur"],

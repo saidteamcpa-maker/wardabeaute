@@ -38,10 +38,10 @@ export const SAVINGS = {
 
 /** Sizes / formats — edit here, used in pricing cards */
 export const SIZES = {
-  velvastretch: { single: "150 ml", duo: "2 × 150 ml", triple: "3 × 150 ml" },
-  silkstop: { single: "60 ml", duo: "2 × 60 ml", triple: "3 × 60 ml" },
-  collaglow: { single: "30 sachets", duo: "60 sachets", triple: "90 sachets" },
-  kit: { duo: "1 CollaGlow + 1 VelvaStretch", duoXL: "2 CollaGlow + 2 VelvaStretch" },
+  velvastretch: { single: "60 ml", duo: "2 × 60 ml", triple: "3 × 60 ml" },
+  silkstop: { single: "30 ml", duo: "2 × 30 ml", triple: "3 × 30 ml" },
+  collaglow: { single: "25 gummies", duo: "50 gummies", triple: "75 gummies" },
+  kit: { duo: "1 CollaGlow (25) + 1 VelvaStretch (60 ml)", duoXL: "2 CollaGlow (50) + 2 VelvaStretch (120 ml)" },
 } as const;
 
 /** Durations / sub-labels under price */
@@ -457,14 +457,14 @@ export const WARDAPages: WardaPages = {
           {
             title: "علبة وحدة",
             price: PRICES.velvastretch.single,
-            size: "150 مل",
+            size: "60 مل",
             duration: "تقريبا شهر",
             cta: "بغيت نطلب",
           },
           {
             title: "جوج علب",
             price: PRICES.velvastretch.duo,
-            size: "2×150 مل",
+            size: "2×60 مل",
             duration: "علاج كامل ديال شهرين لـ 3",
             badge: "وفري 59 درهم",
             savingText: "وفري 59 درهم",
@@ -474,7 +474,7 @@ export const WARDAPages: WardaPages = {
           {
             title: "3 علب",
             price: PRICES.velvastretch.triple,
-            size: "3×150 مل",
+            size: "3×60 مل",
             duration: "علاج كامل ديال 3 لـ 4 أشهر",
             badge: "وفري 138 درهم",
             savingText: "وفري 138 درهم",
@@ -731,9 +731,9 @@ export const WARDAPages: WardaPages = {
         eyebrow: "العلاج ديالك",
         h2: "ختاري العرض ديالك.",
         cards: [
-          { title: "قنينة وحدة", price: PRICES.silkstop.single, size: "60 مل", duration: "تقريبا شهر", cta: "بغيت نطلب" },
-          { title: "جوج قنيني", price: PRICES.silkstop.duo, size: "2×60 مل", duration: "علاج كامل ديال شهرين", badge: "وفري 39 درهم", savingText: "وفري 39 درهم", cta: "بغيت نطلب", isFeatured: true },
-          { title: "3 قنيني", price: PRICES.silkstop.triple, size: "3×60 مل", duration: "علاج كامل ديال 3 أشهر", badge: "وفري 88 درهم", savingText: "وفري 88 درهم", cta: "بغيت نطلب" },
+          { title: "قنينة وحدة", price: PRICES.silkstop.single, size: "30 مل", duration: "تقريبا شهر", cta: "بغيت نطلب" },
+          { title: "جوج قنيني", price: PRICES.silkstop.duo, size: "2×30 مل", duration: "علاج كامل ديال شهرين", badge: "وفري 39 درهم", savingText: "وفري 39 درهم", cta: "بغيت نطلب", isFeatured: true },
+          { title: "3 قنيني", price: PRICES.silkstop.triple, size: "3×30 مل", duration: "علاج كامل ديال 3 أشهر", badge: "وفري 88 درهم", savingText: "وفري 88 درهم", cta: "بغيت نطلب" },
         ],
         trust: "✓ الخلاص عند الاستلام، فكل مدن المغرب · التوصيل من 24 لـ 72 ساعة حسب مدينتك.",
       },
@@ -852,14 +852,14 @@ export const WARDAPages: WardaPages = {
         h2: "Choisissez votre offre.",
         cards: [
           {
-            title: "Cure 30 jours",
+            title: "Cure 25 jours",
             price: PRICES.collaglow.single,
             size: SIZES.collaglow.single,
             duration: DURATIONS.collaglow.single,
             cta: "Je commande",
           },
           {
-            title: "Cure 60 jours",
+            title: "Cure 50 jours",
             price: PRICES.collaglow.duo,
             size: SIZES.collaglow.duo,
             duration: DURATIONS.collaglow.duo,
@@ -869,7 +869,7 @@ export const WARDAPages: WardaPages = {
             isFeatured: true,
           },
           {
-            title: "Cure 90 jours",
+            title: "Cure 75 jours",
             price: PRICES.collaglow.triple,
             size: SIZES.collaglow.triple,
             duration: DURATIONS.collaglow.triple,
@@ -985,9 +985,9 @@ export const WARDAPages: WardaPages = {
         eyebrow: "العلاج ديالك",
         h2: "ختاري العرض ديالك.",
         cards: [
-          { title: "علاج 30 يوم", price: PRICES.collaglow.single, size: "30 كيس", duration: "علاج ديال شهر", cta: "بغيت نطلب" },
-          { title: "علاج 60 يوم", price: PRICES.collaglow.duo, size: "60 كيس", duration: "علاج ديال شهرين", badge: "وفري 69 درهم", savingText: "وفري 69 درهم", cta: "بغيت نطلب", isFeatured: true },
-          { title: "علاج 90 يوم", price: PRICES.collaglow.triple, size: "90 كيس", duration: "علاج ديال 3 أشهر", badge: "وفري 158 درهم", savingText: "وفري 158 درهم", cta: "بغيت نطلب" },
+          { title: "علاج 25 يوم", price: PRICES.collaglow.single, size: "25 gummies", duration: "علاج ديال 25 يوم", cta: "بغيت نطلب" },
+          { title: "علاج 50 يوم", price: PRICES.collaglow.duo, size: "50 gummies", duration: "علاج ديال 50 يوم", badge: "وفري 69 درهم", savingText: "وفري 69 درهم", cta: "بغيت نطلب", isFeatured: true },
+          { title: "علاج 75 يوم", price: PRICES.collaglow.triple, size: "75 gummies", duration: "علاج ديال 75 يوم", badge: "وفري 158 درهم", savingText: "وفري 158 درهم", cta: "بغيت نطلب" },
         ],
         trust: "✓ الخلاص عند الاستلام، فكل مدن المغرب · التوصيل من 24 لـ 72 ساعة حسب مدينتك.",
       },
