@@ -19,9 +19,9 @@ const config: Config = {
         gris: "#8A6E72",
       },
       fontFamily: {
-        display: ["Cormorant Garamond", "Georgia", "serif"],
-        body: ["DM Sans", "system-ui", "sans-serif"],
-        arabic: ["Cairo", "Geeza Pro", "Segoe UI Arabic", "Arial", "sans-serif"],
+        display: ["var(--font-jost)", "Jost", "Segoe UI", "sans-serif"],
+        body: ["var(--font-jost)", "Jost", "Segoe UI", "sans-serif"],
+        arabic: ["var(--font-el-messiri)", "El Messiri", "Segoe UI Arabic", "Arial", "sans-serif"],
       },
       boxShadow: {
         soft: "0 10px 30px -12px rgba(60,33,40,0.25)",
