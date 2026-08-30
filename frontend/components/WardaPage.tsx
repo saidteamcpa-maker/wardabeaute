@@ -32,6 +32,7 @@ export async function WardaPage({ slug, preview = false }: { slug: string; previ
   const c = lang === "ar" ? data.ar : data.fr;
   const imageKey = slug === "kit-collagene" ? "kit" : "product";
   const heroImage = (ov?.[imageKey === "kit" ? "kit.heroImage" : "pp.heroImage"] as string) || HERO_IMAGES[slug] || "/images/velvastretch.png";
+  const bundleImage = (ov?.[imageKey === "kit" ? "kit.bundleImage" : "pp.bundleImage"] as string) || heroImage;
   const problemImage = ov?.[imageKey === "kit" ? "kit.scienceImage" : "pp.descImage"] as string | undefined;
   const ingredientsImage = ov?.[imageKey === "kit" ? "kit.ingredientsImage" : "pp.ingredientsImage"] as string | undefined;
   const ritualImage = ov?.[imageKey === "kit" ? "kit.ritualImage" : "pp.howToImage"] as string | undefined;
@@ -64,7 +65,7 @@ export async function WardaPage({ slug, preview = false }: { slug: string; previ
             <p className="text-champagne text-sm font-body uppercase tracking-wide mb-2 text-center">{c.pricing.eyebrow}</p>
             <h2 className={`text-3xl md:text-4xl leading-snug text-profond mb-8 text-center ${lang === "ar" ? "font-arabic" : ""}`}>{c.pricing.h2}</h2>
           </Reveal>
-          <LinkedPricingCards slug={slug} cards={c.pricing.cards as any} dir={dir} lang={lang} imageSrc={heroImage} />
+          <LinkedPricingCards slug={slug} cards={c.pricing.cards as any} dir={dir} lang={lang} imageSrc={bundleImage} />
           <p className="font-body text-gris text-xs text-center mt-4">{c.pricing.trust}</p>
         </div>
       </section>
