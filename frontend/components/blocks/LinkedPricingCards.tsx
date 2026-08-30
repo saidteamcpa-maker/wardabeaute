@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useCart } from "@/lib/cart";
 import { track } from "@/lib/pixels";
 import { Reveal } from "@/components/ui/Reveal";
@@ -19,11 +20,13 @@ export function LinkedPricingCards({
   slug,
   cards,
   dir = "ltr",
+  imageSrc,
 }: {
   slug: string;
   cards: Card[];
   dir?: "ltr" | "rtl";
   lang?: string;
+  imageSrc?: string;
 }) {
   const defaultTier = slug === "kit-collagene" ? 1 : 2;
   const setTier = useCart((s) => s.setTier);
@@ -47,61 +50,77 @@ export function LinkedPricingCards({
   };
 
   return (
-    <div className="grid md:grid-cols-3 gap-4">
-      {cards.map((card, i) => {
-        const qty = i + 1;
-        const isActive = selectedTier === qty;
-        const featured = !!(card as any).isFeatured;
-        return (
-          <Reveal key={i} delay={i * 0.06}>
-            <div
-              role="radio"
-              aria-checked={isActive}
-              tabIndex={0}
-              onClick={() => handleSelect(i)}
-              onKeyDown={(event) => {
-                if (event.key === "Enter" || event.key === " ") {
-                  event.preventDefault();
-                  handleSelect(i);
-                }
-              }}
-              className={`relative rounded-2xl border-2 p-5 flex flex-col gap-3 h-full ${
-                isActive ? "border-profond bg-profond text-white shadow-elevated scale-[1.02]" : "border-brume bg-white text-brun"
-              }`}
-            >
-              {(card as any).badge && (
-                <span
-                  className={`absolute -top-3 px-3 py-1 rounded-full text-xs font-semibold shadow-subtle ${dir === "rtl" ? "left-4" : "right-4"} ${
-                    featured ? "bg-ordoux text-profond border border-champagne/20" : "bg-champagne text-white"
-                  }`}
-                >
-                  {(card as any).badge}
-                </span>
-              )}
-              <h3 className={`font-display text-lg ${isActive ? "text-white" : "text-profond"}`}>{card.title}</h3>
-              <div>
-                <div className={`font-display text-2xl ${isActive ? "text-white" : "text-profond"}`}>{card.price} MAD</div>
-                <div className={`font-body text-xs ${isActive ? "text-white/80" : "text-gris"}`}>
-                  {card.size} · {card.duration}
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={(event) => {
-                  event.stopPropagation();
-                  handleAdd(i, card.price);
+    <div>
+      {imageSrc && (
+        <Reveal>
+          <div className="relative w-full max-w-sm mx-auto aspect-[4/3] overflow-hidden rounded-3xl border border-brume bg-white shadow-elevated mb-8">
+            <Image
+              src={imageSrc}
+              alt=""
+              fill
+              sizes="(max-width: 768px) 100vw, 384px"
+              className="object-contain p-6"
+            />
+          </div>
+        </Reveal>
+      )}
+
+      <div className="grid md:grid-cols-3 gap-4">
+        {cards.map((card, i) => {
+          const qty = i + 1;
+          const isActive = selectedTier === qty;
+          const featured = !!(card as any).isFeatured;
+          return (
+            <Reveal key={i} delay={i * 0.06}>
+              <div
+                role="radio"
+                aria-checked={isActive}
+                tabIndex={0}
+                onClick={() => handleSelect(i)}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    handleSelect(i);
+                  }
                 }}
-                className={`mt-auto w-full rounded-full px-5 py-3 text-sm font-semibold text-center transition-all ${
-                  isActive ? "bg-white text-profond hover:bg-ordoux shadow-glow" : "bg-profond text-white hover:brightness-110"
+                className={`relative rounded-2xl border-2 p-5 flex flex-col gap-3 h-full ${
+                  isActive ? "border-profond bg-profond text-white shadow-elevated scale-[1.02]" : "border-brume bg-white text-brun"
                 }`}
               >
-                {card.cta}
-              </button>
-              {(card as any).isPlaceholder && <p className="text-[10px] text-center opacity-60">TODO: prix à confirmer</p>}
-            </div>
-          </Reveal>
-        );
-      })}
+                {(card as any).badge && (
+                  <span
+                    className={`absolute -top-3 px-3 py-1 rounded-full text-xs font-semibold shadow-subtle ${dir === "rtl" ? "left-4" : "right-4"} ${
+                      featured ? "bg-ordoux text-profond border border-champagne/20" : "bg-champagne text-white"
+                    }`}
+                  >
+                    {(card as any).badge}
+                  </span>
+                )}
+                <h3 className={`font-display text-lg ${isActive ? "text-white" : "text-profond"}`}>{card.title}</h3>
+                <div>
+                  <div className={`font-display text-2xl ${isActive ? "text-white" : "text-profond"}`}>{card.price} MAD</div>
+                  <div className={`font-body text-xs ${isActive ? "text-white/80" : "text-gris"}`}>
+                    {card.size} · {card.duration}
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    handleAdd(i, card.price);
+                  }}
+                  className={`mt-auto w-full rounded-full px-5 py-3 text-sm font-semibold text-center transition-all ${
+                    isActive ? "bg-white text-profond hover:bg-ordoux shadow-glow" : "bg-profond text-white hover:brightness-110"
+                  }`}
+                >
+                  {card.cta}
+                </button>
+                {(card as any).isPlaceholder && <p className="text-[10px] text-center opacity-60">TODO: prix à confirmer</p>}
+              </div>
+            </Reveal>
+          );
+        })}
+      </div>
     </div>
   );
 }
