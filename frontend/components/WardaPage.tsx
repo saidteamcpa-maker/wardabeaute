@@ -42,86 +42,7 @@ export async function WardaPage({ slug }: { slug: string }) {
         lang={lang}
       />
 
-      {/* 02 Problem */}
-      <ProblemBlock eyebrow={c.problem.eyebrow} h2={c.problem.h2} para={c.problem.para} bullets={c.problem.bullets} lang={lang} />
-
-      {/* 03 Ingredients */}
-      <Section eyebrow={c.ingredients.eyebrow} title={c.ingredients.h2} imageLabel="Ingrédients" imageSide="left">
-        <p className="font-body text-brun mb-4">{c.ingredients.para}</p>
-        <div className="space-y-3">
-          {c.ingredients.items.map((it) => (
-            <div key={it.num} className="flex gap-3 rounded-xl border border-brume p-4 bg-white">
-              <span className="font-display text-champagne text-xl leading-none pt-1">{it.num}</span>
-              <div>
-                <p className="font-body text-profond font-medium text-sm">{it.name}</p>
-                <p className="font-body text-brun text-sm leading-relaxed">{it.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </Section>
-
-      {/* 04 Ritual */}
-      <Section eyebrow={lang === "ar" ? undefined : "Le rituel"} title={c.ritual.h2} imageLabel="Rituel" imageSide="right">
-        <ol className="space-y-3">
-          {c.ritual.steps.map((s, i) => (
-            <li key={i} className="flex gap-3">
-              <span className="w-8 h-8 rounded-full bg-profond text-white grid place-items-center text-sm font-medium shrink-0">{i + 1}</span>
-              <span className="font-body text-brun text-sm leading-relaxed pt-1">{s}</span>
-            </li>
-          ))}
-        </ol>
-      </Section>
-
-      {/* 05 Timeline */}
-      <TimelineBlock eyebrow={c.timeline.eyebrow} h2={c.timeline.h2} milestones={c.timeline.milestones} callouts={c.timeline.callouts} disclaimer={c.timeline.disclaimer} lang={lang} />
-
-      {/* 06 CTA Mid #1 */}
-      <CtaMidBlock ctaLabel={c.ctaMid.cta} trust={c.ctaMid.trust} lang={lang} />
-
-      {/* 07 Values */}
-      <section dir={dir} className="section bg-white">
-        <div className="container-page">
-          <Reveal>
-            {c.values.eyebrow && <p className="text-champagne text-sm font-body uppercase tracking-wide mb-2 text-center">{c.values.eyebrow}</p>}
-            <h2 className={`text-3xl md:text-4xl leading-snug text-profond mb-8 text-center ${lang === "ar" ? "font-arabic" : ""}`}>{c.values.h2}</h2>
-          </Reveal>
-          <div className="grid md:grid-cols-3 gap-4 mb-6">
-            {c.values.pillars.map((p, i) => (
-              <Reveal key={i} delay={i * 0.06}>
-                <div className="rounded-2xl border border-brume p-5 bg-gradient-to-b from-white to-petal/30 h-full">
-                  <h3 className="font-display text-lg text-profond mb-2">{p.title}</h3>
-                  <p className="font-body text-brun text-sm leading-relaxed">{p.desc}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-          <div className="flex flex-wrap justify-center gap-2 mb-6">
-            {c.values.badges.map((b, i) => (
-              <span key={i} className="badge-pill text-xs">
-                ✦ {b}
-              </span>
-            ))}
-          </div>
-          <AssuranceBlock />
-        </div>
-      </section>
-
-      {/* 08 Testimonials */}
-      <section dir={dir} className="section">
-        <div className="container-page">
-          <Reveal>
-            {c.testimonials.eyebrow && <p className="text-champagne text-sm font-body uppercase tracking-wide mb-2 text-center">{c.testimonials.eyebrow}</p>}
-            <h2 className={`text-3xl md:text-4xl leading-snug text-profond mb-6 text-center ${lang === "ar" ? "font-arabic" : ""}`}>{c.testimonials.h2}</h2>
-          </Reveal>
-          <TestimonialGrid items={c.testimonials.items.map((t) => ({ text: t.quote, name: `${t.name} — ${t.city}`, stars: t.stars }))} />
-        </div>
-      </section>
-
-      {/* 09 CTA Mid #2 */}
-      <CtaMidBlock ctaLabel={c.ctaMid2.cta} trust={c.ctaMid2.trust} lang={lang} />
-
-      {/* 10 Pricing */}
+      {/* 02 Pricing — below hero */}
       <section dir={dir} className="section bg-petal/30">
         <div className="container-page">
           <Reveal>
@@ -157,6 +78,85 @@ export async function WardaPage({ slug }: { slug: string }) {
           <p className="font-body text-gris text-xs text-center mt-4">{c.pricing.trust}</p>
         </div>
       </section>
+
+      {/* 03 Problem */}
+      <ProblemBlock eyebrow={c.problem.eyebrow} h2={c.problem.h2} para={c.problem.para} bullets={c.problem.bullets} lang={lang} />
+
+      {/* 04 Ingredients */}
+      <Section eyebrow={c.ingredients.eyebrow} title={c.ingredients.h2} imageLabel="Ingrédients" imageSide="left">
+        <p className="font-body text-brun mb-4">{c.ingredients.para}</p>
+        <div className="space-y-3">
+          {c.ingredients.items.map((it) => (
+            <div key={it.num} className="flex gap-3 rounded-xl border border-brume p-4 bg-white">
+              <span className="font-display text-champagne text-xl leading-none pt-1">{it.num}</span>
+              <div>
+                <p className="font-body text-profond font-medium text-sm">{it.name}</p>
+                <p className="font-body text-brun text-sm leading-relaxed">{it.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      {/* 05 Ritual */}
+      <Section eyebrow={lang === "ar" ? undefined : "Le rituel"} title={c.ritual.h2} imageLabel="Rituel" imageSide="right">
+        <ol className="space-y-3">
+          {c.ritual.steps.map((s, i) => (
+            <li key={i} className="flex gap-3">
+              <span className="w-8 h-8 rounded-full bg-profond text-white grid place-items-center text-sm font-medium shrink-0">{i + 1}</span>
+              <span className="font-body text-brun text-sm leading-relaxed pt-1">{s}</span>
+            </li>
+          ))}
+        </ol>
+      </Section>
+
+      {/* 06 Timeline */}
+      <TimelineBlock eyebrow={c.timeline.eyebrow} h2={c.timeline.h2} milestones={c.timeline.milestones} callouts={c.timeline.callouts} disclaimer={c.timeline.disclaimer} lang={lang} />
+
+      {/* 07 CTA Mid #1 */}
+      <CtaMidBlock ctaLabel={c.ctaMid.cta} trust={c.ctaMid.trust} lang={lang} />
+
+      {/* 08 Values */}
+      <section dir={dir} className="section bg-white">
+        <div className="container-page">
+          <Reveal>
+            {c.values.eyebrow && <p className="text-champagne text-sm font-body uppercase tracking-wide mb-2 text-center">{c.values.eyebrow}</p>}
+            <h2 className={`text-3xl md:text-4xl leading-snug text-profond mb-8 text-center ${lang === "ar" ? "font-arabic" : ""}`}>{c.values.h2}</h2>
+          </Reveal>
+          <div className="grid md:grid-cols-3 gap-4 mb-6">
+            {c.values.pillars.map((p, i) => (
+              <Reveal key={i} delay={i * 0.06}>
+                <div className="rounded-2xl border border-brume p-5 bg-gradient-to-b from-white to-petal/30 h-full">
+                  <h3 className="font-display text-lg text-profond mb-2">{p.title}</h3>
+                  <p className="font-body text-brun text-sm leading-relaxed">{p.desc}</p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+          <div className="flex flex-wrap justify-center gap-2 mb-6">
+            {c.values.badges.map((b, i) => (
+              <span key={i} className="badge-pill text-xs">
+                ✦ {b}
+              </span>
+            ))}
+          </div>
+          <AssuranceBlock />
+        </div>
+      </section>
+
+      {/* 09 Testimonials */}
+      <section dir={dir} className="section">
+        <div className="container-page">
+          <Reveal>
+            {c.testimonials.eyebrow && <p className="text-champagne text-sm font-body uppercase tracking-wide mb-2 text-center">{c.testimonials.eyebrow}</p>}
+            <h2 className={`text-3xl md:text-4xl leading-snug text-profond mb-6 text-center ${lang === "ar" ? "font-arabic" : ""}`}>{c.testimonials.h2}</h2>
+          </Reveal>
+          <TestimonialGrid items={c.testimonials.items.map((t) => ({ text: t.quote, name: `${t.name} — ${t.city}`, stars: t.stars }))} />
+        </div>
+      </section>
+
+      {/* 10 CTA Mid #2 */}
+      <CtaMidBlock ctaLabel={c.ctaMid2.cta} trust={c.ctaMid2.trust} lang={lang} />
 
       {/* 11 Order Form */}
       <OrderFormBlock slug={slug} eyebrow={c.orderForm.eyebrow} h2={c.orderForm.h2} badges={c.orderForm.badges} lang={lang} whatsappNumber={WHATSAPP_NUMBER} />
