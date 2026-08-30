@@ -79,7 +79,7 @@ export function LinkedPricingCards({
                       alt=""
                       fill
                       sizes="128px"
-                      className="object-contain p-4"
+                      className="object-cover"
                     />
                   </div>
                 )}
