@@ -50,11 +50,13 @@ export function LinkedPricingCards({
   };
 
   return (
-    <div className="grid md:grid-cols-3 gap-4">
+    <div className="grid md:grid-cols-3 gap-4 lg:gap-5">
         {cards.map((card, i) => {
           const qty = i + 1;
           const isActive = selectedTier === qty;
           const featured = !!(card as any).isFeatured;
+          const imageSideClass = dir === "rtl" ? "left-4 right-auto" : "right-4";
+          const textPadClass = images[i] ? (dir === "rtl" ? "pl-32" : "pr-32") : "";
           return (
             <Reveal key={i} delay={i * 0.06}>
             <div
@@ -68,12 +70,12 @@ export function LinkedPricingCards({
                     handleSelect(i);
                   }
                 }}
-                className={`relative rounded-2xl border-2 p-5 flex flex-col gap-3 min-h-[190px] h-full ${
-                  isActive ? "border-profond bg-profond text-white shadow-elevated scale-[1.02]" : "border-brume bg-white text-brun"
+                className={`relative rounded-2xl border-2 p-5 flex flex-col gap-3 min-h-[200px] h-full cursor-pointer focus-visible:ring-2 focus-visible:ring-warda/30 focus-visible:outline-none transition-all duration-250 ${
+                  isActive ? "border-profond bg-profond text-white shadow-elevated scale-[1.02]" : "border-brume bg-white text-brun hover:border-warda/30 hover:shadow-subtle"
                 }`}
               >
                 {images[i] && (
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2 w-28 h-28 md:w-32 md:h-32 overflow-hidden rounded-xl bg-petal/60 border border-brume/60">
+                  <div className={`absolute top-1/2 -translate-y-1/2 w-28 h-28 md:w-32 md:h-32 overflow-hidden rounded-xl bg-petal/60 border border-brume/50 ${imageSideClass}`}>
                     <Image
                       src={images[i] as string}
                       alt=""
@@ -83,20 +85,20 @@ export function LinkedPricingCards({
                     />
                   </div>
                 )}
-                <div className={images[i] ? "pr-32" : ""}>
+                <div className={`${textPadClass} flex flex-col flex-1`}>
                   {(card as any).badge && (
                     <span
-                      className={`absolute -top-3 px-3 py-1 rounded-full text-xs font-semibold shadow-subtle ${dir === "rtl" ? "left-4" : "right-4"} ${
+                      className={`absolute -top-3 px-3 py-1 rounded-full text-xs font-body font-semibold shadow-subtle ${dir === "rtl" ? "left-4" : "right-4"} ${
                         featured ? "bg-ordoux text-profond border border-champagne/20" : "bg-champagne text-white"
                       }`}
                     >
                       {(card as any).badge}
                     </span>
                   )}
-                  <h3 className={`font-display text-lg ${isActive ? "text-white" : "text-profond"}`}>{card.title}</h3>
-                  <div>
-                    <div className={`font-display text-2xl ${isActive ? "text-white" : "text-profond"}`}>{card.price} MAD</div>
-                    <div className={`font-body text-xs ${isActive ? "text-white/80" : "text-gris"}`}>
+                  <h3 className={`font-display text-lg leading-tight pr-2 ${isActive ? "text-white" : "text-profond"}`}>{card.title}</h3>
+                  <div className="mt-1">
+                    <div className={`font-display text-2xl leading-none ${isActive ? "text-white" : "text-profond"}`}>{card.price} MAD</div>
+                    <div className={`font-body text-xs mt-1 ${isActive ? "text-white/75" : "text-gris"}`}>
                       {card.size} · {card.duration}
                     </div>
                   </div>
@@ -106,8 +108,8 @@ export function LinkedPricingCards({
                       event.stopPropagation();
                       handleAdd(i, card.price);
                     }}
-                    className={`mt-4 w-full rounded-full px-5 py-3 text-sm font-semibold text-center transition-all ${
-                      isActive ? "bg-white text-profond hover:bg-ordoux shadow-glow" : "bg-profond text-white hover:brightness-110"
+                    className={`mt-auto pt-4 w-full rounded-full px-5 py-3 text-sm font-body font-semibold text-center transition-all duration-250 ${
+                      isActive ? "bg-white text-profond hover:bg-ordoux hover:shadow-glow" : "bg-profond text-white hover:brightness-110 hover:shadow-glow"
                     }`}
                   >
                     {card.cta}

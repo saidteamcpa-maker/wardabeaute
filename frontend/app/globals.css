@@ -53,13 +53,18 @@ h2 {
   font-size: 1.875rem;
 }
 
-/* Tap target + input size rules for Morocco mobile */
+/* Tap target + input size rules for Morocco mobile — exclude icon-only controls */
 button,
 a,
 input,
 select,
 textarea {
   min-height: 44px;
+}
+button.btn-ghost,
+button[class*="rounded-full"],
+a[class*="rounded-full"] {
+  min-height: unset;
 }
 input,
 select,
@@ -121,10 +126,10 @@ textarea:focus-visible {
     @apply focus-visible:ring-2 focus-visible:ring-warda/30 focus-visible:outline-none;
   }
   .container-page {
-    @apply mx-auto w-full max-w-[1200px] px-4 md:px-8;
+    @apply mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8;
   }
   .section {
-    @apply py-12 md:py-24;
+    @apply py-12 md:py-16 lg:py-20;
   }
   .badge-pill {
     @apply inline-block rounded-full bg-ordoux/80 backdrop-blur-sm px-3 py-1 text-sm font-body font-medium text-brun border border-champagne/20 transition-colors duration-200;
@@ -211,6 +216,7 @@ textarea:focus-visible {
     background-size: 200% 100%;
     animation: shimmer 2.8s linear infinite;
     opacity: 0;
+    transition: opacity 0.25s ease;
   }
   .btn-glow:hover::after { opacity: 1; }
   .btn-sticky-cta {
@@ -291,16 +297,6 @@ details[open] > summary ~ * {
   animation: goldShimmer 3s linear infinite;
 }
 
-/* ===== RTL (Arabic / Darija) ===== */
-html[dir="rtl"] body {
-  font-family: var(--font-cairo), var(--font-amiri), system-ui, -apple-system, "Segoe UI", sans-serif;
-}
-html[dir="rtl"] .font-display {
-  font-family: var(--font-cairo), "Playfair Display", Georgia, serif;
-}
-html[dir="rtl"] .font-arabic {
-  font-family: var(--font-amiri), var(--font-cairo), serif;
-}
 /* Flip the fixed WhatsApp bubble to the inline-start side */
 html[dir="rtl"] .fixed.left-4 {
   left: auto;

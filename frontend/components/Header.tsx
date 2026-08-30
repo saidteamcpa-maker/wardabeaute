@@ -71,29 +71,29 @@ export function Header() {
     >
       <div className="container-page flex items-center justify-between h-16 gap-2">
         <button
-          className="order-1 text-2xl text-profond hover:text-warda active:scale-95 transition-all duration-200"
+          className="order-1 text-profond hover:text-warda hover:bg-brume/40 active:scale-95 transition-all duration-200 p-2 rounded-xl focus-visible:ring-2 focus-visible:ring-warda/30 focus-visible:outline-none"
           aria-label={t(lang, "menu")}
           onClick={() => setMenuOpen(true)}
         >
-          <Menu className="w-7 h-7" strokeWidth={1.6} />
+          <Menu className="w-6 h-6" strokeWidth={1.6} />
         </button>
 
         <Link
           href="/"
           dir="ltr"
           style={{ fontFamily: '"Cairo", "Playfair Display", Georgia, serif' }}
-          className="order-2 mx-auto flex items-center gap-2 font-display text-2xl text-profond hover:text-warda transition-colors duration-300"
+          className="order-2 mx-auto flex items-center gap-2 font-display text-2xl text-profond hover:text-warda transition-colors duration-300 rounded-xl px-2 py-1 focus-visible:ring-2 focus-visible:ring-warda/30 focus-visible:outline-none"
         >
           <Image src={logoUrl || "/header-logo.png"} alt="Warda Beauté" width={28} height={28} className="w-7 h-7 object-contain" />
           Warda Beauté
         </Link>
 
-        <div className="flex items-center gap-2 order-3">
+        <div className="flex items-center gap-1.5 order-3">
           <LangToggle />
-          <button onClick={openCart} aria-label={t(lang, "cartAria")} className="relative text-2xl text-profond hover:text-warda hover:scale-110 active:scale-95 transition-all duration-200">
-            <ShoppingCart className="w-7 h-7" strokeWidth={1.6} />
+          <button onClick={openCart} aria-label={t(lang, "cartAria")} className="relative text-profond hover:text-warda hover:bg-brume/40 active:scale-95 transition-all duration-200 p-2 rounded-xl focus-visible:ring-2 focus-visible:ring-warda/30 focus-visible:outline-none">
+            <ShoppingCart className="w-6 h-6" strokeWidth={1.6} />
             {count > 0 && (
-              <span className="absolute -top-2 -right-2 bg-profond text-white text-[11px] font-medium rounded-full w-5 h-5 grid place-items-center animate-pulseSoft shadow-glow">
+              <span className="absolute -top-1 -right-1 bg-profond text-white text-[11px] font-medium rounded-full w-5 h-5 grid place-items-center shadow-glow">
                 {count}
               </span>
             )}
@@ -105,24 +105,24 @@ export function Header() {
         typeof document !== "undefined" &&
         createPortal(
           <div className="fixed inset-0 z-50">
-            <div className="absolute inset-0 bg-brun/50 backdrop-blur-sm" onClick={() => setMenuOpen(false)} />
-            <div className="absolute left-0 top-0 h-full w-72 bg-petal p-6 shadow-soft overflow-y-auto">
+            <div className="absolute inset-0 bg-brun/50 backdrop-blur-sm transition-opacity duration-300" onClick={() => setMenuOpen(false)} />
+            <div className="absolute left-0 top-0 h-full w-72 bg-petal p-6 shadow-drawer overflow-y-auto animate-[fadeIn_0.3s_ease]">
               <div className="flex justify-end">
-                <button onClick={() => setMenuOpen(false)} aria-label={t(lang, "close")} className="hover:text-warda active:scale-95 transition-all duration-200">
-                  <X className="w-7 h-7 text-profond" />
+                <button onClick={() => setMenuOpen(false)} aria-label={t(lang, "close")} className="p-2 -mr-2 rounded-xl text-profond hover:text-warda hover:bg-brume/40 active:scale-95 transition-all duration-200 focus-visible:ring-2 focus-visible:ring-warda/30 focus-visible:outline-none">
+                  <X className="w-6 h-6" />
                 </button>
               </div>
-              <nav className="flex flex-col mt-4 font-body text-lg text-brun">
+              <nav className="flex flex-col mt-4 font-body text-[15px] text-brun">
                 {MENU.map((m) =>
                   m.children ? (
-                    <div key={m.label} className="border-b border-brume/60">
+                    <div key={m.label} className="border-b border-brume/50">
                       <button
                         type="button"
                         onClick={() => setOpenMenus((s) => ({ ...s, [m.label]: !s[m.label] }))}
-                        className="flex w-full items-center justify-between py-3.5 hover:text-warda transition-colors duration-200"
+                        className="flex w-full items-center justify-between py-3 hover:text-warda transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-warda/30 focus-visible:outline-none rounded-lg -mx-1 px-1"
                         aria-expanded={!!openMenus[m.label]}
                       >
-                         <span>{labelOf(m.key, m.label)}</span>
+                        <span className="font-medium">{labelOf(m.key, m.label)}</span>
                         <ChevronDown
                           className={`w-5 h-5 transition-transform duration-300 ease-out-expo ${openMenus[m.label] ? "rotate-180" : ""}`}
                         />
@@ -148,7 +148,7 @@ export function Header() {
                       key={m.label}
                       href={m.href!}
                       onClick={() => setMenuOpen(false)}
-                      className="py-3.5 border-b border-brume/60 hover:text-warda transition-colors duration-200"
+                      className="py-3 border-b border-brume/50 hover:text-warda transition-colors duration-200 focus-visible:ring-2 focus-visible:ring-warda/30 focus-visible:outline-none rounded-lg -mx-1 px-1"
                     >
                       {labelOf(m.key, m.label)}
                     </Link>

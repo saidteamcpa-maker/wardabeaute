@@ -206,20 +206,22 @@ export function CheckoutPopup() {
 
   return (
     <div className="fixed inset-0 z-[60] flex items-end md:items-center justify-center p-0 md:p-4">
-      <div className="absolute inset-0 bg-brun/50" onClick={closeCheckout} />
-      <div className="relative bg-petal w-full max-w-[480px] max-h-[95vh] overflow-y-auto rounded-t-2xl md:rounded-2xl p-5">
-        <button onClick={closeCheckout} className="absolute top-3 right-4 btn-ghost">
+      <div className="absolute inset-0 bg-brun/50 backdrop-blur-sm transition-opacity duration-300" onClick={closeCheckout} />
+      <div className="relative bg-petal w-full max-w-[480px] max-h-[95vh] overflow-y-auto rounded-t-2xl md:rounded-2xl p-5 md:p-6 shadow-drawer">
+        <button onClick={closeCheckout} className="absolute top-3 right-3 btn-ghost focus-visible:ring-2 focus-visible:ring-warda/30 focus-visible:outline-none">
           <X className="w-5 h-5" />
         </button>
 
         {step === "form" && (
           <>
-            <h3 className="font-display text-2xl text-profond mb-1">{Co("co.title")}</h3>
-            <p className="text-sm text-gris mb-3">
-              💳 {Co("co.cod")} · 🚚 24–48h
+            <h3 className="font-display text-2xl text-profond mb-1.5 tracking-tight">{Co("co.title")}</h3>
+            <p className="text-sm text-gris mb-4 flex items-center gap-2">
+              <span>💳 {Co("co.cod")}</span>
+              <span className="w-1 h-1 rounded-full bg-gris/40" aria-hidden />
+              <span>🚚 24–48h</span>
             </p>
 
-            <div className="text-sm font-body text-brun mb-3 border-b border-brume pb-3">
+            <div className="text-sm font-body text-brun mb-4 border-b border-brume/60 pb-4">
               {validItems.length === 0 ? (
                 <p className="text-sm text-gris py-2">{Co("co.errorGeneric")}</p>
               ) : (
@@ -227,32 +229,32 @@ export function CheckoutPopup() {
                   const p = catalog[i.slug];
                   if (!p) return null;
                   return (
-                    <div key={i.slug} className="flex items-center gap-3 py-1">
-                      <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-brume shrink-0">
+                    <div key={i.slug} className="flex items-center gap-3 py-2">
+                      <div className="relative w-12 h-12 rounded-xl overflow-hidden bg-brume shrink-0 shadow-subtle">
                         <Image src={p.image} alt={p.name} fill sizes="48px" className="w-full h-full object-cover" />
                       </div>
-                      <span className="flex-1">
+                      <span className="flex-1 font-medium leading-tight">
                         {p.name} × {i.qty}
                       </span>
-                      <span>{unitPrice(i.slug, i.qty, catalog)} MAD</span>
+                      <span className="font-medium tabular-nums">{unitPrice(i.slug, i.qty, catalog)} MAD</span>
                     </div>
                   );
                 })
               )}
-              <div className="flex justify-between font-medium mt-1">
+              <div className="flex justify-between font-medium pt-3 mt-1 border-t border-brume/40">
                 <span>{t(lang, "total")}</span>
-                <span>{subtotal} MAD</span>
+                <span className="tabular-nums">{subtotal} MAD</span>
               </div>
             </div>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 font-body">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-3.5 font-body">
               <input
                 {...register("customer_name")}
                 placeholder={Co("co.name")}
                 className="w-full input-field"
               />
               {formState.errors.customer_name && (
-                <p className="text-rose-600 text-xs">{formState.errors.customer_name.message}</p>
+                <p className="text-rose-600 text-xs -mt-1">{formState.errors.customer_name.message}</p>
               )}
 
               <div>
@@ -261,18 +263,21 @@ export function CheckoutPopup() {
                   placeholder={Co("co.phone")}
                   className="w-full input-field"
                 />
-                <p className="text-xs text-gris mt-1">{Co("co.phonePh")}</p>
+                <p className="text-xs text-gris mt-1.5 leading-relaxed">{Co("co.phonePh")}</p>
               </div>
               {formState.errors.phone && (
-                <p className="text-rose-600 text-xs">{formState.errors.phone.message}</p>
+                <p className="text-rose-600 text-xs -mt-1">{formState.errors.phone.message}</p>
               )}
 
               <input {...register("city")} placeholder={Co("co.city")} className="w-full input-field" />
+              {formState.errors.city && (
+                <p className="text-rose-600 text-xs -mt-1">{formState.errors.city.message}</p>
+              )}
 
-              <button type="submit" disabled={loading} className="btn-primary w-full disabled:opacity-60">
+              <button type="submit" disabled={loading} className="btn-primary btn-glow w-full disabled:opacity-60 mt-1">
                 {loading ? "..." : `🌹 ${Co("co.submit")} — ${Co("co.cod")}`}
               </button>
-              <p className="text-center text-xs text-gris">{Co("co.secure")}</p>
+              <p className="text-center text-xs text-gris leading-relaxed px-2">{Co("co.secure")}</p>
             </form>
           </>
         )}

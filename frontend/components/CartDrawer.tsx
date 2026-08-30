@@ -24,10 +24,10 @@ export function CartDrawer() {
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
       <div className="absolute inset-0 bg-brun/50 backdrop-blur-sm transition-opacity duration-300" onClick={closeCart} />
-      <div className="drawer-panel">
-        <div className="flex justify-between items-center mb-5 pb-3 border-b border-brume/50">
+      <div className="drawer-panel shadow-drawer animate-[fadeIn_0.25s_ease]">
+        <div className="flex justify-between items-center mb-5 pb-4 border-b border-brume/50">
           <h3 className="font-display text-2xl text-profond">{t(lang, "cart.title")}</h3>
-          <button onClick={closeCart} aria-label={t(lang, "close")} className="btn-ghost hover:text-warda">
+          <button onClick={closeCart} aria-label={t(lang, "close")} className="btn-ghost -mr-2 hover:text-warda focus-visible:ring-2 focus-visible:ring-warda/30 focus-visible:outline-none">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -38,15 +38,15 @@ export function CartDrawer() {
           const p = localize(catalog[i.slug], lang);
           if (!p) return null;
           return (
-            <div key={i.slug} className="flex gap-3 border-b border-brume/50 py-4 transition-colors duration-200 hover:bg-petal/40 rounded-lg px-1 -mx-1">
+            <div key={i.slug} className="flex gap-3 border-b border-brume/50 py-4 transition-colors duration-200 hover:bg-petal/30 rounded-xl px-2 -mx-2">
               <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-brume shrink-0 shadow-subtle">
                 <Image src={p.image} alt={p.name} fill sizes="64px" className="w-full h-full object-cover" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-body font-medium text-profond truncate">{p.name}</p>
-                <p className="text-sm text-brun mt-1">{t(lang, "quantity")} {i.qty}</p>
-                <p className="text-sm text-brun font-medium">{unitPrice(i.slug, i.qty, catalog)} MAD</p>
-                <button onClick={() => remove(i.slug)} className="flex items-center gap-1 text-xs text-gris hover:text-rose-600 transition-colors duration-200 mt-1.5">
+                <p className="font-body font-medium text-profond truncate leading-tight">{p.name}</p>
+                <p className="text-sm text-gris mt-1">{t(lang, "quantity")} {i.qty}</p>
+                <p className="text-sm text-profond font-medium mt-0.5">{unitPrice(i.slug, i.qty, catalog)} MAD</p>
+                <button onClick={() => remove(i.slug)} className="flex items-center gap-1.5 text-xs text-gris hover:text-rose-600 transition-colors duration-200 mt-2 focus-visible:ring-2 focus-visible:ring-warda/30 focus-visible:outline-none rounded px-1 -ml-1">
                   <Trash2 className="w-3.5 h-3.5" />
                   {t(lang, "remove")}
                 </button>
@@ -57,33 +57,33 @@ export function CartDrawer() {
 
         {validItems.length > 0 && (
           <>
-            <div className="mt-5">
-              <p className="text-sm text-gris mb-2 font-medium">{t(lang, "cart.youMayLike")}</p>
-              <div className="grid grid-cols-3 gap-2">
+            <div className="mt-6">
+              <p className="text-xs text-gris mb-2.5 font-medium tracking-wide uppercase">{t(lang, "cart.youMayLike")}</p>
+              <div className="grid grid-cols-3 gap-2.5">
                 {cross.map((s) => (
-                  <Link key={s} href={`/${s}`} onClick={closeCart} className="rounded-xl border border-brume p-2 text-center text-xs font-body text-brun hover:border-warda/50 hover:shadow-subtle transition-all duration-250">
-                    <div className="relative w-full aspect-square rounded-lg overflow-hidden bg-brume mb-1">
+                  <Link key={s} href={`/${s}`} onClick={closeCart} className="rounded-xl border border-brume p-2.5 text-center text-xs font-body text-brun hover:border-warda/40 hover:shadow-subtle transition-all duration-250 focus-visible:ring-2 focus-visible:ring-warda/30 focus-visible:outline-none">
+                    <div className="relative w-full aspect-square rounded-lg overflow-hidden bg-brume mb-1.5">
                       <Image src={catalog[s].image} alt={catalog[s].name} fill sizes="96px" className="w-full h-full object-cover" />
                     </div>
-                    <span className="truncate block">{catalog[s].name}</span>
-                    <div className="text-profond font-medium">{catalog[s].price} MAD</div>
+                    <span className="truncate block leading-tight">{catalog[s].name}</span>
+                    <div className="text-profond font-medium mt-1">{catalog[s].price} MAD</div>
                   </Link>
                 ))}
               </div>
             </div>
 
-            <div className="mt-5 pt-3 border-t border-brume/50 flex justify-between font-body text-brun">
+            <div className="mt-6 pt-4 border-t border-brume/50 flex justify-between font-body text-brun">
               <span className="font-medium">{t(lang, "cart.subtotal")}</span>
               <span className="font-medium text-profond">{subtotal} MAD</span>
             </div>
-            <p className="text-xs text-gris mt-1.5">{t(lang, "freeShipping")} · {t(lang, "paymentCOD")}</p>
+            <p className="text-xs text-gris mt-2 leading-relaxed">{t(lang, "freeShipping")} · {t(lang, "paymentCOD")}</p>
 
             <button
               onClick={() => {
                 track("InitiateCheckout", { value: subtotal, currency: "MAD" });
                 openCheckout();
               }}
-              className="btn-primary w-full mt-4"
+              className="btn-primary w-full mt-5 btn-glow"
             >
               {t(lang, "cart.checkout")}
             </button>

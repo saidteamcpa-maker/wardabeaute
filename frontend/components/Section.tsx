@@ -23,7 +23,7 @@ export function Section({
   return (
     <section className="section" id={id}>
       <Reveal>
-        <div className="container-page grid md:grid-cols-2 gap-8 items-center">
+        <div className="container-page grid md:grid-cols-2 gap-8 lg:gap-10 items-center">
           <div className={cn(imageSide === "right" ? "md:order-2" : "md:order-1")}>
             {imageSrc ? (
               <div className="relative overflow-hidden rounded-2xl aspect-[4/5] bg-brume shadow-elevated">
@@ -36,9 +36,9 @@ export function Section({
             )}
           </div>
           <div className={cn(imageSide === "right" ? "md:order-1" : "md:order-2")}>
-            {eyebrow && <p className="text-champagne text-sm font-body uppercase tracking-wide mb-2">{eyebrow}</p>}
-            {title && <h2 className="text-3xl md:text-4xl leading-snug text-profond mb-4">{title}</h2>}
-            <div className="font-body text-brun space-y-3">{children}</div>
+            {eyebrow && <p className="text-champagne text-sm font-body uppercase tracking-wide mb-3">{eyebrow}</p>}
+            {title && <h2 className="text-3xl md:text-4xl leading-[1.15] text-profond mb-4 text-balance">{title}</h2>}
+            <div className="font-body text-brun space-y-4 leading-relaxed">{children}</div>
           </div>
         </div>
       </Reveal>

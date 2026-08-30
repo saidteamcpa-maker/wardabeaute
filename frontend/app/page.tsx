@@ -100,12 +100,12 @@ export default async function HomePage({ searchParams }: { searchParams?: { prev
       <section className="section">
         <div className="container-page">
           <Reveal>
-            <p className="text-champagne text-sm font-body uppercase">{T("home.featuredEyebrow")}</p>
-            <h2 className="text-4xl leading-snug text-profond mb-6">{T("home.featuredTitle")}</h2>
+            <p className="text-champagne text-sm font-body uppercase tracking-wide mb-2">{T("home.featuredEyebrow")}</p>
+            <h2 className="text-4xl leading-[1.15] text-profond mb-8 text-balance">{T("home.featuredTitle")}</h2>
           </Reveal>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8">
             {featured.map((s, idx) => (
-              <Reveal key={s} delay={idx * 0.1}>
+              <Reveal key={s} delay={idx * 0.08}>
                 <ProductCard slug={s} />
               </Reveal>
             ))}
@@ -117,19 +117,19 @@ export default async function HomePage({ searchParams }: { searchParams?: { prev
       <section className="section bg-white">
         <div className="container-page">
           <Reveal>
-            <p className="text-champagne text-sm font-body uppercase text-center tracking-wide">{T("home.scienceEyebrow")}</p>
-            <h2 className="text-4xl leading-snug text-profond mb-8 text-center">{T("home.scienceTitle")}</h2>
+            <p className="text-champagne text-sm font-body uppercase text-center tracking-wide mb-2">{T("home.scienceEyebrow")}</p>
+            <h2 className="text-4xl leading-[1.15] text-profond mb-8 text-center text-balance">{T("home.scienceTitle")}</h2>
           </Reveal>
-          <div className="grid md:grid-cols-3 gap-5">
+          <div className="grid md:grid-cols-3 gap-5 lg:gap-6">
             {[
               { i: "🌿", t: T("home.sci1t"), d: T("home.sci1d") },
               { i: "🌊", t: T("home.sci2t"), d: T("home.sci2d") },
               { i: "🍊", t: T("home.sci3t"), d: T("home.sci3d") },
             ].map((s, idx) => (
-              <Reveal key={s.t} delay={idx * 0.1}>
-                <div className="rounded-2xl border border-brume p-6 card-hover h-full bg-gradient-to-b from-white to-petal/30">
-                  <div className="text-4xl mb-3">{s.i}</div>
-                  <h3 className="font-display text-xl text-profond mb-2">{s.t}</h3>
+              <Reveal key={s.t} delay={idx * 0.08}>
+                <div className="rounded-2xl border border-brume p-6 card-hover h-full bg-gradient-to-b from-white to-petal/30 shadow-subtle">
+                  <div className="text-3xl mb-3 leading-none" aria-hidden>{s.i}</div>
+                  <h3 className="font-display text-lg text-profond mb-2 leading-tight">{s.t}</h3>
                   <p className="font-body text-brun text-sm leading-relaxed">{s.d}</p>
                 </div>
               </Reveal>
@@ -142,9 +142,9 @@ export default async function HomePage({ searchParams }: { searchParams?: { prev
       <section className="section">
         <Reveal>
           <div className="container-page text-center">
-            <h2 className="text-4xl leading-snug text-profond mb-2">{T("home.bundleTitle")}</h2>
-            <p className="font-body text-brun mb-4">{T("home.bundleSub")}</p>
-            <Link href="/kit-collagene" className="block max-w-md mx-auto mb-6 overflow-hidden rounded-3xl shadow-elevated relative aspect-[4/5]">
+            <h2 className="text-4xl leading-[1.15] text-profond mb-3 text-balance">{T("home.bundleTitle")}</h2>
+            <p className="font-body text-brun mb-6 max-w-2xl mx-auto leading-relaxed">{T("home.bundleSub")}</p>
+            <Link href="/kit-collagene" className="block max-w-md mx-auto mb-6 overflow-hidden rounded-2xl shadow-elevated relative aspect-[4/5] focus-visible:ring-2 focus-visible:ring-warda/30 focus-visible:outline-none">
               <Image
                 src={ov?.["home.bundleImage"] || "/kit-collagene-hero.png"}
                 alt="Kit Collagène Inside & Outside — VelvaStretch™ + CollaGlow™"
@@ -153,11 +153,11 @@ export default async function HomePage({ searchParams }: { searchParams?: { prev
                 className="object-cover transition-transform duration-700 ease-out-expo hover:scale-[1.03]"
               />
             </Link>
-            <div className="inline-flex flex-wrap justify-center gap-3 mb-4">
-              {bundle.contents.map((s) => <span key={s} className="badge-pill">{catalog[s].name}</span>)}
+            <div className="inline-flex flex-wrap justify-center gap-2.5 mb-4">
+              {bundle.contents.map((s) => <span key={s} className="badge-pill text-sm">{catalog[s].name}</span>)}
             </div>
-            <div className="text-2xl font-display text-profond mb-2">{bundlePrice} MAD <span className="line-through text-gris text-base">{bundleOld} MAD</span></div>
-            <p className="text-champagne text-sm mb-4 font-medium">{t(lang, "kit.save")} {bundleSave} MAD · {t(lang, "kit.urgency")}</p>
+            <div className="text-2xl font-display text-profond mb-1.5 tabular-nums">{bundlePrice} MAD <span className="line-through text-gris text-base font-normal">{bundleOld} MAD</span></div>
+            <p className="text-champagne text-sm mb-5 font-medium">{t(lang, "kit.save")} {bundleSave} MAD · {t(lang, "kit.urgency")}</p>
             <Link href="/kit-collagene" className="btn-primary btn-glow">{T("home.bundleCta")}</Link>
           </div>
         </Reveal>

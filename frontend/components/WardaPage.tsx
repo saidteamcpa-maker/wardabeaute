@@ -66,10 +66,10 @@ export async function WardaPage({ slug, preview = false }: { slug: string; previ
         <div className="container-page">
           <Reveal>
             <p className="text-champagne text-sm font-body uppercase tracking-wide mb-2 text-center">{c.pricing.eyebrow}</p>
-            <h2 className={`text-3xl md:text-4xl leading-snug text-profond mb-8 text-center ${lang === "ar" ? "font-arabic" : ""}`}>{c.pricing.h2}</h2>
+            <h2 className={`text-3xl md:text-4xl leading-[1.15] text-profond mb-8 text-center text-balance ${lang === "ar" ? "font-arabic" : ""}`}>{c.pricing.h2}</h2>
           </Reveal>
           <LinkedPricingCards slug={slug} cards={c.pricing.cards as any} dir={dir} lang={lang} images={offerImages} />
-          <p className="font-body text-gris text-xs text-center mt-4">{c.pricing.trust}</p>
+          <p className="font-body text-gris text-xs text-center mt-5 leading-relaxed">{c.pricing.trust}</p>
         </div>
       </section>
 
@@ -78,14 +78,14 @@ export async function WardaPage({ slug, preview = false }: { slug: string; previ
 
       {/* 04 Ingredients */}
       <Section eyebrow={c.ingredients.eyebrow} title={c.ingredients.h2} imageLabel="Ingrédients" imageSrc={ingredientsImage} imageSide="left">
-        <p className="font-body text-brun mb-4">{c.ingredients.para}</p>
+        <p className="font-body text-brun mb-5 leading-relaxed">{c.ingredients.para}</p>
         <div className="space-y-3">
           {c.ingredients.items.map((it) => (
-            <div key={it.num} className="flex gap-3 rounded-xl border border-brume p-4 bg-white">
-              <span className="font-display text-champagne text-xl leading-none pt-1">{it.num}</span>
-              <div>
-                <p className="font-body text-profond font-medium text-sm">{it.name}</p>
-                <p className="font-body text-brun text-sm leading-relaxed">{it.desc}</p>
+            <div key={it.num} className="flex gap-3.5 rounded-xl border border-brume p-4 bg-white shadow-subtle hover:shadow-card transition-shadow duration-250">
+              <span className="font-display text-champagne text-xl leading-none pt-0.5 tabular-nums">{it.num}</span>
+              <div className="min-w-0">
+                <p className="font-body text-profond font-medium text-sm leading-tight">{it.name}</p>
+                <p className="font-body text-brun text-sm leading-relaxed mt-1">{it.desc}</p>
               </div>
             </div>
           ))}
@@ -94,11 +94,11 @@ export async function WardaPage({ slug, preview = false }: { slug: string; previ
 
       {/* 05 Ritual */}
       <Section eyebrow={lang === "ar" ? undefined : "Le rituel"} title={c.ritual.h2} imageLabel="Rituel" imageSrc={ritualImage} imageSide="right">
-        <ol className="space-y-3">
+        <ol className="space-y-3.5">
           {c.ritual.steps.map((s, i) => (
-            <li key={i} className="flex gap-3">
-              <span className="w-8 h-8 rounded-full bg-profond text-white grid place-items-center text-sm font-medium shrink-0">{i + 1}</span>
-              <span className="font-body text-brun text-sm leading-relaxed pt-1">{s}</span>
+            <li key={i} className="flex gap-3.5 items-start">
+              <span className="w-8 h-8 rounded-full bg-profond text-white grid place-items-center text-sm font-medium shrink-0 tabular-nums">{i + 1}</span>
+              <span className="font-body text-brun text-sm leading-relaxed pt-1 flex-1">{s}</span>
             </li>
           ))}
         </ol>
@@ -115,19 +115,19 @@ export async function WardaPage({ slug, preview = false }: { slug: string; previ
         <div className="container-page">
           <Reveal>
             {c.values.eyebrow && <p className="text-champagne text-sm font-body uppercase tracking-wide mb-2 text-center">{c.values.eyebrow}</p>}
-            <h2 className={`text-3xl md:text-4xl leading-snug text-profond mb-8 text-center ${lang === "ar" ? "font-arabic" : ""}`}>{c.values.h2}</h2>
+            <h2 className={`text-3xl md:text-4xl leading-[1.15] text-profond mb-8 text-center text-balance ${lang === "ar" ? "font-arabic" : ""}`}>{c.values.h2}</h2>
           </Reveal>
-          <div className="grid md:grid-cols-3 gap-4 mb-6">
+          <div className="grid md:grid-cols-3 gap-5 lg:gap-6 mb-8">
             {c.values.pillars.map((p, i) => (
               <Reveal key={i} delay={i * 0.06}>
-                <div className="rounded-2xl border border-brume p-5 bg-gradient-to-b from-white to-petal/30 h-full">
-                  <h3 className="font-display text-lg text-profond mb-2">{p.title}</h3>
+                <div className="rounded-2xl border border-brume p-5 lg:p-6 bg-gradient-to-b from-white to-petal/30 h-full shadow-subtle card-hover">
+                  <h3 className="font-display text-lg text-profond mb-2 leading-tight">{p.title}</h3>
                   <p className="font-body text-brun text-sm leading-relaxed">{p.desc}</p>
                 </div>
               </Reveal>
             ))}
           </div>
-          <div className="flex flex-wrap justify-center gap-2 mb-6">
+          <div className="flex flex-wrap justify-center gap-2.5 mb-8">
             {c.values.badges.map((b, i) => (
               <span key={i} className="badge-pill text-xs">
                 ✦ {b}

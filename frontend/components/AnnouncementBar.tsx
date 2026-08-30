@@ -24,11 +24,11 @@ export function AnnouncementBar() {
       <AnimatePresence mode="wait">
         <motion.p
           key={override ? "override" : i}
-          initial={{ y: 14, opacity: 0 }}
+          initial={{ y: 10, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -14, opacity: 0 }}
-          transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="font-medium"
+          exit={{ y: -10, opacity: 0 }}
+          transition={{ duration: 0.36, ease: [0.16, 1, 0.3, 1] }}
+          className="font-medium leading-relaxed"
         >
           {text}
         </motion.p>
