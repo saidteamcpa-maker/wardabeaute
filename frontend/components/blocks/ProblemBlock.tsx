@@ -68,7 +68,9 @@ export function ProblemBlock({
               )}
 
               <div className="flex items-center gap-3 pt-4 border-t border-brume/50">
-                <div className="w-10 h-10 rounded-full bg-profond text-or-doux grid place-items-center font-display text-sm font-medium shrink-0">W</div>
+                <div className="w-10 h-10 rounded-full overflow-hidden bg-white border border-brume grid place-items-center shrink-0 p-1.5">
+                  <Image src="/favicon-32x32.png" alt="Warda Beauté" width={32} height={32} className="w-full h-full object-contain" />
+                </div>
                 <span className="font-display text-profond text-sm tracking-wide">Warda Beauté — Casablanca</span>
               </div>
             </div>
