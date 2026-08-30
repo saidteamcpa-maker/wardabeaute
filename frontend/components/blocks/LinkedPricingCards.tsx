@@ -57,8 +57,8 @@ export function LinkedPricingCards({
           const featured = !!(card as any).isFeatured;
           return (
             <Reveal key={i} delay={i * 0.06}>
-              <div
-                role="radio"
+            <div
+              role="radio"
                 aria-checked={isActive}
                 tabIndex={0}
                 onClick={() => handleSelect(i)}
@@ -68,49 +68,51 @@ export function LinkedPricingCards({
                     handleSelect(i);
                   }
                 }}
-                className={`relative rounded-2xl border-2 p-5 flex flex-col gap-3 h-full ${
+                className={`relative rounded-2xl border-2 p-5 flex flex-col gap-3 min-h-[190px] h-full ${
                   isActive ? "border-profond bg-profond text-white shadow-elevated scale-[1.02]" : "border-brume bg-white text-brun"
                 }`}
               >
                 {imageSrc && (
-                  <div className="relative w-full aspect-[4/3] overflow-hidden rounded-xl bg-petal/60 border border-brume/60">
+                  <div className="absolute right-4 top-1/2 -translate-y-1/2 w-28 h-28 md:w-32 md:h-32 overflow-hidden rounded-xl bg-petal/60 border border-brume/60">
                     <Image
                       src={imageSrc}
                       alt=""
                       fill
-                      sizes="(max-width: 768px) 100vw, 33vw"
+                      sizes="128px"
                       className="object-contain p-4"
                     />
                   </div>
                 )}
-                {(card as any).badge && (
-                  <span
-                    className={`absolute -top-3 px-3 py-1 rounded-full text-xs font-semibold shadow-subtle ${dir === "rtl" ? "left-4" : "right-4"} ${
-                      featured ? "bg-ordoux text-profond border border-champagne/20" : "bg-champagne text-white"
+                <div className={imageSrc ? "pr-32" : ""}>
+                  {(card as any).badge && (
+                    <span
+                      className={`absolute -top-3 px-3 py-1 rounded-full text-xs font-semibold shadow-subtle ${dir === "rtl" ? "left-4" : "right-4"} ${
+                        featured ? "bg-ordoux text-profond border border-champagne/20" : "bg-champagne text-white"
+                      }`}
+                    >
+                      {(card as any).badge}
+                    </span>
+                  )}
+                  <h3 className={`font-display text-lg ${isActive ? "text-white" : "text-profond"}`}>{card.title}</h3>
+                  <div>
+                    <div className={`font-display text-2xl ${isActive ? "text-white" : "text-profond"}`}>{card.price} MAD</div>
+                    <div className={`font-body text-xs ${isActive ? "text-white/80" : "text-gris"}`}>
+                      {card.size} · {card.duration}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      handleAdd(i, card.price);
+                    }}
+                    className={`mt-4 w-full rounded-full px-5 py-3 text-sm font-semibold text-center transition-all ${
+                      isActive ? "bg-white text-profond hover:bg-ordoux shadow-glow" : "bg-profond text-white hover:brightness-110"
                     }`}
                   >
-                    {(card as any).badge}
-                  </span>
-                )}
-                <h3 className={`font-display text-lg ${isActive ? "text-white" : "text-profond"}`}>{card.title}</h3>
-                <div>
-                  <div className={`font-display text-2xl ${isActive ? "text-white" : "text-profond"}`}>{card.price} MAD</div>
-                  <div className={`font-body text-xs ${isActive ? "text-white/80" : "text-gris"}`}>
-                    {card.size} · {card.duration}
-                  </div>
+                    {card.cta}
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    handleAdd(i, card.price);
-                  }}
-                  className={`mt-auto w-full rounded-full px-5 py-3 text-sm font-semibold text-center transition-all ${
-                    isActive ? "bg-white text-profond hover:bg-ordoux shadow-glow" : "bg-profond text-white hover:brightness-110"
-                  }`}
-                >
-                  {card.cta}
-                </button>
                 {(card as any).isPlaceholder && <p className="text-[10px] text-center opacity-60">TODO: prix à confirmer</p>}
               </div>
             </Reveal>
