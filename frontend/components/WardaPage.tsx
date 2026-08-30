@@ -14,6 +14,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { IconBadge } from "@/components/ui/IconBadge";
 import { Check } from "lucide-react";
 import { LinkedPricingCards } from "@/components/blocks/LinkedPricingCards";
+import { StickyCTA } from "@/components/StickyCTA";
 
 const HERO_IMAGES: Record<string, string> = {
   velvastretch: "/images/velvastretch.png",
@@ -160,6 +161,7 @@ export async function WardaPage({ slug, preview = false }: { slug: string; previ
           <Faq items={c.faq.map((f) => ({ q: f.q, r: f.a }))} />
         </div>
       </section>
+      <StickyCTA slug={slug} imageSrc={heroImage} scrollToCheckout />
     </div>
   );
 }

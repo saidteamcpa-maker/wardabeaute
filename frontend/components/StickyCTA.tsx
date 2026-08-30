@@ -20,7 +20,7 @@ const COD_MARKERS = [
   "Paiement à la livraison",
 ];
 
-export function StickyCTA({ slug }: { slug: string }) {
+export function StickyCTA({ slug, imageSrc, scrollToCheckout = false }: { slug: string; imageSrc?: string; scrollToCheckout?: boolean }) {
   const { lang } = useLang();
   const add = useCart((s) => s.add);
   const openCart = useCart((s) => s.openCart);
@@ -33,7 +33,7 @@ export function StickyCTA({ slug }: { slug: string }) {
   if (lang === "fr") ctaLabel = "Commander maintenant";
   if (lang === "ar") ctaLabel = "اطلبي دابا";
   const qty = selectedTier?.[slug] || 1;
-  const price = unitPrice(slug, qty, catalog);
+  const price = scrollToCheckout ? unitPrice(slug, 1, catalog) : unitPrice(slug, qty, catalog);
   const bundleLabel =
     qty === 1
       ? lang === "ar"
@@ -43,31 +43,36 @@ export function StickyCTA({ slug }: { slug: string }) {
         ? `باك ${qty}`
         : `Pack de ${qty}`;
 
-  const handleAdd = () => {
+  const handleAction = () => {
+    if (scrollToCheckout) {
+      const el = document.getElementById("order");
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+      else window.location.hash = "#order";
+      return;
+    }
     add({ slug, qty });
     track("AddToCart", { content_ids: [slug], value: price, currency: "MAD" });
     openCart();
   };
 
+  const actionLabel = scrollToCheckout
+    ? lang === "ar"
+      ? "اختاري العرض"
+      : "Choisir une offre"
+    : ctaLabel;
+
   return (
-    <div
-      role="button"
-      tabIndex={0}
-      aria-label={ctaLabel}
-      onClick={handleAdd}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault();
-          handleAdd();
-        }
-      }}
-      className="md:hidden fixed bottom-0 inset-x-0 z-40 cursor-pointer group select-none"
+    <button
+      type="button"
+      aria-label={actionLabel}
+      onClick={handleAction}
+      className="md:hidden fixed bottom-0 inset-x-0 z-40 cursor-pointer group select-none text-left w-full"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       <div className="bg-profond/95 backdrop-blur-md border-t border-white/10 shadow-[0_-10px_30px_rgba(0,0,0,0.28)] px-4 pt-3 pb-4">
         <div className="flex items-center gap-3">
           <Image
-            src={p.image}
+            src={imageSrc || p.image}
             alt={p.name}
             width={48}
             height={48}
@@ -76,13 +81,13 @@ export function StickyCTA({ slug }: { slug: string }) {
             <div className="min-w-0 flex-1 leading-tight">
               <div className="text-white text-sm font-body truncate">{p.name}</div>
               <div className="text-white/90 text-xs">
-                {bundleLabel} · {price} MAD
+                {scrollToCheckout ? `${price} MAD` : `${bundleLabel} · ${price} MAD`}
               </div>
             </div>
           <div
             className="btn-sticky-cta shrink-0 rounded-full px-5 py-3 text-sm font-body font-semibold text-white"
           >
-            {ctaLabel}
+            {actionLabel}
             <span
               className={`ml-1.5 inline-block transition-transform duration-200 ${
                 lang === "ar" ? "group-hover:-translate-x-1" : "group-hover:translate-x-1"
@@ -94,6 +99,6 @@ export function StickyCTA({ slug }: { slug: string }) {
           </div>
         </div>
       </div>
-    </div>
+    </button>
   );
 }
