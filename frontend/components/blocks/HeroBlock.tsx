@@ -41,8 +41,6 @@ export function HeroBlock({
   };
 
   const displayPills = pills.slice(0, 3);
-  const floatingSrc = floatingImageSrc || imageSrc;
-
   return (
     <section dir={dir} className="section relative overflow-hidden bg-gradient-to-b from-petal via-white to-petal/40">
       <div className="container-page grid md:grid-cols-2 gap-8 md:gap-10 items-center">
@@ -112,16 +110,6 @@ export function HeroBlock({
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-profond/10 via-transparent to-transparent" />
             </div>
 
-            {floatingSrc ? (
-              <div
-                className={`absolute -bottom-5 w-32 h-32 md:w-40 md:h-40 rounded-2xl overflow-hidden border-4 border-white shadow-elevated bg-white hidden sm:block ${
-                  dir === "rtl" ? "left-3 md:left-4" : "right-3 md:right-4"
-                }`}
-                aria-hidden="true"
-              >
-                <Image src={floatingSrc} alt="" fill sizes="160px" className="object-cover" />
-              </div>
-            ) : null}
           </div>
         </Reveal>
       </div>
