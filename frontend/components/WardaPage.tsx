@@ -15,12 +15,21 @@ import { IconBadge } from "@/components/ui/IconBadge";
 import { Check } from "lucide-react";
 import { WHATSAPP_NUMBER } from "@/lib/config";
 
+const HERO_IMAGES: Record<string, string> = {
+  velvastretch: "/images/velvastretch.png",
+  silkstop: "/images/silkstop.png",
+  collaglow: "/images/collaglow.png",
+  "kit-collagene": "/kit-collagene-hero.png",
+  kit: "/kit-collagene-hero.png",
+};
+
 export async function WardaPage({ slug }: { slug: string }) {
   const lang = getLangServer();
   const dir = lang === "ar" ? "rtl" : "ltr";
   const data = getWardaPage(slug);
   if (!data) return null;
   const c = lang === "ar" ? data.ar : data.fr;
+  const heroImage = HERO_IMAGES[slug] || "/images/velvastretch.png";
 
   // SEO handled via generateMetadata in page.tsx
 
@@ -39,6 +48,7 @@ export async function WardaPage({ slug }: { slug: string }) {
         pills={c.hero.pills}
         ctaLabel={c.hero.cta}
         trust={c.hero.trust}
+        imageSrc={heroImage}
         lang={lang}
       />
 
