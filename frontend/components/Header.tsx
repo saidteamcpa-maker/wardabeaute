@@ -83,7 +83,7 @@ export function Header() {
           dir="ltr"
           className="order-2 mx-auto flex items-center transition-opacity duration-300 rounded-xl px-2 py-1 hover:opacity-90 focus-visible:ring-2 focus-visible:ring-warda/30 focus-visible:outline-none"
         >
-          <Image src={logoUrl || "/warda-logo.webp"} alt="Warda Beauté" width={0} height={0} sizes="180px" className="h-7 md:h-8 w-auto object-contain" priority />
+          <Image src={logoUrl || "/warda-logo.png"} alt="Warda Beauté" width={0} height={0} sizes="180px" className="h-7 md:h-8 w-auto object-contain" priority />
         </Link>
 
         <div className="flex items-center gap-1.5 order-3">
