@@ -108,7 +108,7 @@ textarea:focus-visible {
     @apply inline-flex items-center justify-center rounded-xl border border-brume px-3 py-2 font-body text-sm transition-all duration-200 hover:bg-petal/60 hover:border-warda/30 active:scale-[0.97];
   }
   .input-field {
-    @apply rounded-xl border border-brume px-4 py-3 font-body text-sm bg-white transition-all duration-250 focus:border-warda focus:ring-2 focus:ring-warda/20 focus:outline-none focus:shadow-glow;
+    @apply rounded-xl border border-brume px-4 py-3 font-body text-base bg-white transition-all duration-250 focus:border-warda focus:ring-2 focus:ring-warda/20 focus:outline-none focus:shadow-glow;
   }
   .admin-card {
     @apply bg-white rounded-2xl border border-brume p-4 sm:p-5;
