@@ -73,13 +73,17 @@ export const useCart = create<CartState>()(
             state.isCheckoutOpen = false;
           }
         }
+        // Fix silkstop default was 3 but should be 2 — correct persisted value
+        if (state && state.selectedTier && state.selectedTier["silkstop"] === 3) {
+          state.selectedTier["silkstop"] = 2;
+        }
         // Always start with UI closed on rehydrate
         if (state) {
           state.isCartOpen = false;
           state.isCheckoutOpen = false;
         }
       },
-      version: 2,
+      version: 3,
       migrate: (persistedState: any, version: number) => {
         if (version < 2) {
           // v1 stored isCartOpen/isCheckoutOpen — drop them
@@ -91,6 +95,12 @@ export const useCart = create<CartState>()(
               const valid = new Set(["velvastretch", "silkstop", "collaglow", "kit-collagene"]);
               s.items = s.items.filter((i: any) => i && valid.has(i.slug));
             }
+          }
+        }
+        if (version < 3) {
+          const s = persistedState as any;
+          if (s && s.selectedTier && s.selectedTier["silkstop"] === 3) {
+            s.selectedTier["silkstop"] = 2;
           }
         }
         return persistedState as CartState;
