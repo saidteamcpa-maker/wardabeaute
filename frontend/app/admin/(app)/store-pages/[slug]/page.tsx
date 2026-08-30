@@ -43,12 +43,12 @@ export default function PageEditor({ params }: { params: { slug: string } }) {
   const [activeLang, setActiveLang] = useState<Lang>("fr");
   const [tab, setTab] = useState<"content" | "seo" | "versions" | "settings">("content");
   const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
-  const [uploadTarget, setUploadTarget] = useState<string | null>(null);
+  const uploadTargetRef = useRef<{ key: string; lang: Lang } | null>(null);
 
   async function load() {
     setLoading(true);
@@ -134,7 +134,7 @@ export default function PageEditor({ params }: { params: { slug: string } }) {
     }
   }
   function pickImage(key: string) {
-    setUploadTarget(key);
+    uploadTargetRef.current = { key, lang: activeLang };
     fileRef.current?.click();
   }
 
@@ -307,6 +307,23 @@ export default function PageEditor({ params }: { params: { slug: string } }) {
         </div>
       )}
 
+      {/* Always-mounted hidden file input — must be outside tab conditional so fileRef is always valid */}
+      <input
+        ref={fileRef}
+        type="file"
+        accept="image/*"
+        className="sr-only"
+        tabIndex={-1}
+        aria-hidden="true"
+        onChange={(e) => {
+          const f = e.target.files?.[0];
+          const target = uploadTargetRef.current;
+          if (f && target) uploadImage(f, target.lang, target.key);
+          uploadTargetRef.current = null;
+          e.target.value = "";
+        }}
+      />
+
       <div className="flex gap-2 mb-4 border-b border-brume">
         {(["content", "versions"] as const).map((t) => (
           <button
@@ -340,18 +357,6 @@ export default function PageEditor({ params }: { params: { slug: string } }) {
 
       {tab === "content" && (
         <div className="space-y-4">
-          <input
-            ref={fileRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={(e) => {
-              const f = e.target.files?.[0];
-              if (f && uploadTarget) uploadImage(f, activeLang, uploadTarget);
-              setUploadTarget(null);
-              e.target.value = "";
-            }}
-          />
           {orderedBlocks.map((b) => {
             const isDisabled = disabled.includes(b.key);
             return (
