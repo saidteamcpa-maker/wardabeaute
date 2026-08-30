@@ -84,8 +84,8 @@ export function Header() {
           style={{ fontFamily: '"Cairo", "Playfair Display", Georgia, serif' }}
           className="order-2 mx-auto flex items-center gap-2 font-display text-2xl text-profond hover:text-warda transition-colors duration-300 rounded-xl px-2 py-1 focus-visible:ring-2 focus-visible:ring-warda/30 focus-visible:outline-none"
         >
-          <Image src={logoUrl || "/header-logo.png"} alt="Warda Beauté" width={28} height={28} className="w-7 h-7 object-contain" />
-          Warda Beauté
+          <Image src={logoUrl || "/header-logo.png"} alt="Warda Beauté" width={28} height={28} className="w-7 h-7 object-contain shrink-0" />
+          <span className="whitespace-nowrap leading-none">Warda Beauté</span>
         </Link>
 
         <div className="flex items-center gap-1.5 order-3">
