@@ -185,7 +185,7 @@ export default async function HomePage({ searchParams }: { searchParams?: { prev
             ))}
           </div>
           {lang === "ar" && (
-            <p className="text-center font-arabic text-gris mt-6">الدفع عند الاستلام — مكتعطيش درهم حتى توصلك السلعة في يديك</p>
+            <p className="text-center font-arabic text-gris mt-6">الدفع عند الاستلام — ما كتخلصي حتى درهم حتى كتوصلك السلعة ليدك</p>
           )}
         </div>
       </section>
@@ -194,8 +194,16 @@ export default async function HomePage({ searchParams }: { searchParams?: { prev
       <section className="section overflow-hidden">
         <div className="container-page">
           <Reveal>
-            <h2 className="text-4xl leading-snug text-profond mb-2 text-center">
-              Plus de <CountUp to={2400} suffix={T("home.socialSuffix")} className="text-gradient font-display" /> satisfaites
+            <h2 className={`text-4xl leading-snug text-profond mb-2 text-center ${lang === "ar" ? "font-arabic" : ""}`}>
+              {lang === "ar" ? (
+                <>
+                  أكثر من <CountUp to={2400} suffix="+" className="text-gradient font-display" /> {T("home.socialSuffix")}
+                </>
+              ) : (
+                <>
+                  Plus de <CountUp to={2400} suffix="+" className="text-gradient font-display" /> {T("home.socialSuffix")}
+                </>
+              )}
             </h2>
             <div className="flex flex-wrap justify-center gap-2 mt-4">
               {["Casablanca", "Rabat", "Marrakech", "Agadir", "Fès", "Tanger"].map((c) => (

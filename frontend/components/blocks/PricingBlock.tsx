@@ -78,7 +78,7 @@ export function PricingBlock({ slug, offers: propOffers, lang: propLang, title, 
 
         <div
           role="radiogroup"
-          aria-label={lang === "ar" ? "اختر العرض" : "Choisir une offre"}
+          aria-label={lang === "ar" ? "اختاري العرض" : "Choisir une offre"}
           className="grid md:grid-cols-3 gap-4"
         >
           {displayOffers.map((o: Offer) => {
@@ -109,7 +109,7 @@ export function PricingBlock({ slug, offers: propOffers, lang: propLang, title, 
                         dir === "rtl" ? "left-4" : "right-4"
                       } ${isActive ? "bg-ordoux text-profond border border-champagne/20" : "bg-champagne text-white"}`}
                     >
-                      {lang === "ar" ? `وفّري ${savings} MAD` : `-${savings} MAD`}
+                      {lang === "ar" ? `وفّري ${savings} درهم` : `-${savings} MAD`}
                     </span>
                   )}
 
@@ -120,7 +120,7 @@ export function PricingBlock({ slug, offers: propOffers, lang: propLang, title, 
                       ))}
                     </span>
                     <span className={`font-body text-sm font-semibold ${isActive ? "text-white" : "text-profond"}`}>
-                      {bundleLabel(o.qty)} Â· {qtyLabel(o.qty)}
+                      {bundleLabel(o.qty)} · {qtyLabel(o.qty)}
                     </span>
                     <span
                       className={`ml-auto w-5 h-5 rounded-full border-2 grid place-items-center shrink-0 ${isActive ? "border-white bg-white" : "border-brume bg-white"}`}
@@ -138,7 +138,7 @@ export function PricingBlock({ slug, offers: propOffers, lang: propLang, title, 
                     </div>
                     {hasSavings ? (
                       <div className={`font-body text-xs font-medium mt-1 ${isActive ? "text-ordoux" : "text-champagne"}`}>
-                        {lang === "ar" ? `توفير ${savings} MAD` : `Économisez ${savings} MAD`}
+                        {lang === "ar" ? `كتوفّري ${savings} درهم` : `Économisez ${savings} MAD`}
                       </div>
                     ) : (
                       o.qty > 1 && (
@@ -159,7 +159,7 @@ export function PricingBlock({ slug, offers: propOffers, lang: propLang, title, 
                       isActive ? "bg-white text-profond hover:bg-ordoux hover:shadow-glow" : "bg-profond text-white hover:brightness-110 hover:shadow-glow"
                     }`}
                   >
-                    {lang === "ar" ? "اطلبي الآن" : "Commander"} — {o.price} MAD
+                    {lang === "ar" ? "طلبي دابا" : "Commander"} — {o.price} MAD
                   </button>
                 </div>
               </Reveal>
@@ -168,7 +168,7 @@ export function PricingBlock({ slug, offers: propOffers, lang: propLang, title, 
         </div>
 
         <p className="font-body text-gris text-xs text-center mt-4">
-          {lang === "ar" ? "🚚 التوصيل مجاني · 💳 الخلاص عند الاستلام" : "🚚 Livraison gratuite · 💳 Paiement à la livraison"}
+          {lang === "ar" ? "🚚 توصيل فابور فكل المغرب · 💳 الدفع عند الاستلام" : "🚚 Livraison gratuite · 💳 Paiement à la livraison"}
         </p>
       </div>
     </section>

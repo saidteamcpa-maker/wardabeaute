@@ -57,14 +57,17 @@ export function OrderFormBlock({
 
   const whatsappText = useMemo(() => {
     const pName = product?.name ?? slug;
-    return encodeURIComponent(`Hi, I want to order ${pName} (${activeQty} pcs)`);
-  }, [product?.name, slug, activeQty]);
+    if (lang === "ar") {
+      return encodeURIComponent(`سلام 🌹 بغيت نطلب ${pName} (${activeQty} قطع)`);
+    }
+    return encodeURIComponent(`Bonjour, je souhaite commander ${pName} (${activeQty} pièces)`);
+  }, [product?.name, slug, activeQty, lang]);
 
   const waHref = `https://wa.me/${whatsappNumber}?text=${whatsappText}`;
 
   const validate = () => {
     const errs: Record<string, string> = {};
-    if (!name.trim() || name.trim().length < 2) errs.name = lang === "ar" ? "الاسم ضروري" : "Nom requis (min. 2 caractères)";
+    if (!name.trim() || name.trim().length < 2) errs.name = lang === "ar" ? "الاسم الكامل ضروري" : "Nom requis (min. 2 caractères)";
     if (!PHONE_RE.test(phone.trim())) errs.phone = lang === "ar" ? "رقم مغربي غير صالح — مثال: 0612345678" : "Numéro invalide — ex: 0612345678 (0[5-7]XXXXXXXX)";
     if (!city.trim()) errs.city = lang === "ar" ? "المدينة ضرورية" : "Ville requise";
     if (!address.trim()) errs.address = lang === "ar" ? "العنوان ضروري" : "Adresse requise";
@@ -105,15 +108,15 @@ export function OrderFormBlock({
       track("Purchase", { value: (res as unknown as { total: number }).total ?? activePrice, currency: "MAD", content_ids: [slug], orderId: (res as unknown as { id: string }).id });
       setSuccess(
         lang === "ar"
-          ? "شكراً! سنتصل بك قريباً لتأكيد الطلب — الخلاص عند الاستلام."
+          ? "شكراً ليك! سنتصل بك قريباً لتأكيد الطلب — الدفع عند الاستلام."
           : "Merci ! Nous vous appelons très bientôt pour confirmer — paiement à la livraison."
       );
       setError(null);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "";
-      if (msg === "invalid_phone") setError(lang === "ar" ? "رقم غير صالح" : "Numéro invalide");
-      else if (msg === "morocco_only") setError(lang === "ar" ? "الطلبات للمغرب فقط 🇲🇦" : "Commandes réservées au Maroc 🇲🇦");
-      else setError(lang === "ar" ? "حدث خطأ — حاولي مرة أخرى" : "Une erreur est survenue — réessayez.");
+      if (msg === "invalid_phone") setError(lang === "ar" ? "رقم هاتف غير صالح" : "Numéro invalide");
+      else if (msg === "morocco_only") setError(lang === "ar" ? "الطلبات متوفرة للمغرب فقط 🇲🇦" : "Commandes réservées au Maroc 🇲🇦");
+      else setError(lang === "ar" ? "وقع خطأ — عاودي حاولي مرة أخرى" : "Une erreur est survenue — réessayez.");
     } finally {
       setLoading(false);
     }
@@ -128,13 +131,13 @@ export function OrderFormBlock({
           {eyebrow && <p className="text-champagne text-sm font-body uppercase tracking-wide mb-2 text-center">{eyebrow}</p>}
           {h2 && <h2 className={`text-3xl md:text-4xl leading-snug text-profond mb-2 text-center ${lang === "ar" ? "font-arabic" : ""}`}>{h2}</h2>}
           <p className="font-body text-gris text-sm text-center mb-6">
-            {lang === "ar" ? "املئي الاستمارة — الدفع عند الاستلام" : "Remplis le formulaire — paiement à la livraison"}
+            {lang === "ar" ? "عمّري الاستمارة — والدفع عند الاستلام" : "Remplis le formulaire — paiement à la livraison"}
           </p>
         </Reveal>
 
         <div className="max-w-xl mx-auto">
           <Reveal>
-            <div role="radiogroup" aria-label={lang === "ar" ? "اختر العرض" : "Choisis ton offre"} className="flex flex-col gap-2 mb-6">
+            <div role="radiogroup" aria-label={lang === "ar" ? "اختاري العرض" : "Choisis ton offre"} className="flex flex-col gap-2 mb-6">
               {offers.slice(0, 3).map((o: { qty: number; price: number; save?: number }) => {
                 const isActive = activeQty === o.qty;
                 const savings = o.save ?? (o.qty > 1 ? Math.max(0, product.price * o.qty - o.price) : 0);
@@ -157,7 +160,7 @@ export function OrderFormBlock({
                     </span>
                     <span className="flex-1 font-body text-sm">
                       <span className="font-medium">{o.qty === 1 ? (lang === "ar" ? "وحدة واحدة" : "1 pièce") : lang === "ar" ? `${o.qty} قطع` : `${o.qty} pièces`}</span>
-                      {savings > 0 && <span className={`block text-xs ${isActive ? "text-white/80" : "text-champagne"}`}>{lang === "ar" ? `توفير ${savings} MAD` : `-${savings} MAD`}</span>}
+                      {savings > 0 && <span className={`block text-xs ${isActive ? "text-white/80" : "text-champagne"}`}>{lang === "ar" ? `وفّري ${savings} درهم` : `-${savings} MAD`}</span>}
                     </span>
                     <span className="text-right">
                       <span className="font-medium font-body text-sm">{o.price} MAD</span>
@@ -287,11 +290,11 @@ export function OrderFormBlock({
               )}
 
               <button type="submit" disabled={loading} className="btn-primary btn-glow w-full text-base disabled:opacity-60">
-                {loading ? (lang === "ar" ? "جاري الإرسال..." : "Envoi...") : lang === "ar" ? `اطلبي الآن — ${activePrice} MAD` : `Commander — ${activePrice} MAD`}
+                {loading ? (lang === "ar" ? "جاري الإرسال..." : "Envoi...") : lang === "ar" ? `طلبي دابا — ${activePrice} درهم` : `Commander — ${activePrice} MAD`}
               </button>
 
               <p className="text-center text-xs text-gris">
-                {lang === "ar" ? "🔒 بياناتك محمية · الخلاص عند الاستلام" : "🔒 Données protégées · Paiement à la livraison · Livraison 24–48h"}
+                {lang === "ar" ? "🔒 بياناتك محمية وسرية · الدفع عند الاستلام · التوصيل فـ 24–48 ساعة" : "🔒 Données protégées · Paiement à la livraison · Livraison 24–48h"}
               </p>
             </form>
           </Reveal>
@@ -310,9 +313,9 @@ export function OrderFormBlock({
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">
                   {[
                     { icon: Leaf, label: lang === "ar" ? "طبيعي 100%" : "100% Naturel" },
-                    { icon: ShieldCheck, label: lang === "ar" ? "مجرّب" : "Testé" },
+                    { icon: ShieldCheck, label: lang === "ar" ? "مجرّب ديرماتولوجياً" : "Testé" },
                     { icon: Truck, label: "24–48h" },
-                    { icon: CreditCard, label: lang === "ar" ? "عند الاستلام" : "COD" },
+                    { icon: CreditCard, label: lang === "ar" ? "الدفع عند الاستلام" : "COD" },
                   ].map(({ icon: Icon, label }, i) => (
                     <div key={i} className="rounded-xl bg-petal/60 border border-brume/60 px-3 py-3 flex flex-col items-center gap-1.5 text-center">
                       <IconBadge icon={Icon} tone="warda" size="sm" />
@@ -329,7 +332,7 @@ export function OrderFormBlock({
                 className="flex items-center justify-center gap-2 w-full rounded-full border border-[#25D366] text-[#25D366] font-body font-medium py-3 hover:bg-[#25D366] hover:text-white transition-colors duration-250"
               >
                 <span aria-hidden="true">💬</span>
-                {lang === "ar" ? "اطلبي عبر واتساب" : "Commander via WhatsApp"}
+                {lang === "ar" ? "طلبي عبر واتساب" : "Commander via WhatsApp"}
               </a>
               <p className="text-center text-[11px] text-gris mt-2 break-all">{waHref}</p>
             </div>

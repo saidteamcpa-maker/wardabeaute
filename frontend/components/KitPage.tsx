@@ -122,7 +122,7 @@ export async function KitPage({ preview = false }: { preview?: boolean }) {
         </div>
           <div className="rounded-2xl bg-ordoux/60 p-5 border border-champagne/20">
           <p className="font-body text-brun mb-2 leading-relaxed">
-            <strong className="text-profond">{lang === "ar" ? "البحث واضح :" : "La recherche est claire :"}</strong>{" "}
+            <strong className="text-profond">{lang === "ar" ? "الدراسات العلمية واضحة :" : "La recherche est claire :"}</strong>{" "}
             {T("kit.sci3")}
           </p>
           <div className="flex items-start gap-3 mt-3">
@@ -145,7 +145,7 @@ export async function KitPage({ preview = false }: { preview?: boolean }) {
           </div>
           <p className="text-center text-gris text-sm mt-4">
             {lang === "ar"
-              ? "ماركة مغربية، للنساء المغربيات. بلا استيراد، بلا وسيط."
+              ? "ماركة مغربية، للمرأة المغربية. بلا استيراد، وبلا وسطاء."
               : "Une marque marocaine, pour des femmes marocaines. Pas d'importation, pas d'intermédiaire."}
           </p>
         </div>

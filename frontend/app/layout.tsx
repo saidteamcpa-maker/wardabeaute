@@ -30,9 +30,9 @@ const META = {
       "Warda Beauté — sérums anti-vergetures, huile ralentisseuse de repousse et gummies au collagène. Fabriqué au Maroc. Livraison 24-48h, paiement à la livraison.",
   },
   ar: {
-    title: "Warda Beauté | دوايات تجميل طبيعية فالمغرب | الخلاص عند الاستلام",
+    title: "Warda Beauté | منتجات عناية وتجميل طبيعية فالمغرب | الدفع عند الاستلام",
     description:
-      "Warda Beauté — سيروم لعلامات التمدد، وزيت بغي بطّأ رجوع الشعر، وعلكات الكولاجين. مصنوعة فالمغرب. التوصيل 24-48 ساعة، والخلاص عند الاستلام.",
+      "Warda Beauté — سيروم علامات التمدد، سيروم إبطاء نمو الشعر، وحلوى الكولاجين البحري. مصنوع فالمغرب بمكونات طبيعية. التوصيل فـ 24-48 ساعة والدفع عند الاستلام.",
   },
 };
 

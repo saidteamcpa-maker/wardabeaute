@@ -46,7 +46,7 @@ export async function WardaPage({ slug, preview = false }: { slug: string; previ
     <div dir={dir} className={lang === "ar" ? "font-arabic" : ""}>
       {/* Skip link */}
       <a href="#order" className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-profond focus:text-white focus:px-4 focus:py-2 focus:rounded-full">
-        {lang === "ar" ? "اذهبي إلى الاستمارة" : "Aller au formulaire"}
+        {lang === "ar" ? "انتقلي إلى استمارة الطلب" : "Aller au formulaire"}
       </a>
 
       {/* 01 Hero */}

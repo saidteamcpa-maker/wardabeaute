@@ -80,21 +80,21 @@ export default function ConfirmationPage() {
   const waNumber = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "212779754660";
 
   const buildMsg = () => {
-    const lines = [A("🌹 سلام Warda Beauté، هادا متابعة لكوماندة ديالي", "🌹 Bonjour Warda Beauté, c'est suite à ma commande")];
-    if (lastOrder?.id) lines.push(`🆔 ${A("الكوماندة","Commande")} #${lastOrder.id}`);
-    else if (id) lines.push(`🆔 ${A("الكوماندة","Commande")} #${id}`);
+    const lines = [A("🌹 سلام Warda Beauté، هادي متابعة للطلب ديالي", "🌹 Bonjour Warda Beauté, c'est suite à ma commande")];
+    if (lastOrder?.id) lines.push(`🆔 ${A("رقم الطلب","Commande")} #${lastOrder.id}`);
+    else if (id) lines.push(`🆔 ${A("رقم الطلب","Commande")} #${id}`);
     if (lastOrder) {
-      lines.push(`👤 ${A("السمية","Nom")}: ${lastOrder.customer_name}`);
-      lines.push(`📱 ${A("تليفون","Téléphone")}: ${lastOrder.phone}`);
+      lines.push(`👤 ${A("الاسم","Nom")}: ${lastOrder.customer_name}`);
+      lines.push(`📱 ${A("الهاتف","Téléphone")}: ${lastOrder.phone}`);
       lines.push(`🏙️ ${A("المدينة","Ville")}: ${lastOrder.city}`);
       lines.push(`📍 ${A("العنوان","Adresse")}: ${lastOrder.address}`);
-      lines.push(`🛒 ${A("المنتوجات","Articles")}:`);
+      lines.push(`🛒 ${A("المنتجات","Articles")}:`);
       lastOrder.items.forEach((it: any) =>
         lines.push(`- ${it.name} × ${it.qty} — ${it.price} MAD`)
       );
-      lines.push(`💰 ${A("المجموع","Total")}: ${lastOrder.total} MAD`);
+      lines.push(`💰 ${A("المجموع للدفع عند الاستلام","Total")}: ${lastOrder.total} MAD`);
     }
-    if (upsell) lines.push("🎁 Kit Collagène Inside & Outside ajouté (−49 MAD)");
+    if (upsell) lines.push(A("🎁 تم إضافة Kit Collagène بخصم (−49 درهم)", "🎁 Kit Collagène Inside & Outside ajouté (−49 MAD)"));
     return lines.join("\n");
   };
 
@@ -123,24 +123,24 @@ export default function ConfirmationPage() {
           <p className="font-display text-2xl mb-1">
             {withinWindow ? (
               <>
-                📞 {firstName}, {A("كنعيطو ليك فأقل من 10 دقايق !", "on vous appelle sous 10 minutes !")}
+                📞 {firstName}، {A("غادي نتصلو بيك فـ أقل من 10 دقائق !", "on vous appelle sous 10 minutes !")}
               </>
             ) : (
-              <>{A("🌙 الكوماندة وصلات — غدا من 9h كنعيطو نأكدو", "🌙 Commande reçue — appel de confirmation demain dès 9h !")}</>
+              <>{A("🌙 تم استلام طلبك — غادي نتصلو بيك غداً مع 9 صباحاً لتأكيده !", "🌙 Commande reçue — appel de confirmation demain dès 9h !")}</>
             )}
           </p>
           <p className="text-sm text-petal/90">
             {withinWindow
               ? A(
-                  `كنعيطو ليك على ${phone} باش نأكدو العنوان ديالك مع بعض.`,
+                  `غادي نتصلو بيك على ${phone} لتأكيد عنوان التوصيل.`,
                   `On vous appelle au ${phone} pour confirmer votre adresse ensemble.`
                 )
               : A(
-                  `غادي تستناو عينة من ${phone} غدا فالصباح باش نأكدو العنوان.`,
+                  `غادي نتصلو بيك على الرقم ${phone} غداً صباحاً لتأكيد العنوان.`,
                   `Vous recevrez un appel au ${phone} demain matin pour confirmer votre adresse.`
                 )}{" "}
             {A(
-              "خلي تليفونك قريب من يدك 📱 · الجواب على العينة = الشحن فوراً.",
+              "خلي هاتفك قريب منك 📱 · الرد على المكالمة = الشحن الفوري لطلبك.",
               "Gardez votre téléphone à portée de main 📱 · Répondre à l'appel = expédition immédiate."
             )}
           </p>
@@ -154,26 +154,26 @@ export default function ConfirmationPage() {
               </div>
             )}
             <h1 className="font-display text-5xl leading-[1.1] text-profond mb-2">
-              {C("confirm.title", "مرسي", "Merci")} {firstName} ! 🌹
+              {C("confirm.title", "شكراً ليك", "Merci")} {firstName} ! 🌹
             </h1>
-            <p className="text-lg">{C("confirm.message", "الكوماندة ديالك مؤكدة.", "Votre commande est confirmée.")}</p>
-            <p className="text-gris mt-1">{C("confirm.delivery", "التوصيل 24 لـ 48 ساعة فكل المغرب.", "Livraison 24–48h partout au Maroc.")}</p>
+            <p className="text-lg">{C("confirm.message", "الطلب ديالك تسجل بنجاح.", "Votre commande est confirmée.")}</p>
+            <p className="text-gris mt-1">{C("confirm.delivery", "التوصيل فـ 24 إلى 48 ساعة فكل مدن المغرب.", "Livraison 24–48h partout au Maroc.")}</p>
           <p className="text-lg">
-            {A("الكوماندة ديالك", "Votre commande")}{" "}
+            {A("الطلب ديالك", "Votre commande")}{" "}
             <span className="font-medium text-profond">
               #{lastOrder?.id || id || "—"}
             </span>{" "}
-            {A("تسجلات مزيان.", "est bien enregistrée.")}
+            {A("تسجل بنجاح.", "est bien enregistrée.")}
           </p>
           <p className="text-gris mt-1">
-            📱 {A(`كنعيطو ليك على ${phone} باش نأكدو العنوان قبل ما نشحنو.`, `On vous appelle au ${phone} pour confirmer l'adresse avant l'expédition.`)}
+            📱 {A(`غادي نتصلو بيك على ${phone} لتأكيد العنوان قبل الشحن.`, `On vous appelle au ${phone} pour confirmer l'adresse avant l'expédition.`)}
           </p>
         </div>
 
         {/* 3. ORDER SUMMARY */}
         <div className="rounded-2xl bg-white border border-brume p-5 mt-6">
           <h2 className="font-display text-2xl leading-snug text-profond mb-3">
-            {A("الكوماندة ديالك", "Votre commande")}
+            {A("ملخص الطلب ديالك", "Votre commande")}
           </h2>
           <div className="divide-y divide-brume">
             {(lastOrder?.items || []).map((it: any, idx: number) => {
@@ -227,24 +227,24 @@ export default function ConfirmationPage() {
                 )}
                 <div className="flex justify-between">
                   <span className="text-gris">{A("التوصيل", "Livraison")}</span>
-                  <span className="text-warda font-medium">{A("مجانية 🚚", "Offerte 🚚")}</span>
+                  <span className="text-warda font-medium">{A("فابور مجاني 🚚", "Offerte 🚚")}</span>
                 </div>
                 <div className="flex justify-between text-lg font-medium text-profond pt-1">
-                  <span>{A("المجموع اللي تخلصيه عند الاستلام", "Total à payer à la livraison")}</span>
+                  <span>{A("المجموع للدفع عند الاستلام", "Total à payer à la livraison")}</span>
                   <span>{totalCalc} MAD</span>
                 </div>
               </div>
             );
           })()}
           <p className="text-xs text-gris mt-3 text-center">
-            {A("💳 ما كتخلصي غير كيف توصلك السلعة.", "💳 Vous ne payez que lorsque le colis arrive chez vous.")}
+            {A("💳 ما كتخلصي حتى كتوصلك الطلبية ليدك.", "💳 Vous ne payez que lorsque le colis arrive chez vous.")}
           </p>
         </div>
 
         {/* 4. TIMELINE — what happens now */}
         <div className="mt-8">
           <h2 className="font-display text-2xl leading-snug text-profond text-center mb-4">
-            {A("شنو كيطرا دابا ✨", "Ce qui se passe maintenant ✨")}
+            {A("المراحل القادمة لطلبك ✨", "Ce qui se passe maintenant ✨")}
           </h2>
           <ol className="space-y-3">
             <li className="flex items-start gap-3">
@@ -254,12 +254,12 @@ export default function ConfirmationPage() {
               <div>
                 <p className="font-medium text-profond">
                   {withinWindow
-                    ? A("عينة ديال التأكيد فأقل من 10 دقايق", "Appel de confirmation sous 10 minutes")
-                    : A("عينة ديال التأكيد غدا من 9h", "Appel de confirmation demain dès 9h")}
+                    ? A("مكالمة هاتفية للتأكيد فـ أقل من 10 دقائق", "Appel de confirmation sous 10 minutes")
+                    : A("مكالمة هاتفية للتأكيد غداً ابتداءً من 9 صباحاً", "Appel de confirmation demain dès 9h")}
                 </p>
                 <p className="text-sm text-gris">
                   {A(
-                    "كنتحققو من العنوان ديالك مع بعض، كنجاوبو على الأسئلة ديالك. بلا سبام — غير باش نوصّلو بلا غلط.",
+                    "كنأكدو معاك العنوان وكنجاوبوك على أي تساؤل. اتصال سريع باش توصلك طلبيتك فـ أحسن الظروف.",
                     "On vérifie votre adresse ensemble, on répond à vos questions. Pas de démarchage — juste pour livrer sans erreur."
                   )}
                 </p>
@@ -271,11 +271,11 @@ export default function ConfirmationPage() {
               </span>
               <div>
                 <p className="font-medium text-profond">
-                  {A("التحضير فاللابو ديالنا فالدار البيضاء", "Préparation dans notre labo à Casablanca")}
+                  {A("التحضير والتغليف فمختبراتنا فالدار البيضاء", "Préparation dans notre labo à Casablanca")}
                 </p>
                 <p className="text-sm text-gris">
                   {A(
-                    "الكوماندة ديالك مغلفة بكل العناية، جاهزة للخروج.",
+                    "الطلب ديالك كيتغلف بكل عناية ونظافة ليكون جاهز للإرسال.",
                     "Votre commande est emballée avec soin, prête à partir."
                   )}
                 </p>
@@ -287,11 +287,11 @@ export default function ConfirmationPage() {
               </span>
               <div>
                 <p className="font-medium text-profond">
-                  {A("التوصيل 24 لـ 48 ساعة فكل المغرب", "Livraison 24–48h partout au Maroc")}
+                  {A("الشحن السريع فـ 24 إلى 48 ساعة لجميع المدن", "Livraison 24–48h partout au Maroc")}
                 </p>
                 <p className="text-sm text-gris">
                   {A(
-                    "كتخلصي للبوستا كيف توصلك. ساهل وبلا خطر.",
+                    "كتخلصي نقداً للموزع ملي كتوصلك طلبيتك ليدك. ساهل وبلا حتى مخاطرة.",
                     "Vous payez le livreur à la réception. Simple et sans risque."
                   )}
                 </p>
@@ -303,11 +303,11 @@ export default function ConfirmationPage() {
               </span>
               <div>
                 <p className="font-medium text-profond">
-                  {A("أول النتائج ديالك من 2 لـ 3 سيمان", "Vos premiers résultats dès 2–3 semaines")}
+                  {A("بداية ظهور النتائج فـ 2 إلى 3 سيمانات", "Vos premiers résultats dès 2–3 semaines")}
                 </p>
                 <p className="text-sm text-gris">
                   {A(
-                    "سيمانا 2 لـ 3 : الجلد كيولي مرن. سيمانا 4 : التبديل كيولي باين. 🌹 كنشوقو نشوفوك تلمعي !",
+                    "الأسبوع 2–3 : البشرة كتولي رطبة ومرنة. الأسبوع 4 : النتيجة كتولي واضحة. 🌹 متحمسين نشوفو إشراقتك وثقتك بنفسك !",
                     "Semaine 2–3 : la peau s'assouplit. Semaine 4 : le changement devient visible. 🌹 On hâte de vous revoir rayonnante !"
                   )}
                 </p>
@@ -320,30 +320,30 @@ export default function ConfirmationPage() {
         <div className="grid sm:grid-cols-3 gap-3 mt-8">
           <div className="rounded-2xl bg-petal border border-brume p-4 text-center">
             <FaPhoneAlt className="w-6 h-6 text-warda mx-auto mb-2" />
-            <p className="font-medium text-profond text-sm">{A("علاش كنعيطو ؟", "Pourquoi on appelle ?")}</p>
+            <p className="font-medium text-profond text-sm">{A("علاش كنتصلو بيك؟", "Pourquoi on appelle ?")}</p>
             <p className="text-xs text-gris mt-1">
               {A(
-                "باش نأكدو العنوان ديالك ونحيدو أي تأخير. بلا سبام.",
+                "لتأكيد صحة العنوان وتفادي أي تأخير فالتوصيل.",
                 "Pour confirmer votre adresse et éviter tout retard. Zéro spam."
               )}
             </p>
           </div>
           <div className="rounded-2xl bg-petal border border-brume p-4 text-center">
             <FaShieldAlt className="w-6 h-6 text-warda mx-auto mb-2" />
-            <p className="font-medium text-profond text-sm">{A("الخلاص عند الاستلام", "Paiement à la livraison")}</p>
+            <p className="font-medium text-profond text-sm">{A("الدفع عند الاستلام", "Paiement à la livraison")}</p>
             <p className="text-xs text-gris mt-1">
               {A(
-                "ما كتخلصي غير كيف توصلك السلعة.",
+                "ما كتخلصي حتى كتوصلك طلبيتك ليدك.",
                 "Vous ne payez que quand le colis arrive chez vous."
               )}
             </p>
           </div>
           <div className="rounded-2xl bg-petal border border-brume p-4 text-center">
             <Clock className="w-6 h-6 text-warda mx-auto mb-2" />
-            <p className="font-medium text-profond text-sm">{A("ضمان 4 سيمان", "Garantie 4 semaines")}</p>
+            <p className="font-medium text-profond text-sm">{A("ضمان استرجاع 4 سيمانات", "Garantie 4 semaines")}</p>
             <p className="text-xs text-gris mt-1">
               {A(
-                "ما عجبكش؟ كنرجعو الفلوس بلا نقاش.",
+                "ما عجباتكش النتيجة؟ كنرجعو ليك فلوسك كاملة بلا نقاش.",
                 "Pas convaincue ? On rembourse, sans discussion."
               )}
             </p>
@@ -353,12 +353,12 @@ export default function ConfirmationPage() {
         {/* 6. SOCIAL PROOF */}
         <div className="mt-10">
           <h2 className="font-display text-2xl leading-snug text-profond text-center mb-2">
-            {A("هوما قالو ولة لـ Warda 🌹", "Elles ont dit oui à Warda 🌹")}
+            {A("زبونات وثقو فـ Warda Beauté 🌹", "Elles ont dit oui à Warda 🌹")}
           </h2>
           <div className="flex flex-wrap justify-center gap-2 mb-4">
-            <span className="badge-pill">{A("⭐ 4.9/5 على 2662 رأي", "⭐ 4.9/5 sur 2 662 avis")}</span>
-            <span className="badge-pill">{A("🇲🇦 كثر من 12 000 زبونة", "🇲🇦 +12 000 clientes")}</span>
-            <span className="badge-pill">{A("🚚 94% توصّل فـ 48 ساعة", "🚚 94% livré en 48h")}</span>
+            <span className="badge-pill">{A("⭐ 4.9/5 من أكثر من 2600 تقييم", "⭐ 4.9/5 sur 2 662 avis")}</span>
+            <span className="badge-pill">{A("🇲🇦 أكثر من 12000 زبونة", "🇲🇦 +12 000 clientes")}</span>
+            <span className="badge-pill">{A("🚚 94% كيتوصلو فـ 48 ساعة", "🚚 94% livré en 48h")}</span>
           </div>
           <div className="grid sm:grid-cols-3 gap-3">
             {social.map((t: any, i: number) => (
@@ -379,7 +379,7 @@ export default function ConfirmationPage() {
             </h2>
             <p className="text-center text-gris text-sm mb-4">
               {A(
-                "الزبونات اللي شراو هادو زادوه للروتين ديالهم.",
+                "منتجات كيكملو روتين العناية بجمالك.",
                 "Les clientes qui ont pris ça l'ont ajouté à leur routine."
               )}
             </p>
@@ -406,7 +406,7 @@ export default function ConfirmationPage() {
               · {A("وفرتي", "économie")} {kitSave} MAD
             </p>
             <Link href="/kit-collagene" className="btn-primary inline-flex">
-              {A("اكتشري الكيت", "Découvrir le kit")}
+              {A("اكتشفي الباك", "Découvrir le kit")}
             </Link>
           </div>
         )}
@@ -419,11 +419,11 @@ export default function ConfirmationPage() {
             rel="noopener noreferrer"
             className="btn-primary inline-flex items-center gap-2"
           >
-            <FaWhatsapp className="w-5 h-5" /> {A("سؤال؟ واتساب", "Une question ? WhatsApp")}
+            <FaWhatsapp className="w-5 h-5" /> {A("عندك سؤال؟ تواصلي معنا فالواتساب", "Une question ? WhatsApp")}
           </a>
           <div className="mt-4">
             <Link href="/collection" className="btn-outline inline-flex">
-              {A("رجعي للبوطيك", "Retour à la boutique")}
+              {A("رجعي للمتجر", "Retour à la boutique")}
             </Link>
           </div>
         </div>

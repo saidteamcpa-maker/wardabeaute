@@ -31,16 +31,16 @@ export function StickyCTA({ slug, imageSrc, scrollToCheckout = false }: { slug: 
   for (const m of COD_MARKERS) ctaLabel = ctaLabel.replace(m, "");
   ctaLabel = ctaLabel.replace(/—\s*$/, "").replace(/\s+/g, " ").trim() || p.hero.cta;
   if (lang === "fr") ctaLabel = "Commander maintenant";
-  if (lang === "ar") ctaLabel = "اطلبي دابا";
+  if (lang === "ar") ctaLabel = "طلبي دابا";
   const qty = selectedTier?.[slug] || 1;
   const price = scrollToCheckout ? unitPrice(slug, 1, catalog) : unitPrice(slug, qty, catalog);
   const bundleLabel =
     qty === 1
       ? lang === "ar"
-        ? "وحدة"
+        ? "قطعة واحدة"
         : "Produit seul"
       : lang === "ar"
-        ? `باك ${qty}`
+        ? `عرض ${qty} قطع`
         : `Pack de ${qty}`;
 
   const handleAction = () => {

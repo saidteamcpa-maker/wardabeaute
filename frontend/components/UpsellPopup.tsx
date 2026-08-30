@@ -96,10 +96,10 @@ export function UpsellPopup({ info, productName, productImage, preDiscountTotal,
           <h3 className="font-display text-xl text-profond mb-2">
             {isAddMissing
               ? lang === "ar"
-                ? `زيدي ${productName} ووفّري ${saveAmount} MAD`
+                ? `زيدي ${productName} ووفّري ${saveAmount} درهم`
                 : `Ajoutez ${productName} · −${saveAmount} MAD`
               : lang === "ar"
-                ? ` كتوفّري ${saveAmount} MAD على الدوو`
+                ? `كتوفّري ${saveAmount} درهم على باقة الثنائي`
                 : `Vous économisez ${saveAmount} MAD sur le duo`}
           </h3>
 
@@ -107,10 +107,10 @@ export function UpsellPopup({ info, productName, productImage, preDiscountTotal,
           <p className="text-sm text-gris mb-4">
             {isAddMissing
               ? lang === "ar"
-                ? "الجمال من الداخل + من لبراني. مع بعض، كتوفّري 49 MAD."
+                ? "الجمال والعناية من الداخل ومن برا. مع بعض، كتوفّري 49 درهم."
                 : t(lang, "co.upsellBody")
               : lang === "ar"
-                ? "عندك الدو كامل — كنهاديو ليك −49 MAD على الطلب ديالك."
+                ? "عندك الباك كامل 🌹 — كنهديو ليك خصم −49 درهم على الطلب ديالك."
                 : t(lang, "co.upsellBoth").replace("{discount}", String(saveAmount))}
           </p>
 
@@ -121,11 +121,11 @@ export function UpsellPopup({ info, productName, productImage, preDiscountTotal,
               <span className="line-through">{preDiscountTotal} MAD</span>
             </div>
             <div className="flex justify-between items-center text-lg font-bold text-warda">
-              <span>{lang === "ar" ? "الثمن otherButtonTitles" : "Prix promotionnel"}</span>
+              <span>{lang === "ar" ? "ثمن العرض المخفض" : "Prix promotionnel"}</span>
               <span>{bundleTotal} MAD</span>
             </div>
             <div className="mt-2 text-center text-sm font-semibold text-warda">
-              {lang === "ar" ? `كترشدي ${saveAmount} MAD` : `Économisez ${saveAmount} MAD`}
+              {lang === "ar" ? `كتوفّري ${saveAmount} درهم` : `Économisez ${saveAmount} MAD`}
             </div>
           </div>
 
@@ -141,7 +141,7 @@ export function UpsellPopup({ info, productName, productImage, preDiscountTotal,
           {/* Countdown */}
           <p className="text-xs text-gris mb-4">
             {lang === "ar"
-              ? `كيغبر فـ ${seconds} ثانية`
+              ? `العرض كيسالي فـ ${seconds} ثانية`
               : t(lang, "co.upsellSave")
                   .replace("{discount}", String(saveAmount))
                   .replace("{sec}", String(seconds))}
@@ -154,12 +154,12 @@ export function UpsellPopup({ info, productName, productImage, preDiscountTotal,
           >
             {isAddMissing
               ? lang === "ar"
-                ? `زيدي ${productName}`
+                ? `زيدي ${productName} واستافدي من العرض`
                 : t(lang, "co.upsellAdd")
                     .replace("{name}", productName)
                     .replace("{discount}", String(saveAmount))
               : lang === "ar"
-                ? `طبّقي −${saveAmount} MAD`
+                ? `استافدي من خصم −${saveAmount} درهم`
                 : t(lang, "co.upsellApply").replace("{discount}", String(saveAmount))}
           </button>
 

@@ -67,7 +67,7 @@ export const products: Record<string, Product> = {
   velvastretch: {
     slug: "velvastretch",
     name: "VelvaStretch™",
-    arSub: "سيروم الكولاجين لعلامات التمدد",
+    arSub: "سيروم الكولاجين لعلامات التمدد ومرونة البشرة",
     image: "/images/velvastretch.png",
     badge: "🔥 Bestseller",
     price: 279,
@@ -85,7 +85,7 @@ export const products: Record<string, Product> = {
       h1: "Le sérum anti-vergetures, né au Maroc",
       h1Ar: "واش كتخبي جسمك بسبب علامات التمدد؟",
       sub: "Formulé avec de la Centella Asiatica (scientifiquement prouvée pour stimuler le collagène) + collagène marin + vitamine E. Sans retinol — donc sûr pendant et après la grossesse. Résultats en 8 à 12 semaines.",
-      subAr: "سيروم بالكولاجين المغربي — آمن حتى خلال الحمل والرضاعة.",
+      subAr: "سيروم بالكولاجين الطبيعي — آمن حتى وقت الحمل والرضاعة.",
       cta: "Commander maintenant — paiement à la livraison",
       micro: "Livraison gratuite · Plus que 47 unités · Paiement à la réception uniquement",
     },
@@ -142,7 +142,7 @@ export const products: Record<string, Product> = {
   silkstop: {
     slug: "silkstop",
     name: "SilkStop™",
-    arSub: "زيت إبطاء نمو الشعر بالزيوت الطبيعية",
+    arSub: "سيروم إبطاء نمو الشعر ومنع الشعر تحت الجلد",
     image: "/images/silkstop.png",
     badge: "⭐ Plus Vendu",
     price: 229,
@@ -158,9 +158,9 @@ export const products: Record<string, Product> = {
     hero: {
       eyebrow: "✦ 8 huiles naturelles · Paiement à la livraison ✦",
       h1: "L'huile qui ralentit la repousse",
-      h1Ar: "منعيتي من الإبيلاسيون اللي ما يوقفش؟",
+      h1Ar: "عييتي من إزالة الشعر المتكررة والحبوب تحت الجلد؟",
       sub: "8 huiles naturelles marocaines et exotiques appliquées APRÈS l'épilation pour calmer la peau et ralentir la repousse. La science le confirme : calmer l'activité du follicule repousse l'épilation de plusieurs semaines.",
-      subAr: "زيت 8 زيوت يبطئ رجوع الشعر ويخلي جلدك حرير.",
+      subAr: "تركيبة بـ 8 زيوت طبيعية كتبطئ نمو الشعر وترجع جلدك رطب بحال الحرير.",
       cta: "Commander maintenant — paiement à la livraison",
       micro: "Livraison gratuite · Offre limitée · Paiement à la réception uniquement",
     },
@@ -216,7 +216,7 @@ export const products: Record<string, Product> = {
   collaglow: {
     slug: "collaglow",
     name: "CollaGlow™",
-    arSub: "علكات الكولاجين البحري + حمض الهيالورونيك",
+    arSub: "حلوى الكولاجين البحري المحلل + حمض الهيالورونيك",
     image: "/images/collaglow.png",
     badge: "✨ Nouveau",
     price: 319,
@@ -232,9 +232,9 @@ export const products: Record<string, Product> = {
     hero: {
       eyebrow: "✦ Beauté de l'intérieur · Paiement à la livraison ✦",
       h1: "La beauté qui reconstruit de l'intérieur",
-      h1Ar: "بشرتك بدات تبان عياانة؟ الكريمات ما كافيتش وحدها.",
+      h1Ar: "بشرتك بدات تبان عيانة؟ الكريمات بوحدها ما كافياش.",
       sub: "Les gummies au collagène marin hydrolysé — la forme la plus BIODISPONIBLE. Une étude double-aveugle 2023 a mesuré -14 à -31% de rides et +23% d'élasticité en 12 semaines. Résultats dès 30 jours.",
-      subAr: "علكات الكولاجين البحري — بشرة متجددة من الداخل في 30 يوم.",
+      subAr: "حلوى كولاجين بحري لذيذة — بشرة مشدودة ونضارة من الداخل فـ 30 يوم.",
       cta: "Commander maintenant — paiement à la livraison",
       micro: "Livraison gratuite · Goût grenade · Paiement à la réception uniquement",
     },
@@ -291,7 +291,7 @@ export const products: Record<string, Product> = {
 const kitCollagene: Product = {
     slug: "kit-collagene",
     name: "Kit Collagène Inside & Outside",
-    arSub: "الكولاجين من الداخل والخارج",
+    arSub: "باقة الكولاجين المتكاملة من الداخل ومن برا",
     image: "/kit-collagene-hero.png",
     badge: "🌟 Le Duo",
     price: 549,
@@ -306,9 +306,9 @@ const kitCollagene: Product = {
     hero: {
       eyebrow: "✦ Marque marocaine · Collagène de l'intérieur et de l'extérieur ✦",
       h1: "Ta peau, reconstruite de l'intérieur et de l'extérieur",
-      h1Ar: "بشرتك من الداخل والخارج — الثقة الكاملة",
+      h1Ar: "جمال بشرتك من الداخل ومن برا — نتائج وثقة كاملة",
       sub: "VelvaStretch™ (le sérum qui agit SUR ta peau) + CollaGlow™ (le collagène que tu prends CHAQUE matin). Ensemble, ils attaquent vergetures ET perte de fermeté des deux côtés à la fois.",
-      subAr: "الداخل والخارج — نتيجة في 4 أسابيع.",
+      subAr: "علاج متكامل من الداخل ومن برا — نتائج واضحة فـ 4 سيمانات.",
       cta: "Commander le Kit Collagène",
       micro: "Paiement à la livraison | Livraison gratuite 24–48h",
     },
@@ -373,7 +373,7 @@ export function localize(p: Product, lang: Lang): Product {
 
 export const bundle = {
   name: "Kit Collagène Inside & Outside",
-  arSub: "الكولاجين من الداخل والخارج — الثقة الكاملة",
+  arSub: "باقة الكولاجين المتكاملة من الداخل ومن برا",
   contents: ["velvastretch", "collaglow"],
   price: 549,
   oldPrice: 848,
