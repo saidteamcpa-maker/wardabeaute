@@ -16,6 +16,6 @@ export async function generateMetadata() {
   };
 }
 
-export default function Page() {
-  return <WardaPage slug="collaglow" />;
+export default function Page({ searchParams }: { searchParams?: { preview?: string } }) {
+  return <WardaPage slug="collaglow" preview={searchParams?.preview === "1"} />;
 }

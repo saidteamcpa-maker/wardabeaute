@@ -17,5 +17,5 @@ export async function generateMetadata() {
 }
 
 export default function Page({ searchParams }: { searchParams?: { preview?: string } }) {
-  return <WardaPage slug="kit-collagene" />;
+  return <WardaPage slug="kit-collagene" preview={searchParams?.preview === "1"} />;
 }

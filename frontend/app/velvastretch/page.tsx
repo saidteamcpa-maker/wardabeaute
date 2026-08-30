@@ -16,6 +16,6 @@ export async function generateMetadata() {
   };
 }
 
-export default function Page() {
-  return <WardaPage slug="velvastretch" />;
+export default function Page({ searchParams }: { searchParams?: { preview?: string } }) {
+  return <WardaPage slug="velvastretch" preview={searchParams?.preview === "1"} />;
 }

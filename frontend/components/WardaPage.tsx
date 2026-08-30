@@ -1,4 +1,5 @@
 import { getLangServer } from "@/lib/lang-server";
+import { getPageOverride } from "@/lib/store-content";
 import { WARDAPages, getWardaPage } from "@/content/wardaContent";
 import { HeroBlock } from "@/components/blocks/HeroBlock";
 import { ProblemBlock } from "@/components/blocks/ProblemBlock";
@@ -24,13 +25,18 @@ const HERO_IMAGES: Record<string, string> = {
   kit: "/kit-collagene-hero.png",
 };
 
-export async function WardaPage({ slug }: { slug: string }) {
+export async function WardaPage({ slug, preview = false }: { slug: string; preview?: boolean }) {
   const lang = getLangServer();
   const dir = lang === "ar" ? "rtl" : "ltr";
+  const ov = await getPageOverride(slug, lang, preview);
   const data = getWardaPage(slug);
   if (!data) return null;
   const c = lang === "ar" ? data.ar : data.fr;
-  const heroImage = HERO_IMAGES[slug] || "/images/velvastretch.png";
+  const imageKey = slug === "kit-collagene" ? "kit" : "product";
+  const heroImage = (ov?.[imageKey === "kit" ? "kit.heroImage" : "pp.heroImage"] as string) || HERO_IMAGES[slug] || "/images/velvastretch.png";
+  const problemImage = ov?.[imageKey === "kit" ? "kit.scienceImage" : "pp.descImage"] as string | undefined;
+  const ingredientsImage = ov?.[imageKey === "kit" ? "kit.ingredientsImage" : "pp.ingredientsImage"] as string | undefined;
+  const ritualImage = ov?.[imageKey === "kit" ? "kit.ritualImage" : "pp.howToImage"] as string | undefined;
 
   // SEO handled via generateMetadata in page.tsx
 
@@ -79,10 +85,10 @@ export async function WardaPage({ slug }: { slug: string }) {
       </section>
 
       {/* 03 Problem */}
-      <ProblemBlock eyebrow={c.problem.eyebrow} h2={c.problem.h2} para={c.problem.para} bullets={c.problem.bullets} lang={lang} />
+      <ProblemBlock eyebrow={c.problem.eyebrow} h2={c.problem.h2} para={c.problem.para} bullets={c.problem.bullets} imageSrc={problemImage} lang={lang} />
 
       {/* 04 Ingredients */}
-      <Section eyebrow={c.ingredients.eyebrow} title={c.ingredients.h2} imageLabel="Ingrédients" imageSide="left">
+      <Section eyebrow={c.ingredients.eyebrow} title={c.ingredients.h2} imageLabel="Ingrédients" imageSrc={ingredientsImage} imageSide="left">
         <p className="font-body text-brun mb-4">{c.ingredients.para}</p>
         <div className="space-y-3">
           {c.ingredients.items.map((it) => (
@@ -98,7 +104,7 @@ export async function WardaPage({ slug }: { slug: string }) {
       </Section>
 
       {/* 05 Ritual */}
-      <Section eyebrow={lang === "ar" ? undefined : "Le rituel"} title={c.ritual.h2} imageLabel="Rituel" imageSide="right">
+      <Section eyebrow={lang === "ar" ? undefined : "Le rituel"} title={c.ritual.h2} imageLabel="Rituel" imageSrc={ritualImage} imageSide="right">
         <ol className="space-y-3">
           {c.ritual.steps.map((s, i) => (
             <li key={i} className="flex gap-3">
