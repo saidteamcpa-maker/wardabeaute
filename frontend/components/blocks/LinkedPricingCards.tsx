@@ -50,22 +50,7 @@ export function LinkedPricingCards({
   };
 
   return (
-    <div>
-      {imageSrc && (
-        <Reveal>
-          <div className="relative w-full max-w-sm mx-auto aspect-[4/3] overflow-hidden rounded-3xl border border-brume bg-white shadow-elevated mb-8">
-            <Image
-              src={imageSrc}
-              alt=""
-              fill
-              sizes="(max-width: 768px) 100vw, 384px"
-              className="object-contain p-6"
-            />
-          </div>
-        </Reveal>
-      )}
-
-      <div className="grid md:grid-cols-3 gap-4">
+    <div className="grid md:grid-cols-3 gap-4">
         {cards.map((card, i) => {
           const qty = i + 1;
           const isActive = selectedTier === qty;
@@ -87,6 +72,17 @@ export function LinkedPricingCards({
                   isActive ? "border-profond bg-profond text-white shadow-elevated scale-[1.02]" : "border-brume bg-white text-brun"
                 }`}
               >
+                {imageSrc && (
+                  <div className="relative w-full aspect-[4/3] overflow-hidden rounded-xl bg-petal/60 border border-brume/60">
+                    <Image
+                      src={imageSrc}
+                      alt=""
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-contain p-4"
+                    />
+                  </div>
+                )}
                 {(card as any).badge && (
                   <span
                     className={`absolute -top-3 px-3 py-1 rounded-full text-xs font-semibold shadow-subtle ${dir === "rtl" ? "left-4" : "right-4"} ${
@@ -121,6 +117,5 @@ export function LinkedPricingCards({
           );
         })}
       </div>
-    </div>
   );
 }
