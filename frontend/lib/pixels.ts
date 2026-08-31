@@ -93,18 +93,21 @@ export async function deletePixel(id: string): Promise<void> {
 // ---------- Env seed (backward compatibility) ----------
 
 export async function seedPixelsFromEnv(): Promise<void> {
-  const count = await prisma.pixel.count();
-  if (count > 0) return; // already seeded
+  const existing = await prisma.pixel.findMany({ select: { pixelId: true, type: true } });
+  const existingKeys = new Set(existing.map((p) => `${p.type}:${p.pixelId}`));
 
   const envPixels: { pixelId: string; type: PixelType; label: string }[] = [];
   if (process.env.NEXT_PUBLIC_FB_PIXEL_ID) {
-    envPixels.push({ pixelId: process.env.NEXT_PUBLIC_FB_PIXEL_ID, type: "meta", label: "Facebook Pixel" });
+    const key = `meta:${process.env.NEXT_PUBLIC_FB_PIXEL_ID.trim()}`;
+    if (!existingKeys.has(key)) envPixels.push({ pixelId: process.env.NEXT_PUBLIC_FB_PIXEL_ID.trim(), type: "meta", label: "Facebook Pixel" });
   }
   if (process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID) {
-    envPixels.push({ pixelId: process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID, type: "tiktok", label: "TikTok Pixel" });
+    const key = `tiktok:${process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID.trim()}`;
+    if (!existingKeys.has(key)) envPixels.push({ pixelId: process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID.trim(), type: "tiktok", label: "TikTok Pixel" });
   }
   if (process.env.NEXT_PUBLIC_GTM_ID) {
-    envPixels.push({ pixelId: process.env.NEXT_PUBLIC_GTM_ID, type: "gtm", label: "Google Tag Manager" });
+    const key = `gtm:${process.env.NEXT_PUBLIC_GTM_ID.trim()}`;
+    if (!existingKeys.has(key)) envPixels.push({ pixelId: process.env.NEXT_PUBLIC_GTM_ID.trim(), type: "gtm", label: "Google Tag Manager" });
   }
 
   for (const p of envPixels) {
