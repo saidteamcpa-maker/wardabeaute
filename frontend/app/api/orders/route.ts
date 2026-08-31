@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { isMorocco } from "@/lib/geo";
 import { computeTotal, generateReference, deriveSource, parseDevice, parseBrowser, unitPriceFor, offerSkuFor, CO_COLLAGEN_DISCOUNT, bundleDiscount } from "@/lib/orders";
 import { getCatalog } from "@/lib/catalog";
+import { bundle } from "@/content/products";
 
 const SHEETS_URL =
   process.env.SHEETS_WEBHOOK_URL ||
@@ -21,6 +22,16 @@ function mapCityId(city: string | null | undefined): number | undefined {
   if (CITY_MAP[k] !== undefined) return CITY_MAP[k];
   for (const [ck, cv] of Object.entries(CITY_MAP)) if (k.includes(ck) || ck.includes(k)) return cv;
   return undefined;
+}
+
+/**
+ * The kit is a PACK, not a real product. When pushing to Sheets/Marketplace we
+ * expand a pack line into its constituent products so each is matched against a
+ * real SKU/slug. Non-pack slugs pass through unchanged.
+ */
+function expandItem(item: { slug: string; qty: number }): { slug: string; qty: number }[] {
+  if (item.slug !== "kit-collagene") return [{ slug: item.slug, qty: item.qty }];
+  return (bundle.contents || []).map((slug) => ({ slug, qty: item.qty }));
 }
 
 async function pushToSheets(payload: Record<string, unknown>) {
@@ -281,14 +292,15 @@ export async function POST(req: NextRequest) {
     address: created.address || "",
     postal: created.postal || "",
       items_json: (() => {
-        const sheetSku = created.items
-          .map((i: any) => {
-            const specific = offerSkuFor(i.slug, i.qty, catalog);
+        const flat: { slug: string; qty: number }[] = created.items.flatMap((i: any) => expandItem({ slug: i.slug, qty: i.qty }));
+        const sheetSku = flat
+          .map((f) => {
+            const specific = offerSkuFor(f.slug, f.qty, catalog);
             if (specific) return specific;
-            return `${(skuMap.get(i.slug) || (i as any).sku || "")}-x${(i.qty || 1)}`;
+            return `${(skuMap.get(f.slug) || "")}-x${(f.qty || 1)}`;
           })
           .join("+");
-        const totalQty = created.items.reduce((s: number, i: any) => s + (i.qty || 1), 0);
+        const totalQty = flat.reduce((s, f) => s + (f.qty || 1), 0);
         return [{ slug: "", sku: sheetSku, sku_sheet: sheetSku, qty: totalQty, name: "", unit_price: total }];
       })(),
     subtotal: total,
@@ -305,14 +317,20 @@ export async function POST(req: NextRequest) {
   // Marketplace payload must use real per-product items (not the consolidated Sheets sku)
   const marketplacePayload = {
     ...sheetsPayload,
-    items_json: created.items.map((i: any) => ({
-      slug: i.slug,
-      sku: offerSkuFor(i.slug, i.qty, catalog) ?? skuMap.get(i.slug) ?? (i as any).sku ?? "",
-      qty: i.qty,
-      unit_price: i.unitPrice,
-      name: i.name,
-      line_total: i.unitPrice * i.qty,
-    })),
+    items_json: created.items.flatMap((i: any) =>
+      expandItem({ slug: i.slug, qty: i.qty }).map((f) => {
+        const unit = unitPriceFor(f.slug, f.qty, catalog);
+        const p = catalog[f.slug];
+        return {
+          slug: f.slug,
+          sku: skuMap.get(f.slug) ?? f.slug,
+          qty: f.qty,
+          unit_price: unit,
+          name: p?.name ?? f.slug,
+          line_total: unit * f.qty,
+        };
+      })
+    ),
   };
   // Fire-and-forget — both must not block order creation
   pushToSheets(sheetsPayload).catch(() => {});
