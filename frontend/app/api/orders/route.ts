@@ -116,6 +116,7 @@ async function pushToSpaceseller(payload: Record<string, unknown>) {
   };
   const cityId = mapCityId(city);
   if (cityId !== undefined) body.id_city = cityId;
+  console.log(`[spaceseller] Payload for ${payload.order_id}: ` + JSON.stringify(body));
 
   try {
     const url = `${SPACESHELL_URL}/orders`;
@@ -195,8 +196,10 @@ export async function POST(req: NextRequest) {
 
   const catalog = await getCatalog();
   const total = await computeTotal(cleanItems);
-  // Fetch SKU snapshot for Sheets/Marketplace (uses existing admin SKU field)
-  const skuRows = await prisma.product.findMany({ where: { slug: { in: cleanItems.map((i) => i.slug) } }, select: { slug: true, sku: true } });
+  // Fetch SKU snapshot for Sheets/Marketplace (uses existing admin SKU field).
+  // Fetch for the whole catalog so kit-pack expansion (velvastretch/collaglow)
+  // can resolve real SKUs even though the order line itself is "kit-collagene".
+  const skuRows = await prisma.product.findMany({ select: { slug: true, sku: true } });
   const skuMap = new Map(skuRows.map((p) => [p.slug, p.sku] as const));
 
   // "Kit Collagène Inside & Outside" discount: auto-granted whenever the order
