@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from ..config import settings
 from ..db import get_db
 from ..models import Order, OrderItem, Product
-from ..prices import PRODUCT_NAMES, compute_total, CO_COLLAGEN_DISCOUNT
+from ..prices import PRODUCT_NAMES, compute_total, unit_price, CO_COLLAGEN_DISCOUNT
 from ..schemas import OrderCreate, OrderOut, UpsellIn
 from ..services import geo, sheets, spaceseller
 from ..services.capi import track
@@ -121,13 +121,31 @@ async def create_order(
 
     # 7. Sheets webhook (fire-and-forget) — enrich with SKU from admin panel
     sku_map = {slug: prod.sku for slug, prod in product_map.items()}
+
+    # The Kit Collagène is a PACK: expand it into its constituents so both Sheets and
+    # Marketplace carry real product SKUs (not the kit's own placeholder).
+    def _pack_slugs(slug: str) -> list[str]:
+        return {
+            "kit-collagene": ["velvastretch", "collaglow"],
+        }.get(slug, [slug])
+
+    def _sku_for(slug: str) -> str:
+        return {
+            "velvastretch": "anti-vergeture",
+            "collaglow": "gummies_collagen",
+        }.get(slug, sku_map.get(slug) or slug)
+
     # Format the Sheets "sku" column repo-side as "<qty>x<SKU>" per item, joined by
     # " / " (e.g. "2xWVE-001 / 1xCGL-001"), and send it as a single consolidated item.
     # This makes the live Apps Script output the correct value without a redeploy.
     sheet_sku = "+".join(
-        f"{(sku_map.get(l['slug']) or '')}-x{(l.get('qty') or 1)}" for l in lines
+        f"{_sku_for(s)}-x{(l.get('qty') or 1)}"
+        for l in lines
+        for s in _pack_slugs(l["slug"])
     )
-    total_qty = sum((l.get('qty') or 1) for l in lines)
+    total_qty = sum(
+        (l.get('qty') or 1) for l in lines for _ in _pack_slugs(l["slug"])
+    )
     items_for_sheet = [{
         "slug": "",
         "sku": sheet_sku,
@@ -160,18 +178,23 @@ async def create_order(
     background.add_task(sheets.push_order, sheet_payload)
 
     # 7b. SpaceSeller Marketplace — automatic push (fire-and-forget)
-    # Use real per-product items (sku/qty/unit_price), NOT the consolidated Sheets sku
-    marketplace_items = [
-        {
-            "slug": l["slug"],
-            "sku": sku_map.get(l["slug"]),
-            "qty": l["qty"],
-            "unit_price": l["unit_price"],
-            "name": l["name"],
-            "line_total": l["unit_price"] * l["qty"],
-        }
-        for l in lines
-    ]
+    # Use real per-product items (sku/qty/unit_price), NOT the consolidated Sheets sku.
+    # The Kit Collagène is a PACK, not a real product: expand it into its constituent
+    # products so each maps to a real SpaceSeller SKU.
+    marketplace_items = []
+    for l in lines:
+        for s in _pack_slugs(l["slug"]):
+            unit = unit_price(s, l["qty"])
+            marketplace_items.append(
+                {
+                    "slug": s,
+                    "sku": _sku_for(s),
+                    "qty": l["qty"],
+                    "unit_price": unit,
+                    "name": PRODUCT_NAMES.get(s, s),
+                    "line_total": unit * l["qty"],
+                }
+            )
     marketplace_payload = {**sheet_payload, "items_json": marketplace_items}
     # Skip marketplace for whitelist test numbers (like Sheets notes="test")
     _whitelist = [p.strip() for p in settings.whitelist_phones.split(",") if p.strip()]

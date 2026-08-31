@@ -30,6 +30,7 @@ SEED_PRODUCTS = [
         "badge": "🔥 Bestseller",
         "stars": 4.9,
         "reviews": 847,
+        "sku": "anti-vergeture",
     },
     {
         "id": "silkstop",
@@ -40,6 +41,7 @@ SEED_PRODUCTS = [
         "badge": "⭐ Plus Vendu",
         "stars": 4.8,
         "reviews": 1203,
+        "sku": "silk-stop",
     },
     {
         "id": "collaglow",
@@ -50,6 +52,7 @@ SEED_PRODUCTS = [
         "badge": "✨ Nouveau",
         "stars": 4.8,
         "reviews": 612,
+        "sku": "gummies_collagen",
     },
     {
         "id": "kit-collagene",
@@ -60,6 +63,7 @@ SEED_PRODUCTS = [
         "badge": "🔥 Offre Duo",
         "stars": 4.9,
         "reviews": 1031,
+        "sku": "pack-kit-collagen",
     },
 ]
 

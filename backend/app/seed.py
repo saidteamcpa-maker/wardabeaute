@@ -20,5 +20,6 @@ def seed_products():
                     badge=p["badge"],
                     stars=p["stars"],
                     reviews=p["reviews"],
+                    sku=p.get("sku"),
                 ))
         db.commit()
