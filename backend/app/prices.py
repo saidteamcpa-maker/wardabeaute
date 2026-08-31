@@ -4,7 +4,7 @@ PRICES = {
     "velvastretch": {"1": 279, "2": 499, "3": 699},
     "silkstop": {"1": 229, "2": 419, "3": 599},
     "collaglow": {"1": 319, "2": 569, "3": 799},
-    "kit-collagene": {"1": 549},
+    "kit-collagene": {"1": 549, "2": 999},
 }
 
 UPSELL_99 = 99

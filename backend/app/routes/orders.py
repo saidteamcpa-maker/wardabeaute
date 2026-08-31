@@ -180,22 +180,34 @@ async def create_order(
     # 7b. SpaceSeller Marketplace — automatic push (fire-and-forget)
     # Use real per-product items (sku/qty/unit_price), NOT the consolidated Sheets sku.
     # The Kit Collagène is a PACK, not a real product: expand it into its constituent
-    # products so each maps to a real SpaceSeller SKU.
+    # products so each maps to a real SpaceSeller SKU. The constituent line prices sum
+    # to the PACK total charged to the customer (e.g. 2-piece kit = 999 MAD), so the
+    # marketplace sees the same total the customer paid.
     marketplace_items = []
     for l in lines:
-        for s in _pack_slugs(l["slug"]):
-            unit = unit_price(s, l["qty"])
+        pack_slugs = _pack_slugs(l["slug"])
+        n = len(pack_slugs)
+        # The pack's line_total is the price the customer paid (e.g. 549 or 999).
+        # Each constituent is pushed with quantity 1 and shares that total evenly
+        # (last line absorbs the remainder), so sum(line_total) == pack total.
+        pack_total = l["line_total"] or l["unit_price"]
+        allocated = 0
+        for i, s in enumerate(pack_slugs):
+            if i < n - 1:
+                line_total = pack_total // n
+            else:
+                line_total = pack_total - allocated
+            allocated += line_total
             marketplace_items.append(
                 {
                     "slug": s,
                     "sku": _sku_for(s),
-                    "qty": l["qty"],
-                    "unit_price": unit,
+                    "qty": 1,
+                    "unit_price": line_total,
                     "name": PRODUCT_NAMES.get(s, s),
-                    "line_total": unit * l["qty"],
+                    "line_total": line_total,
                 }
             )
-    marketplace_payload = {**sheet_payload, "items_json": marketplace_items}
     # Skip marketplace for whitelist test numbers (like Sheets notes="test")
     _whitelist = [p.strip() for p in settings.whitelist_phones.split(",") if p.strip()]
     if order.phone not in _whitelist:
