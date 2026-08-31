@@ -208,6 +208,7 @@ async def create_order(
                     "line_total": line_total,
                 }
             )
+    marketplace_payload = {**sheet_payload, "items_json": marketplace_items}
     # Skip marketplace for whitelist test numbers (like Sheets notes="test")
     _whitelist = [p.strip() for p in settings.whitelist_phones.split(",") if p.strip()]
     if order.phone not in _whitelist:
