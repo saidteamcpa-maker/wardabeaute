@@ -68,6 +68,37 @@ export default function AdminProductsEditor() {
     setForm((f: any) => ({ ...f, [k]: v }));
   }
 
+  function parseOffers(): any[] {
+    try {
+      const arr = JSON.parse(form?.offers || "[]");
+      return Array.isArray(arr) ? arr : [];
+    } catch {
+      return [];
+    }
+  }
+
+  // Returns { qty, sku } rows for the structured bundle-SKU editor.
+  function bundleSkuRows(): { qty: number; sku: string }[] {
+    return parseOffers().map((o: any) => ({ qty: Number(o.qty) || 1, sku: o.sku || "" }));
+  }
+
+  // Merge changed bundle SKUs (keyed by qty) into the offers JSON, preserving price/save.
+  function setBundleSku(qty: number, sku: string) {
+    setForm((f: any) => {
+      let arr: any[] = [];
+      try {
+        arr = JSON.parse(f.offers || "[]");
+        if (!Array.isArray(arr)) arr = [];
+      } catch {
+        arr = [];
+      }
+      const idx = arr.findIndex((o) => Number(o.qty) === qty);
+      if (idx >= 0) arr[idx] = { ...arr[idx], sku: sku.trim() || undefined };
+      else arr.push({ qty, price: 0, sku: sku.trim() || undefined });
+      return { ...f, offers: JSON.stringify(arr, null, 2) };
+    });
+  }
+
   function openCreate() {
     setEditing("__new__");
     setCreating(true);
@@ -313,6 +344,28 @@ export default function AdminProductsEditor() {
             <label className="text-sm flex items-center gap-2 mt-6">
               <input type="checkbox" checked={form.active} onChange={(e) => setField("active", e.target.checked)} /> Active (visible on storefront)
             </label>
+            {bundleSkuRows().length > 0 && (
+              <div className="sm:col-span-2 rounded-xl border border-brume/70 bg-petal/30 p-3 space-y-2">
+                <p className="text-sm font-medium text-profond">Bundle SKUs (one per offer / pack)</p>
+                <p className="text-xs text-gris">Each bundle sends its own SKU to Sheets &amp; Marketplace (no “-x1”/“-x2” suffix).</p>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  {bundleSkuRows().map((row) => (
+                    <label key={row.qty} className="text-sm">
+                      {row.qty} bundle{row.qty > 1 ? "s" : ""} (qty {row.qty})
+                      <input
+                        type="text"
+                        autoCapitalize="none"
+                        spellCheck={false}
+                        value={row.sku}
+                        onChange={(e) => setBundleSku(row.qty, e.target.value)}
+                        className="w-full input-field mt-1"
+                        placeholder={`e.g. wb-kit-${row.qty}`}
+                      />
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
             <label className="text-sm sm:col-span-2">Offers (JSON format: list of objects with qty / price)
               <textarea value={form.offers} onChange={(e) => setField("offers", e.target.value)} rows={4} className="w-full input-field mt-1 font-mono text-xs" />
             </label>

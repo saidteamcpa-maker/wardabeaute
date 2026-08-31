@@ -8,6 +8,30 @@ export function unitPriceFor(slug: string, qty: number, catalog: Record<string, 
   return p.offers.find((o) => o.qty === qty)?.price ?? p.price;
 }
 
+/**
+ * Resolve the SKU to push for a given line item.
+ * Bundle offers may declare their own per-tier `sku`; when present we use it as-is
+ * (no "-xN" suffix). Otherwise we fall back to the product-level SKU.
+ */
+export function offerSkuFor(slug: string, qty: number, catalog: Record<string, CatalogProduct>): string | null {
+  const p = catalog[slug];
+  if (!p) return null;
+  const offer = p.offers.find((o) => o.qty === qty);
+  return (offer && offer.sku) ? offer.sku : null;
+}
+
+/**
+ * SKU used when pushing a line to Sheets/Marketplace.
+ * Prefers the per-tier bundle SKU (exact, no suffix); falls back to the
+ * product-level SKU with the legacy "-x{qty}" suffix for backward compat.
+ */
+export function pushSkuFor(slug: string, qty: number, catalog: Record<string, CatalogProduct>, productSku?: string | null): string {
+  const specific = offerSkuFor(slug, qty, catalog);
+  if (specific) return specific;
+  const base = productSku || "";
+  return base ? `${base}-x${qty}` : "";
+}
+
 export async function computeTotal(items: { slug: string; qty: number }[]): Promise<number> {
   const catalog = await getCatalog();
   return items.reduce((sum, i) => sum + unitPriceFor(i.slug, i.qty, catalog), 0);

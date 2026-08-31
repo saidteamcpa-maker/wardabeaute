@@ -5,6 +5,7 @@ export interface Offer {
   qty: number;
   price: number;
   save?: number;
+  sku?: string;
 }
 
 export interface Ingredient {
@@ -299,8 +300,8 @@ const kitCollagene: Product = {
     stars: 5.0,
     reviews: 1459,
     offers: [
-      { qty: 1, price: 549, save: 299 },
-      { qty: 2, price: 999, save: 99 },
+      { qty: 1, price: 549, save: 299, sku: "WB-KIT-1" },
+      { qty: 2, price: 999, save: 99, sku: "WB-KIT-2" },
     ],
     stockCount: 40,
     hero: {

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { isMorocco } from "@/lib/geo";
-import { computeTotal, generateReference, deriveSource, parseDevice, parseBrowser, unitPriceFor, CO_COLLAGEN_DISCOUNT, bundleDiscount } from "@/lib/orders";
+import { computeTotal, generateReference, deriveSource, parseDevice, parseBrowser, unitPriceFor, offerSkuFor, CO_COLLAGEN_DISCOUNT, bundleDiscount } from "@/lib/orders";
 import { getCatalog } from "@/lib/catalog";
 
 const SHEETS_URL =
@@ -235,7 +235,7 @@ export async function POST(req: NextRequest) {
       create: cleanItems.map((i: any) => ({
         slug: i.slug,
         name: catalog[i.slug]?.name ?? i.slug,
-        sku: skuMap.get(i.slug) || null,
+        sku: offerSkuFor(i.slug, i.qty, catalog) ?? skuMap.get(i.slug) ?? null,
         qty: i.qty,
         unitPrice: unitPriceFor(i.slug, i.qty, catalog),
       })),
@@ -282,7 +282,11 @@ export async function POST(req: NextRequest) {
     postal: created.postal || "",
       items_json: (() => {
         const sheetSku = created.items
-          .map((i: any) => `${(skuMap.get(i.slug) || (i as any).sku || "")}-x${(i.qty || 1)}`)
+          .map((i: any) => {
+            const specific = offerSkuFor(i.slug, i.qty, catalog);
+            if (specific) return specific;
+            return `${(skuMap.get(i.slug) || (i as any).sku || "")}-x${(i.qty || 1)}`;
+          })
           .join("+");
         const totalQty = created.items.reduce((s: number, i: any) => s + (i.qty || 1), 0);
         return [{ slug: "", sku: sheetSku, sku_sheet: sheetSku, qty: totalQty, name: "", unit_price: total }];
@@ -303,7 +307,7 @@ export async function POST(req: NextRequest) {
     ...sheetsPayload,
     items_json: created.items.map((i: any) => ({
       slug: i.slug,
-      sku: skuMap.get(i.slug) || (i as any).sku || "",
+      sku: offerSkuFor(i.slug, i.qty, catalog) ?? skuMap.get(i.slug) ?? (i as any).sku ?? "",
       qty: i.qty,
       unit_price: i.unitPrice,
       name: i.name,

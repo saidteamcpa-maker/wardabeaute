@@ -3,7 +3,7 @@ import { prisma } from "@/lib/db";
 import fs from "fs";
 import path from "path";
 
-export type CatalogOffer = { qty: number; price: number; save?: number };
+export type CatalogOffer = { qty: number; price: number; save?: number; sku?: string };
 export type CatalogProduct = Omit<StaticProduct, "oldPrice"> & {
   oldPrice: number;
   active: boolean;
