@@ -23,7 +23,7 @@ const CATALOG = [
   { slug: "velvastretch", name: "VelvaStretch™", price: 279, oldPrice: 399, image: "/images/velvastretch.png", isBundle: false, offers: [{ qty: 1, price: 279 }, { qty: 2, price: 499, save: 59 }, { qty: 3, price: 699, save: 138 }] },
   { slug: "silkstop", name: "SilkStop™", price: 229, oldPrice: 329, image: "/images/silkstop.png", isBundle: false, offers: [{ qty: 1, price: 229 }, { qty: 2, price: 419, save: 39 }, { qty: 3, price: 599, save: 90 }] },
   { slug: "collaglow", name: "CollaGlow™", price: 319, oldPrice: 449, image: "/images/collaglow.png", isBundle: false, offers: [{ qty: 1, price: 319 }, { qty: 2, price: 569, save: 69 }, { qty: 3, price: 799, save: 158 }] },
-  { slug: "kit-collagene", name: "Kit Collagène Inside & Outside", price: 549, oldPrice: 848, image: "/kit-collagene-hero.png", isBundle: true, sku: "pack-le-duo-collagène-7928", offers: [{ qty: 1, price: 549, save: 299 }, { qty: 2, price: 999, save: 99 }] },
+  { slug: "kit-collagene", name: "Kit Collagène Inside & Outside", price: 549, oldPrice: 848, image: "/kit-collagene-hero.png", isBundle: true, sku: "pack-kit-collagen", offers: [{ qty: 1, price: 549, save: 299 }, { qty: 2, price: 999, save: 99 }] },
 ];
 
 function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }

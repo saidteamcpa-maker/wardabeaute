@@ -3,6 +3,36 @@ import { prisma } from "@/lib/db";
 import { isMorocco } from "@/lib/geo";
 import { computeTotal, generateReference, deriveSource, parseDevice, parseBrowser, unitPriceFor, offerSkuFor, CO_COLLAGEN_DISCOUNT, bundleDiscount } from "@/lib/orders";
 import { getCatalog } from "@/lib/catalog";
+import type { CatalogProduct } from "@/lib/catalog";
+
+/**
+ * The "Kit Collagène Inside & Outside" is a PACK, not a real product.
+ * When pushing to Sheets/Marketplace we expand it into its constituent products,
+ * each carrying its own real Spaceseller SKU. Identifiers below are the
+ * authoritative Spaceseller SKUs for each product.
+ */
+const CONSTITUENT_SKU: Record<string, { slug: string; sku: string }[]> = {
+  "kit-collagene": [
+    { slug: "velvastretch", sku: "anti-vergeture" },
+    { slug: "collaglow", sku: "gummies_collagen" },
+  ],
+};
+
+function expandItem(item: { slug: string; qty: number }): { slug: string; qty: number }[] {
+  const pack = CONSTITUENT_SKU[item.slug];
+  if (!pack) return [{ slug: item.slug, qty: item.qty }];
+  return pack.map((p) => ({ slug: p.slug, qty: item.qty }));
+}
+
+// Resolve the Spaceseller SKU for any product: pack constituents use the fixed
+// mapping; single products use the DB SKU (falling back to their slug).
+function skuFor(slug: string, catalog: Record<string, CatalogProduct>, skuMap: Map<string, string | null>): string {
+  for (const pack of Object.values(CONSTITUENT_SKU)) {
+    const found = pack.find((p) => p.slug === slug);
+    if (found) return found.sku;
+  }
+  return skuMap.get(slug) || catalog[slug]?.name || slug;
+}
 
 const SHEETS_URL =
   process.env.SHEETS_WEBHOOK_URL ||
@@ -284,14 +314,15 @@ export async function POST(req: NextRequest) {
     address: created.address || "",
     postal: created.postal || "",
       items_json: (() => {
-        const sheetSku = created.items
-          .map((i: any) => {
-            const specific = offerSkuFor(i.slug, i.qty, catalog);
+        const flat: { slug: string; qty: number }[] = created.items.flatMap((i: any) => expandItem({ slug: i.slug, qty: i.qty }));
+        const sheetSku = flat
+          .map((f) => {
+            const specific = offerSkuFor(f.slug, f.qty, catalog);
             if (specific) return specific;
-            return `${(skuMap.get(i.slug) || (i as any).sku || "")}-x${(i.qty || 1)}`;
+            return `${skuFor(f.slug, catalog, skuMap)}-x${(f.qty || 1)}`;
           })
           .join("+");
-        const totalQty = created.items.reduce((s: number, i: any) => s + (i.qty || 1), 0);
+        const totalQty = flat.reduce((s: number, f) => s + (f.qty || 1), 0);
         return [{ slug: "", sku: sheetSku, sku_sheet: sheetSku, qty: totalQty, name: "", unit_price: total }];
       })(),
     subtotal: total,
@@ -308,14 +339,19 @@ export async function POST(req: NextRequest) {
   // Marketplace payload must use real per-product items (not the consolidated Sheets sku)
   const marketplacePayload = {
     ...sheetsPayload,
-    items_json: created.items.map((i: any) => ({
-      slug: i.slug,
-      sku: skuMap.get(i.slug) ?? (i as any).sku ?? i.slug,
-      qty: i.qty,
-      unit_price: i.unitPrice,
-      name: catalog[i.slug]?.name ?? i.slug,
-      line_total: i.unitPrice * i.qty,
-    })),
+    items_json: created.items.flatMap((i: any) =>
+      expandItem({ slug: i.slug, qty: i.qty }).map((f) => {
+        const unit = unitPriceFor(f.slug, f.qty, catalog);
+        return {
+          slug: f.slug,
+          sku: skuFor(f.slug, catalog, skuMap),
+          qty: f.qty,
+          unit_price: unit,
+          name: catalog[f.slug]?.name ?? f.slug,
+          line_total: unit * f.qty,
+        };
+      })
+    ),
   };
   // Fire-and-forget — both must not block order creation
   pushToSheets(sheetsPayload).catch(() => {});
