@@ -302,14 +302,14 @@ export const WARDAPages: WardaPages = {
         h2: "Choisissez votre offre.",
         cards: [
           {
-            title: "1 pot",
+            title: "1 sérum",
             price: PRICES.velvastretch.single,
             size: SIZES.velvastretch.single,
             duration: DURATIONS.velvastretch.single,
             cta: "Je commande",
           },
           {
-            title: "2 pots",
+            title: "2 sérums",
             price: PRICES.velvastretch.duo,
             size: SIZES.velvastretch.duo,
             duration: DURATIONS.velvastretch.duo,
@@ -319,7 +319,7 @@ export const WARDAPages: WardaPages = {
             isFeatured: true,
           },
           {
-            title: "3 pots",
+            title: "3 sérums",
             price: PRICES.velvastretch.triple,
             size: SIZES.velvastretch.triple,
             duration: DURATIONS.velvastretch.triple,
@@ -598,14 +598,14 @@ export const WARDAPages: WardaPages = {
         h2: "Choisissez votre offre.",
         cards: [
           {
-            title: "1 flacon",
+            title: "1 sérum",
             price: PRICES.silkstop.single,
             size: SIZES.silkstop.single,
             duration: DURATIONS.silkstop.single,
             cta: "Je commande",
           },
           {
-            title: "2 flacons",
+            title: "2 sérums",
             price: PRICES.silkstop.duo,
             size: SIZES.silkstop.duo,
             duration: DURATIONS.silkstop.duo,
@@ -615,7 +615,7 @@ export const WARDAPages: WardaPages = {
             isFeatured: true,
           },
           {
-            title: "3 flacons",
+            title: "3 sérums",
             price: PRICES.silkstop.triple,
             size: SIZES.silkstop.triple,
             duration: DURATIONS.silkstop.triple,

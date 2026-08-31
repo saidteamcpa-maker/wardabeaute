@@ -207,7 +207,7 @@ export const products: Record<string, Product> = {
       { text: "Je l'utilise depuis 7 semaines. La repousse est vraiment plus lente — avant 3 semaines, maintenant 5.", name: "Yasmine A. — Casablanca", stars: 5 },
       { text: "Ma peau est très sensible et rougissait. SilkStop a résolu ce problème entièrement.", name: "Hiba M. — Agadir", stars: 5 },
     ],
-    upsellCopy: "Offre duo — 2 flacons SilkStop™ à 419 MAD (économisez 39 MAD)",
+    upsellCopy: "Offre duo — 2 sérums SilkStop™ à 419 MAD (économisez 39 MAD)",
     upsellSlug: "silkstop",
     upsellQty: 2,
     crossSell: { slug: "collaglow", copy: "Pour les femmes qui veulent aussi une peau plus jeune de l'intérieur" },
