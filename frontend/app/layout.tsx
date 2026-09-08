@@ -7,6 +7,7 @@ import { MetaPixel } from "@/components/pixels/MetaPixel";
 import { TikTokPixel } from "@/components/pixels/TikTokPixel";
 import { GoogleTag } from "@/components/pixels/GoogleTag";
 import { ClarityPixel } from "@/components/pixels/ClarityPixel";
+import { ContentSquarePixel } from "@/components/pixels/ContentSquarePixel";
 import { Toaster } from "react-hot-toast";
 import { LangProvider } from "@/components/LangProvider";
 import { getLangServer } from "@/lib/lang-server";
@@ -87,6 +88,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <TikTokPixel key={p.id} id={p.pixelId} scriptId={`tt-${p.id}`} />
         ))}
         <ClarityPixel projectId={process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID} enabled={clarityEnabled} />
+        <ContentSquarePixel tagId={process.env.NEXT_PUBLIC_CONTENTSQUARE_TAG_ID} enabled={clarityEnabled} />
         <LangProvider initialLang={lang}>
           <CatalogProvider catalog={catalog}>
             <StorefrontHeader />
