@@ -176,4 +176,40 @@ export function track(
       ttq.track(event, data);
     }
   } catch { /* ignore */ }
+
+  // Microsoft Clarity — custom events & tags (privacy-safe, no PII)
+  // Clarity auto-tracks page views, clicks, scrolls, recordings and heatmaps.
+  // We only add e-commerce events + the 4 approved custom tags.
+  try {
+    const w = window as unknown as {
+      clarity?: ((method: string, ...args: unknown[]) => void) & {
+        q?: unknown[];
+      };
+    };
+    if (typeof w.clarity === "function") {
+      const map: Record<string, string> = {
+        ViewContent: "product_viewed",
+        AddToCart: "add_to_cart",
+        InitiateCheckout: "begin_checkout",
+        Purchase: "purchase",
+      };
+      const clarityEvent = map[event] || event.toLowerCase();
+      // Fire the mapped e-commerce event (keep Purchase as "purchase" per request)
+      w.clarity("event", clarityEvent);
+
+      // Custom tags — only the 4 approved keys, never PII
+      const d = data || {};
+      const productId = (d.content_ids as string[] | undefined)?.[0] || (d.slug as string | undefined);
+      if (typeof productId === "string" && productId) w.clarity("set", "product_id", productId);
+      const category = d.content_type as string | undefined;
+      if (typeof category === "string" && category) w.clarity("set", "product_category", category);
+      const cartValue = d.value;
+      if (typeof cartValue === "number" || typeof cartValue === "string") w.clarity("set", "cart_value", String(cartValue));
+      const traffic =
+        (d.utm_source as string | undefined) ||
+        (d.source as string | undefined) ||
+        (d.referrer as string | undefined);
+      if (typeof traffic === "string" && traffic) w.clarity("set", "traffic_source", traffic.slice(0, 100));
+    }
+  } catch { /* ignore */ }
 }

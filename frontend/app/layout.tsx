@@ -6,13 +6,14 @@ import { StorefrontHeader, StorefrontFooterArea } from "@/components/StorefrontC
 import { MetaPixel } from "@/components/pixels/MetaPixel";
 import { TikTokPixel } from "@/components/pixels/TikTokPixel";
 import { GoogleTag } from "@/components/pixels/GoogleTag";
+import { ClarityPixel } from "@/components/pixels/ClarityPixel";
 import { Toaster } from "react-hot-toast";
 import { LangProvider } from "@/components/LangProvider";
 import { getLangServer } from "@/lib/lang-server";
 import { dirFor } from "@/lib/i18n-shared";
 import { getCatalog } from "@/lib/catalog";
 import { CatalogProvider } from "@/lib/catalog-context";
-import { getEnabledPixels, seedPixelsFromEnv } from "@/lib/pixels";
+import { getEnabledPixels, isPixelsEnabled, seedPixelsFromEnv } from "@/lib/pixels";
 
 const PixelDebug = dynamicImport(() => import("@/components/pixels/PixelDebug").then((m) => m.PixelDebug), { ssr: false });
 
@@ -65,9 +66,10 @@ export function generateMetadata(): Metadata {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const lang = getLangServer();
-  const [catalog, pixels] = await Promise.all([
+  const [catalog, pixels, clarityEnabled] = await Promise.all([
     getCatalog(),
     seedPixelsFromEnv().then(() => getEnabledPixels()),
+    isPixelsEnabled(),
   ]);
   const metaPixels = pixels.filter((p) => p.type === "meta");
   const tiktokPixels = pixels.filter((p) => p.type === "tiktok");
@@ -84,6 +86,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {tiktokPixels.map((p) => (
           <TikTokPixel key={p.id} id={p.pixelId} scriptId={`tt-${p.id}`} />
         ))}
+        <ClarityPixel projectId={process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID} enabled={clarityEnabled} />
         <LangProvider initialLang={lang}>
           <CatalogProvider catalog={catalog}>
             <StorefrontHeader />
