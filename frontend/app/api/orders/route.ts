@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { isMorocco } from "@/lib/geo";
-import { computeTotal, generateReference, deriveSource, parseDevice, parseBrowser, unitPriceFor, offerSkuFor, CO_COLLAGEN_DISCOUNT, bundleDiscount } from "@/lib/orders";
+import { computeTotal, generateReference, deriveSource, parseDevice, parseBrowser, unitPriceFor, offerSkuFor } from "@/lib/orders";
 import { getCatalog } from "@/lib/catalog";
 import type { CatalogProduct } from "@/lib/catalog";
 
@@ -221,12 +221,7 @@ export async function POST(req: NextRequest) {
   const skuRows = await prisma.product.findMany({ select: { slug: true, sku: true } });
   const skuMap = new Map(skuRows.map((p) => [p.slug, p.sku] as const));
 
-  // "Kit Collagène Inside & Outside" discount: auto-granted whenever the order
-  // already contains BOTH VelvaStretch (outside) and CollaGlow (inside) — with or
-  // without any other products. The upsell popup only offers to *complete* the kit
-  // (add the missing one) when exactly one of them is present.
-  // NOT applied when the Kit product itself is in the cart (tested separately).
-  const kitDiscount = bundleDiscount(cleanItems);
+
 
   const idemKey =
     typeof body.idempotency_key === "string" && body.idempotency_key.trim()
@@ -251,8 +246,8 @@ export async function POST(req: NextRequest) {
     city: String(city).slice(0, 80),
     address: address ? String(address).slice(0, 300) : null,
     postal: postal ? String(postal).slice(0, 20) : null,
-    total: total - kitDiscount,
-    discount: kitDiscount,
+    total: total,
+    discount: 0,
     idempotencyKey: idemKey,
     source: deriveSource(req.headers.get("referer"), body.utm_source),
     utmSource: body.utm_source ?? null,
@@ -326,7 +321,7 @@ export async function POST(req: NextRequest) {
         return [{ slug: "", sku: sheetSku, sku_sheet: sheetSku, qty: totalQty, name: "", unit_price: total }];
       })(),
     subtotal: total,
-    discount: kitDiscount,
+    discount: 0,
     upsell: 0,
     total: created.total,
     status: created.status,

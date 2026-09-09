@@ -79,15 +79,6 @@ export function parseBrowser(ua?: string | null): string {
   return "other";
 }
 
-export const CO_COLLAGEN_DISCOUNT = 49;
-
-export function bundleDiscount(items: { slug: string; qty: number }[]): number {
-  const vsQty = items.filter((i) => i.slug === "velvastretch").reduce((s, i) => s + i.qty, 0);
-  const cgQty = items.filter((i) => i.slug === "collaglow").reduce((s, i) => s + i.qty, 0);
-  if (vsQty === 0 || cgQty === 0) return 0;
-  return Math.min(vsQty, cgQty) * CO_COLLAGEN_DISCOUNT;
-}
-
 export function suggestedUpsellSlug(cartSlugs: string[]): string | null {
   const hasV = cartSlugs.includes("velvastretch");
   const hasC = cartSlugs.includes("collaglow");

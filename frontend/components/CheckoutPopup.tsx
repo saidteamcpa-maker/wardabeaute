@@ -15,9 +15,6 @@ import { useLang } from "@/components/LangProvider";
 import { useCatalog } from "@/lib/catalog-context";
 import { t } from "@/content/ui";
 import { usePageOverride } from "@/lib/use-page-override";
-import { UpsellPopup } from "@/components/UpsellPopup";
-import { getUpsellInfo } from "@/lib/upsell";
-import type { CartItem } from "@/lib/cart";
 
 type FormData = { customer_name: string; phone: string; city: string };
 
@@ -28,26 +25,14 @@ export function CheckoutPopup() {
   const router = useRouter();
   const ov = usePageOverride("checkout");
   const Co = (k: string) => (ov ? ov[lang]?.[k] || t(lang, k) : t(lang, k));
-  const [step, setStep] = useState<"form" | "upsell" | "error">("form");
+  const [step, setStep] = useState<"form" | "error">("form");
   const [errorMsg, setErrorMsg] = useState("");
   const [orderId, setOrderId] = useState("");
   const [loading, setLoading] = useState(false);
   const idemRef = useRef<string>("");
-  const formDataRef = useRef<FormData | null>(null);
-  const [upsellItems, setUpsellItems] = useState<CartItem[] | null>(null);
-  const upsellAcceptedRef = useRef(false);
 
   // Filter stale slugs (old localStorage like bundle-bck) to prevent client crash
   const validItems = useMemo(() => items.filter((i) => i && typeof i.slug === "string" && !!catalog[i.slug]), [items, catalog]);
-  // Upsell logic
-  const productNames = useMemo(() => {
-    const names: Record<string, string> = {};
-    for (const [slug, p] of Object.entries(catalog)) {
-      names[slug] = p.name;
-    }
-    return names;
-  }, [catalog]);
-  const upsellInfo = useMemo(() => getUpsellInfo(validItems, productNames), [validItems, productNames]);
 
   // Fresh idempotency key each time the checkout is opened
   useEffect(() => {
@@ -60,9 +45,6 @@ export function CheckoutPopup() {
       setStep("form");
       setOrderId("");
       setErrorMsg("");
-      setUpsellItems(null);
-      formDataRef.current = null;
-      upsellAcceptedRef.current = false;
     }
   }, [isCheckoutOpen]);
 
@@ -80,7 +62,6 @@ export function CheckoutPopup() {
     resolver: zodResolver(schema),
   });
   const subtotal = validItems.reduce((s, i) => s + unitPrice(i.slug, i.qty, catalog), 0);
-  const preDiscountTotal = subtotal;
 
   useEffect(() => {
     if (isCheckoutOpen) {
@@ -92,9 +73,9 @@ export function CheckoutPopup() {
     }
   }, [isCheckoutOpen, subtotal, validItems]);
 
-  // Actual order submission (called after upsell resolution or directly)
+  // Actual order submission
   const submitOrder = useCallback(
-    async (orderItems: CartItem[], formData: FormData) => {
+    async (orderItems: typeof validItems, formData: FormData) => {
       setLoading(true);
       setErrorMsg("");
       try {
@@ -157,49 +138,13 @@ export function CheckoutPopup() {
       setLoading(false);
       return;
     }
-    // Check upsell eligibility
-    if (upsellInfo.eligible) {
-      // Store form data for later use after upsell resolution
-      formDataRef.current = data;
-      // If add_missing: prepare items with the missing product added
-      if (upsellInfo.type === "add_missing") {
-        const existing = validItems.find((i) => i.slug === upsellInfo.missing);
-        if (!existing) {
-          setUpsellItems([...validItems, { slug: upsellInfo.missing, qty: 1 }]);
-        } else {
-          setUpsellItems(validItems);
-        }
-      } else {
-        // apply_discount: items stay the same, backend applies discount
-        setUpsellItems(validItems);
-      }
-      setStep("upsell");
-      setLoading(false);
-      return;
-    }
-    // No upsell — submit directly
     await submitOrder(validItems, data);
   };
-
-  const handleUpsellAccept = useCallback(async () => {
-    if (upsellItems && formDataRef.current) {
-      upsellAcceptedRef.current = true;
-      await submitOrder(upsellItems, formDataRef.current);
-    }
-  }, [upsellItems, submitOrder]);
-
-  const handleUpsellReject = useCallback(async () => {
-    // Proceed with original items (no upsell)
-    if (formDataRef.current) {
-      await submitOrder(validItems, formDataRef.current);
-    }
-  }, [validItems, submitOrder]);
 
   const finish = (id?: string) => {
     clear();
     const finalId = id || orderId;
-    const qs = upsellAcceptedRef.current ? `?id=${finalId}&upsell=1` : `?id=${finalId}`;
-    router.push(`/confirmation${qs}`);
+    router.push(`/confirmation?id=${finalId}`);
   };
 
   if (!isCheckoutOpen) return null;
@@ -280,25 +225,6 @@ export function CheckoutPopup() {
               <p className="text-center text-xs text-gris leading-relaxed px-2">{Co("co.secure")}</p>
             </form>
           </>
-        )}
-
-        {step === "upsell" && upsellInfo.eligible && upsellItems && (
-          <UpsellPopup
-            info={upsellInfo}
-            productName={
-              upsellInfo.type === "add_missing"
-                ? upsellInfo.missingName
-                : catalog["collaglow"]?.name || "CollaGlow™"
-            }
-            productImage={
-              upsellInfo.type === "add_missing"
-                ? catalog[upsellInfo.missing]?.image || "/images/velvastretch.png"
-                : catalog["kit-collagene"]?.image || "/kit-collagene-hero.png"
-            }
-            preDiscountTotal={preDiscountTotal}
-            onAccept={handleUpsellAccept}
-            onReject={handleUpsellReject}
-          />
         )}
 
         {step === "error" && (

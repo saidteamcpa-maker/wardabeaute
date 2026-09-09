@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from ..config import settings
 from ..db import get_db
 from ..models import Order, OrderItem, Product
-from ..prices import PRODUCT_NAMES, compute_total, unit_price, CO_COLLAGEN_DISCOUNT
+from ..prices import PRODUCT_NAMES, compute_total, unit_price
 from ..schemas import OrderCreate, OrderOut, UpsellIn
 from ..services import geo, sheets, spaceseller
 from ..services.capi import track

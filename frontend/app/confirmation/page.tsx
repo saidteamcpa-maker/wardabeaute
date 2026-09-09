@@ -94,7 +94,7 @@ export default function ConfirmationPage() {
       );
       lines.push(`💰 ${A("المجموع للدفع عند الاستلام","Total")}: ${lastOrder.total} MAD`);
     }
-    if (upsell) lines.push(A("🎁 تم إضافة Kit Collagène بخصم (−49 درهم)", "🎁 Kit Collagène Inside & Outside ajouté (−49 MAD)"));
+    if (upsell) lines.push(A("🎁 تم إضافة Kit Collagène", "🎁 Kit Collagène Inside & Outside ajouté"));
     return lines.join("\n");
   };
 

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { CO_COLLAGEN_DISCOUNT, suggestedUpsellSlug, unitPriceFor } from "@/lib/orders";
+import { suggestedUpsellSlug, unitPriceFor } from "@/lib/orders";
 import { getCatalog } from "@/lib/catalog";
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
@@ -19,8 +19,6 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   const slugs = order.items.map((i) => i.slug);
   const hasV = slugs.includes("velvastretch");
   const hasC = slugs.includes("collaglow");
-  // Both components already present -> the kit discount was auto-applied at
-  // creation. Nothing to add here.
   if (hasV && hasC) return NextResponse.json({ ok: true, added: false, alreadyDiscounted: true });
   const suggest = suggestedUpsellSlug(slugs);
   if (!suggest) return NextResponse.json({ ok: true, added: false });
@@ -33,7 +31,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
     }),
     prisma.order.update({
       where: { id: order.id },
-      data: { total: order.total + price - CO_COLLAGEN_DISCOUNT, discount: order.discount + CO_COLLAGEN_DISCOUNT },
+      data: { total: order.total + price, discount: order.discount },
     }),
   ]);
 
