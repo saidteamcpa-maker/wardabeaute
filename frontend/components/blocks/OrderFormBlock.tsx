@@ -161,7 +161,6 @@ export function OrderFormBlock({
                     </span>
                     <span className="text-right">
                       <span className="font-medium font-body text-sm">{o.price} MAD</span>
-                      <span className={`block text-xs ${isActive ? "text-white/70" : "text-gris"}`}>{o.qty} × {o.price} MAD</span>
                     </span>
                   </button>
                 );
