@@ -49,7 +49,6 @@ export function OrderFormBlock({
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [city, setCity] = useState("");
-  const [address, setAddress] = useState("");
   const [honeypot, setHoneypot] = useState("");
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState<string | null>(null);
@@ -71,7 +70,6 @@ export function OrderFormBlock({
     if (!name.trim() || name.trim().length < 2) errs.name = lang === "ar" ? "الاسم الكامل ضروري" : "Nom requis (min. 2 caractères)";
     if (!PHONE_RE.test(phone.trim())) errs.phone = lang === "ar" ? "رقم مغربي غير صالح — مثال: 0612345678" : "Numéro invalide — ex: 0612345678 (0[5-7]XXXXXXXX)";
     if (!city.trim()) errs.city = lang === "ar" ? "المدينة ضرورية" : "Ville requise";
-    if (!address.trim()) errs.address = lang === "ar" ? "العنوان ضروري" : "Adresse requise";
     if (honeypot.trim()) errs.honeypot = "spam";
     return errs;
   };
@@ -102,8 +100,6 @@ export function OrderFormBlock({
         items: [{ slug, qty: activeQty }],
         upsell: false,
         idempotency_key,
-        // address is not in CreateOrderPayload type but backend accepts it
-        ...(address.trim() ? { address: address.trim() } : {}),
       } as unknown as Parameters<typeof createOrder>[0]);
 
       track("Purchase", { value: (res as unknown as { total: number }).total ?? activePrice, currency: "MAD", content_ids: [slug], orderId: (res as unknown as { id: string }).id });
@@ -234,49 +230,26 @@ export function OrderFormBlock({
                 )}
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div>
-                  <label htmlFor="order-city" className="block text-sm font-medium text-profond mb-1.5">
-                    {lang === "ar" ? "المدينة" : "Ville"}
-                  </label>
-                  <input
-                    id="order-city"
-                    type="text"
-                    autoComplete="address-level2"
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                    placeholder={lang === "ar" ? "الدار البيضاء" : "Casablanca"}
-                    className="w-full input-field"
-                    aria-invalid={!!fieldErrors.city}
-                    aria-describedby={fieldErrors.city ? "err-city" : undefined}
-                  />
-                  {fieldErrors.city && (
-                    <p id="err-city" className="text-rose-600 text-xs mt-1">
-                      {fieldErrors.city}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <label htmlFor="order-address" className="block text-sm font-medium text-profond mb-1.5">
-                    {lang === "ar" ? "العنوان" : "Adresse"}
-                  </label>
-                  <input
-                    id="order-address"
-                    type="text"
-                    autoComplete="street-address"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    placeholder={lang === "ar" ? "الحي، الزنقة..." : "Rue, quartier..."}
-                    className="w-full input-field"
-                    aria-invalid={!!fieldErrors.address}
-                    aria-describedby={fieldErrors.address ? "err-address" : undefined}
-                  />
-                  {fieldErrors.address && (
-                    <p id="err-address" className="text-rose-600 text-xs mt-1">
-                      {fieldErrors.address}
-                    </p>
-                  )}
-                </div>
+              <div>
+                <label htmlFor="order-city" className="block text-sm font-medium text-profond mb-1.5">
+                  {lang === "ar" ? "المدينة" : "Ville"}
+                </label>
+                <input
+                  id="order-city"
+                  type="text"
+                  autoComplete="address-level2"
+                  value={city}
+                  onChange={(e) => setCity(e.target.value)}
+                  placeholder={lang === "ar" ? "الدار البيضاء" : "Casablanca"}
+                  className="w-full input-field"
+                  aria-invalid={!!fieldErrors.city}
+                  aria-describedby={fieldErrors.city ? "err-city" : undefined}
+                />
+                {fieldErrors.city && (
+                  <p id="err-city" className="text-rose-600 text-xs mt-1">
+                    {fieldErrors.city}
+                  </p>
+                )}
               </div>
 
               {error && (
