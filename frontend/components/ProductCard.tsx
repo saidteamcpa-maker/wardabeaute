@@ -3,7 +3,6 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useMemo } from "react";
-import { AddToCartButton } from "./AddToCartButton";
 import { localize } from "@/content/products";
 import { useLang } from "@/components/LangProvider";
 import { useCatalog } from "@/lib/catalog-context";
@@ -63,9 +62,9 @@ export function ProductCard({
               </span>
             </div>
           </Link>
-          <div className="mt-3">
-            <AddToCartButton slug={slug} />
-          </div>
+          <Link href={`/${slug}`} className="btn-primary w-full btn-glow flex items-center justify-center gap-2 mt-3">
+            {lang === "ar" ? "شوفي المنتج" : "Voir le produit"}
+          </Link>
           {delivery}
         </div>
       </div>
@@ -105,9 +104,9 @@ export function ProductCard({
           </span>
         </div>
       </Link>
-      <div className="mt-4">
-        <AddToCartButton slug={slug} />
-      </div>
+      <Link href={`/${slug}`} className="btn-primary w-full btn-glow flex items-center justify-center gap-2 mt-4">
+        {lang === "ar" ? "شوفي المنتج" : "Voir le produit"}
+      </Link>
       {delivery}
     </div>
   );
