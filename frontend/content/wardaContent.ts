@@ -16,24 +16,24 @@
 /** WhatsApp contact — change once, used everywhere (also re-exported via lib/config.ts) */
 export const WHATSAPP_NUMBER = "212779754660";
 
-/** Prices in MAD — previous pricing restored (from content/products.ts) */
+/** Prices in MAD — package prices (total price for selected pack) */
 export const PRICES = {
-  velvastretch: { single: 279, duo: 499, triple: 699 },
-  silkstop: { single: 229, duo: 419, triple: 599 },
-  collaglow: { single: 319, duo: 569, triple: 799 },
-  kit: { duo: 549, duoXL: 999 }, // kit duo 549 (prev), duoXL 2×549=1098 placeholder 999 TODO
+  velvastretch: { single: 219, duo: 279, triple: 329 },
+  silkstop: { single: 209, duo: 259, triple: 299 },
+  collaglow: { single: 229, duo: 299, triple: 359 },
+  kit: { duo: 329, duoXL: 449 },
 } as const;
 
-/** Savings computed from previous offers */
+/** Savings computed from package prices */
 export const SAVINGS = {
-  velvastretchDuo: 59, // 2×279 - 499 = 59
-  velvastretchTriple: 138, // 3×279 - 699 = 138
-  silkstopDuo: 39, // 2×229 - 419 = 39
-  silkstopTriple: 88, // 3×229 - 599 = 88 (catalog shows 90, using 88)
-  collaglowDuo: 69, // 2×319 - 569 = 69
-  collaglowTriple: 158, // 3×319 - 799 = 158
-  kitDuo: 299, // 848 - 549 = 299
-  kitDuoXL: 99, // placeholder
+  velvastretchDuo: 159, // 2×219 - 279 = 159
+  velvastretchTriple: 328, // 3×219 - 329 = 328
+  silkstopDuo: 159, // 2×209 - 259 = 159
+  silkstopTriple: 328, // 3×209 - 299 = 328
+  collaglowDuo: 159, // 2×229 - 299 = 159
+  collaglowTriple: 328, // 3×229 - 359 = 328
+  kitDuo: 519, // 848 - 329 = 519
+  kitDuoXL: 209, // 2×329 - 449 = 209
 } as const;
 
 /** Sizes / formats — edit here, used in pricing cards */
@@ -313,8 +313,8 @@ export const WARDAPages: WardaPages = {
             price: PRICES.velvastretch.duo,
             size: SIZES.velvastretch.duo,
             duration: DURATIONS.velvastretch.duo,
-            badge: "Économisez 59 DH",
-            savingText: "Économisez 59 DH",
+            badge: "Économisez 159 DH",
+            savingText: "Économisez 159 DH",
             cta: "Je commande",
             isFeatured: true,
           },
@@ -323,8 +323,8 @@ export const WARDAPages: WardaPages = {
             price: PRICES.velvastretch.triple,
             size: SIZES.velvastretch.triple,
             duration: DURATIONS.velvastretch.triple,
-            badge: "Économisez 138 DH",
-            savingText: "Économisez 138 DH",
+            badge: "Économisez 328 DH",
+            savingText: "Économisez 328 DH",
             cta: "Je commande",
             isPlaceholder: true,
           },
@@ -466,8 +466,8 @@ export const WARDAPages: WardaPages = {
             price: PRICES.velvastretch.duo,
             size: "2×60 مل",
             duration: "علاج متكامل ديال شهرين لـ 3 أشهر",
-            badge: "وفّري 59 درهم",
-            savingText: "وفّري 59 درهم",
+            badge: "وفّري 159 درهم",
+            savingText: "وفّري 159 درهم",
             cta: "بغيت نطلب",
             isFeatured: true,
           },
@@ -476,8 +476,8 @@ export const WARDAPages: WardaPages = {
             price: PRICES.velvastretch.triple,
             size: "3×60 مل",
             duration: "علاج كامل ديال 3 لـ 4 أشهر",
-            badge: "وفّري 138 درهم",
-            savingText: "وفّري 138 درهم",
+            badge: "وفّري 328 درهم",
+            savingText: "وفّري 328 درهم",
             cta: "بغيت نطلب",
           },
         ],
@@ -609,8 +609,8 @@ export const WARDAPages: WardaPages = {
             price: PRICES.silkstop.duo,
             size: SIZES.silkstop.duo,
             duration: DURATIONS.silkstop.duo,
-            badge: "Économisez 39 DH",
-            savingText: "Économisez 39 DH",
+            badge: "Économisez 159 DH",
+            savingText: "Économisez 159 DH",
             cta: "Je commande",
             isFeatured: true,
           },
@@ -619,8 +619,8 @@ export const WARDAPages: WardaPages = {
             price: PRICES.silkstop.triple,
             size: SIZES.silkstop.triple,
             duration: DURATIONS.silkstop.triple,
-            badge: "Économisez 88 DH",
-            savingText: "Économisez 88 DH",
+            badge: "Économisez 328 DH",
+            savingText: "Économisez 328 DH",
             cta: "Je commande",
           },
         ],
@@ -732,8 +732,8 @@ export const WARDAPages: WardaPages = {
         h2: "اختاري العرض المناسب ليك.",
         cards: [
           { title: "قرعة وحدة", price: PRICES.silkstop.single, size: "30 مل", duration: "استعمال ديال شهر تقريباً", cta: "بغيت نطلب" },
-          { title: "2 قراعي", price: PRICES.silkstop.duo, size: "2×30 مل", duration: "علاج متكامل ديال شهرين", badge: "وفّري 39 درهم", savingText: "وفّري 39 درهم", cta: "بغيت نطلب", isFeatured: true },
-          { title: "3 قراعي", price: PRICES.silkstop.triple, size: "3×30 مل", duration: "علاج كامل ديال 3 أشهر", badge: "وفّري 88 درهم", savingText: "وفّري 88 درهم", cta: "بغيت نطلب" },
+          { title: "2 قراعي", price: PRICES.silkstop.duo, size: "2×30 مل", duration: "علاج متكامل ديال شهرين", badge: "وفّري 159 درهم", savingText: "وفّري 159 درهم", cta: "بغيت نطلب", isFeatured: true },
+          { title: "3 قراعي", price: PRICES.silkstop.triple, size: "3×30 مل", duration: "علاج كامل ديال 3 أشهر", badge: "وفّري 328 درهم", savingText: "وفّري 328 درهم", cta: "بغيت نطلب" },
         ],
         trust: "✓ الدفع عند الاستلام فجميع مدن المغرب · التوصيل فـ 24 إلى 48 ساعة حسب مدينتك.",
       },
@@ -863,8 +863,8 @@ export const WARDAPages: WardaPages = {
             price: PRICES.collaglow.duo,
             size: SIZES.collaglow.duo,
             duration: DURATIONS.collaglow.duo,
-            badge: "Économisez 69 DH",
-            savingText: "Économisez 69 DH",
+            badge: "Économisez 159 DH",
+            savingText: "Économisez 159 DH",
             cta: "Je commande",
             isFeatured: true,
           },
@@ -873,8 +873,8 @@ export const WARDAPages: WardaPages = {
             price: PRICES.collaglow.triple,
             size: SIZES.collaglow.triple,
             duration: DURATIONS.collaglow.triple,
-            badge: "Économisez 158 DH",
-            savingText: "Économisez 158 DH",
+            badge: "Économisez 328 DH",
+            savingText: "Économisez 328 DH",
             cta: "Je commande",
           },
         ],
@@ -986,8 +986,8 @@ export const WARDAPages: WardaPages = {
         h2: "اختاري العرض المناسب ليك.",
         cards: [
           { title: "علبة وحدة (25 حبة)", price: PRICES.collaglow.single, size: "25 gummies", duration: "كورس ديال 25 يوم", cta: "بغيت نطلب" },
-          { title: "2 علب (50 حبة)", price: PRICES.collaglow.duo, size: "50 gummies", duration: "كورس متكامل ديال 50 يوم", badge: "وفّري 69 درهم", savingText: "وفّري 69 درهم", cta: "بغيت نطلب", isFeatured: true },
-          { title: "3 علب (75 حبة)", price: PRICES.collaglow.triple, size: "75 gummies", duration: "كورس علاجي كامل ديال 75 يوم", badge: "وفّري 158 درهم", savingText: "وفّري 158 درهم", cta: "بغيت نطلب" },
+          { title: "2 علب (50 حبة)", price: PRICES.collaglow.duo, size: "50 gummies", duration: "كورس متكامل ديال 50 يوم", badge: "وفّري 159 درهم", savingText: "وفّري 159 درهم", cta: "بغيت نطلب", isFeatured: true },
+          { title: "3 علب (75 حبة)", price: PRICES.collaglow.triple, size: "75 gummies", duration: "كورس علاجي كامل ديال 75 يوم", badge: "وفّري 328 درهم", savingText: "وفّري 328 درهم", cta: "بغيت نطلب" },
         ],
         trust: "✓ الدفع عند الاستلام فجميع مدن المغرب · التوصيل فـ 24 إلى 48 ساعة حسب مدينتك.",
       },
@@ -1116,8 +1116,8 @@ export const WARDAPages: WardaPages = {
             originalPrice: 848,
             size: SIZES.kit.duo,
             duration: DURATIONS.kit.duo,
-            badge: "Économisez 299 DH",
-            savingText: "Économisez 299 DH (au lieu de 848 DH à l'unité)",
+            badge: "Économisez 519 DH",
+            savingText: "Économisez 519 DH (au lieu de 848 DH à l'unité)",
             cta: "Je commande le kit",
             isFeatured: true,
           },
@@ -1126,8 +1126,8 @@ export const WARDAPages: WardaPages = {
             price: PRICES.kit.duoXL,
             size: SIZES.kit.duoXL,
             duration: DURATIONS.kit.duoXL,
-            badge: "Économisez 99 DH",
-            savingText: "Économisez 99 DH",
+            badge: "Économisez 209 DH",
+            savingText: "Économisez 209 DH",
             cta: "Je commande le kit XL",
           },
           // No triple for kit now — future placeholder if needed
@@ -1245,8 +1245,8 @@ export const WARDAPages: WardaPages = {
             originalPrice: 598,
             size: "1 CollaGlow (25) + 1 VelvaStretch (60 مل)",
             duration: "علاج متكامل ديال شهر",
-            badge: "وفّري 49 درهم",
-            savingText: "وفّري 49 درهم (بدل 598 درهم كلا بوحدو)",
+            badge: "وفّري 269 درهم",
+            savingText: "وفّري 269 درهم (بدل 598 درهم كلا بوحدو)",
             cta: "بغيت نطلب الباك",
             isFeatured: true,
           },
@@ -1255,8 +1255,8 @@ export const WARDAPages: WardaPages = {
             price: PRICES.kit.duoXL,
             size: "2 CollaGlow (50) + 2 VelvaStretch (120 مل)",
             duration: "علاج مكثف ديال شهرين لـ 3 أشهر",
-            badge: "وفّري 99 درهم",
-            savingText: "وفّري 99 درهم",
+            badge: "وفّري 209 درهم",
+            savingText: "وفّري 209 درهم",
             cta: "بغيت نطلب الباك المضاعف",
           },
         ],

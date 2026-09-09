@@ -1,10 +1,10 @@
 """Authoritative catalog + pricing. Server computes totals, never trusts the client."""
 
 PRICES = {
-    "velvastretch": {"1": 279, "2": 499, "3": 699},
-    "silkstop": {"1": 229, "2": 419, "3": 599},
-    "collaglow": {"1": 319, "2": 569, "3": 799},
-    "kit-collagene": {"1": 549, "2": 999},
+    "velvastretch": {"1": 219, "2": 279, "3": 329},
+    "silkstop": {"1": 209, "2": 259, "3": 299},
+    "collaglow": {"1": 229, "2": 299, "3": 359},
+    "kit-collagene": {"1": 329, "2": 449},
 }
 
 UPSELL_99 = 99
@@ -25,7 +25,7 @@ SEED_PRODUCTS = [
         "id": "velvastretch",
         "name": "VelvaStretch™",
         "ar_sub": "سيروم الكولاجين لعلامات التمدد",
-        "price": 279,
+        "price": 219,
         "old_price": 399,
         "badge": "🔥 Bestseller",
         "stars": 4.9,
@@ -36,7 +36,7 @@ SEED_PRODUCTS = [
         "id": "silkstop",
         "name": "SilkStop™",
         "ar_sub": "زيت إيقاف نمو الشعر بالزيوت الطبيعية",
-        "price": 229,
+        "price": 209,
         "old_price": 329,
         "badge": "⭐ Plus Vendu",
         "stars": 4.8,
@@ -47,7 +47,7 @@ SEED_PRODUCTS = [
         "id": "collaglow",
         "name": "CollaGlow™",
         "ar_sub": "علكات الكولاجين البحري + حمض الهيالورونيك",
-        "price": 319,
+        "price": 229,
         "old_price": 449,
         "badge": "✨ Nouveau",
         "stars": 4.8,
@@ -58,7 +58,7 @@ SEED_PRODUCTS = [
         "id": "kit-collagene",
         "name": "Kit Collagène Inside & Outside",
         "ar_sub": "الكولاجين من الداخل والخارج",
-        "price": 549,
+        "price": 329,
         "old_price": 848,
         "badge": "🔥 Offre Duo",
         "stars": 4.9,

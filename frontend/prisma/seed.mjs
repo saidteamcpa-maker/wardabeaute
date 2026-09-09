@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-const PRICES = { velvastretch: 279, collaglow: 319, silkstop: 229, "kit-collagene": 549 };
+const PRICES = { velvastretch: 219, collaglow: 229, silkstop: 209, "kit-collagene": 329 };
 const PRODUCT_NAMES = {
   velvastretch: "VelvaStretch™",
   collaglow: "CollaGlow™",
@@ -20,10 +20,10 @@ const REFERERS = ["https://facebook.com", "https://instagram.com", "https://goog
 const UTMS = ["facebook", "instagram", "tiktok", "google", "direct", "snapchat", "youtube", "other"];
 const CAMPAIGNS = ["summer_sale", "ramadan", "launch", "retarget", null];
 const CATALOG = [
-  { slug: "velvastretch", name: "VelvaStretch™", price: 279, oldPrice: 399, image: "/images/velvastretch.png", isBundle: false, offers: [{ qty: 1, price: 279 }, { qty: 2, price: 499, save: 59 }, { qty: 3, price: 699, save: 138 }] },
-  { slug: "silkstop", name: "SilkStop™", price: 229, oldPrice: 329, image: "/images/silkstop.png", isBundle: false, offers: [{ qty: 1, price: 229 }, { qty: 2, price: 419, save: 39 }, { qty: 3, price: 599, save: 90 }] },
-  { slug: "collaglow", name: "CollaGlow™", price: 319, oldPrice: 449, image: "/images/collaglow.png", isBundle: false, offers: [{ qty: 1, price: 319 }, { qty: 2, price: 569, save: 69 }, { qty: 3, price: 799, save: 158 }] },
-  { slug: "kit-collagene", name: "Kit Collagène Inside & Outside", price: 549, oldPrice: 848, image: "/kit-collagene-hero.png", isBundle: true, sku: "pack-kit-collagen", offers: [{ qty: 1, price: 549, save: 299 }, { qty: 2, price: 999, save: 99 }] },
+  { slug: "velvastretch", name: "VelvaStretch™", price: 219, oldPrice: 399, image: "/images/velvastretch.png", isBundle: false, offers: [{ qty: 1, price: 219 }, { qty: 2, price: 279, save: 159 }, { qty: 3, price: 329, save: 328 }] },
+  { slug: "silkstop", name: "SilkStop™", price: 209, oldPrice: 329, image: "/images/silkstop.png", isBundle: false, offers: [{ qty: 1, price: 209 }, { qty: 2, price: 259, save: 159 }, { qty: 3, price: 299, save: 328 }] },
+  { slug: "collaglow", name: "CollaGlow™", price: 229, oldPrice: 449, image: "/images/collaglow.png", isBundle: false, offers: [{ qty: 1, price: 229 }, { qty: 2, price: 299, save: 159 }, { qty: 3, price: 359, save: 328 }] },
+  { slug: "kit-collagene", name: "Kit Collagène Inside & Outside", price: 329, oldPrice: 848, image: "/kit-collagene-hero.png", isBundle: true, sku: "pack-kit-collagen", offers: [{ qty: 1, price: 329, save: 519 }, { qty: 2, price: 449, save: 209 }] },
 ];
 
 function rand(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
