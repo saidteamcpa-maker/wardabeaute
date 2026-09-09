@@ -4,9 +4,8 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState, type ComponentType } from "react";
 import { createPortal } from "react-dom";
-import { ShoppingCart, Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { FaWhatsapp, FaInstagram, FaTiktok, FaEnvelope } from "react-icons/fa";
-import { useCart } from "@/lib/cart";
 import { useLang } from "@/components/LangProvider";
 import { LangToggle } from "@/components/LangToggle";
 import { t } from "@/content/ui";
@@ -47,9 +46,6 @@ export function Header() {
   const { lang } = useLang();
   const site = useSiteContent();
   const logoUrl = site?.header?.logoUrl;
-  const items = useCart((s) => s.items);
-  const openCart = useCart((s) => s.openCart);
-  const count = items.reduce((n, i) => n + i.qty, 0);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
@@ -86,16 +82,8 @@ export function Header() {
           <Image src={logoUrl || "/warda-logo.png"} alt="Warda Beauté" width={0} height={0} sizes="180px" className="h-8 md:h-10 w-auto object-contain" priority />
         </Link>
 
-        <div className="flex items-center gap-1.5 order-3">
+        <div className="flex items-center order-3">
           <LangToggle />
-          <button onClick={openCart} aria-label={t(lang, "cartAria")} className="relative text-profond hover:text-warda hover:bg-brume/40 active:scale-95 transition-all duration-200 p-2 rounded-xl focus-visible:ring-2 focus-visible:ring-warda/30 focus-visible:outline-none">
-            <ShoppingCart className="w-6 h-6" strokeWidth={1.6} />
-            {count > 0 && (
-              <span className="absolute -top-1 -right-1 bg-profond text-white text-[11px] font-medium rounded-full w-5 h-5 grid place-items-center shadow-glow">
-                {count}
-              </span>
-            )}
-          </button>
         </div>
       </div>
 
