@@ -33,19 +33,13 @@ export async function getCatalog(): Promise<Record<string, CatalogProduct>> {
   for (const slug of Object.keys(STATIC_PRODUCTS)) {
     const base = STATIC_PRODUCTS[slug];
     const db = dbProducts.find((p) => p.slug === slug);
-    let offers = base.offers as CatalogOffer[];
-    if (db?.offers) {
-      try {
-        const parsed = JSON.parse(db.offers) as CatalogOffer[];
-        if (Array.isArray(parsed) && parsed.length > 0) offers = parsed;
-      } catch {
-        offers = base.offers as CatalogOffer[];
-      }
-    }
+    // Pricing is single source of truth in code (STATIC_PRODUCTS / content/products.ts).
+    // DB overrides are intentionally ignored for price/offers to prevent homepage/product page drift.
+    const offers = base.offers as CatalogOffer[];
     map[slug] = {
       ...base,
-      price: db ? db.price : base.price,
-      oldPrice: db ? (db.oldPrice ?? base.oldPrice) : base.oldPrice,
+      price: base.price,
+      oldPrice: base.oldPrice,
       image: resolveImage(db?.image ?? null, base.image),
       active: db ? db.active : true,
       stockCount: db?.stockCount ?? base.stockCount ?? null,
@@ -60,7 +54,7 @@ export async function getCatalog(): Promise<Record<string, CatalogProduct>> {
 
 export function getBundleFromCatalog(catalog: Record<string, CatalogProduct>) {
   const kit = catalog["kit-collagene"];
-  const price = kit ? kit.price : 549;
+  const price = kit ? kit.price : 329;
   const oldPrice = kit ? kit.oldPrice ?? 848 : 848;
   const save = Math.max(0, oldPrice - price);
   return { price, oldPrice, save };

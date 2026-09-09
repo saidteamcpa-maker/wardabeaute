@@ -95,7 +95,14 @@ async function seedProducts() {
   for (const p of CATALOG) {
     await prisma.product.upsert({
       where: { slug: p.slug },
-      update: {},
+      update: {
+        price: p.price,
+        oldPrice: p.oldPrice,
+        offers: JSON.stringify(p.offers),
+        image: p.image,
+        isBundle: p.isBundle,
+        sku: (p as any).sku ?? null,
+      },
       create: { ...p, offers: JSON.stringify(p.offers) },
     });
   }
