@@ -14,6 +14,7 @@ import { Reveal } from "@/components/ui/Reveal";
 import { IconBadge } from "@/components/ui/IconBadge";
 import { Check } from "lucide-react";
 import { LinkedPricingCards } from "@/components/blocks/LinkedPricingCards";
+import { OrderFormBlock } from "@/components/blocks/OrderFormBlock";
 import { StickyCTA } from "@/components/StickyCTA";
 
 const HERO_IMAGES: Record<string, string> = {
@@ -62,7 +63,7 @@ export async function WardaPage({ slug, preview = false }: { slug: string; previ
       />
 
       {/* 02 Offers / bundle selector — directly below the hero */}
-      <section dir={dir} id="order" className="section bg-petal/30 scroll-mt-6">
+      <section dir={dir} className="section bg-petal/30 scroll-mt-6">
         <div className="container-page">
           <Reveal>
             <p className="text-champagne text-sm font-body uppercase tracking-wide mb-2 text-center">{c.pricing.eyebrow}</p>
@@ -72,6 +73,15 @@ export async function WardaPage({ slug, preview = false }: { slug: string; previ
           <p className="font-body text-gris text-xs text-center mt-5 leading-relaxed">{c.pricing.trust}</p>
         </div>
       </section>
+
+      {/* 02b Express Checkout — directly below offers, synced via shared selectedTier */}
+      <OrderFormBlock
+        slug={slug}
+        eyebrow={c.orderForm.eyebrow}
+        h2={c.orderForm.h2}
+        badges={c.orderForm.badges}
+        lang={lang}
+      />
 
       {/* 03 Problem */}
       <ProblemBlock eyebrow={c.problem.eyebrow} h2={c.problem.h2} para={c.problem.para} bullets={c.problem.bullets} imageSrc={problemImage} lang={lang} />

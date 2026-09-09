@@ -38,11 +38,12 @@ export function OrderFormBlock({
   const catalog = useCatalog();
   const product = catalog[slug];
   const offers: { qty: number; price: number; save?: number }[] = product?.offers ?? [];
-  const selectedTier = useCart((s) => s.selectedTier[slug]);
+  const defaultTier = slug === "kit-collagene" ? 1 : 2;
+  const selectedTier = useCart((s) => s.selectedTier[slug] ?? defaultTier);
   const setTier = useCart((s) => s.setTier);
   const add = useCart((s) => s.add);
 
-  const activeQty = selectedTier ?? offers[0]?.qty ?? 1;
+  const activeQty = selectedTier;
   const activePrice = unitPrice(slug, activeQty, catalog);
 
   const [name, setName] = useState("");

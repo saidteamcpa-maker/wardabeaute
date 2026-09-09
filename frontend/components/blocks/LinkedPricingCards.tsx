@@ -30,8 +30,6 @@ export function LinkedPricingCards({
 }) {
   const defaultTier = slug === "kit-collagene" ? 1 : 2;
   const setTier = useCart((s) => s.setTier);
-  const add = useCart((s) => s.add);
-  const openCart = useCart((s) => s.openCart);
   const selectedTier = useCart((s) => s.selectedTier[slug] ?? defaultTier);
 
   const handleSelect = (idx: number) => {
@@ -44,9 +42,11 @@ export function LinkedPricingCards({
   const handleAdd = (idx: number, price: number) => {
     const qty = idx + 1;
     setTier(slug, qty);
-    add({ slug, qty });
     track("AddToCart", { content_ids: [slug], value: price, currency: "MAD" });
-    openCart();
+    // Express checkout: select offer and scroll to form, no cart required
+    const el = document.getElementById("order");
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+    else window.location.hash = "#order";
   };
 
   return (
