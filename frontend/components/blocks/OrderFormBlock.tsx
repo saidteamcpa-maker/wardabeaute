@@ -122,7 +122,7 @@ export function OrderFormBlock({
   if (!product) return null;
 
   return (
-    <section dir={dir} id="order" className="pt-4 md:pt-6 pb-12 md:pb-16 lg:pb-20 bg-white scroll-mt-6">
+    <section dir={dir} id="order" className="pt-2 md:pt-3 pb-12 md:pb-16 lg:pb-20 bg-white scroll-mt-6">
       <div className="container-page">
         <Reveal>
           {eyebrow && <p className="text-champagne text-sm font-body uppercase tracking-wide mb-2 text-center">{eyebrow}</p>}
