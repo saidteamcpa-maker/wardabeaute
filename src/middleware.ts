@@ -15,7 +15,7 @@ export default function middleware(req: NextRequest) {
   if (isAdmin && !isLogin) {
     const token = req.cookies.get('admin_token')?.value;
     if (!token) {
-      const url = new URL('/fr/admin/login', req.url);
+      const url = new URL(`/${routing.defaultLocale}/admin/login`, req.url);
       return NextResponse.redirect(url);
     }
   }
