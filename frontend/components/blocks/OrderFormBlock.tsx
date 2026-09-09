@@ -297,17 +297,6 @@ export function OrderFormBlock({
                   ))}
                 </div>
               )}
-
-              <a
-                href={waHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 w-full rounded-full border border-[#25D366] text-[#25D366] font-body font-medium py-3 hover:bg-[#25D366] hover:text-white transition-colors duration-250"
-              >
-                <span aria-hidden="true">💬</span>
-                {lang === "ar" ? "طلبي عبر واتساب" : "Commander via WhatsApp"}
-              </a>
-              <p className="text-center text-[11px] text-gris mt-2 break-all">{waHref}</p>
             </div>
           </Reveal>
         </div>
