@@ -170,7 +170,7 @@ export function OrderFormBlock({
 
           <Reveal delay={0.06}>
             <form onSubmit={handleSubmit} className="space-y-4 font-body" noValidate>
-              <div className="absolute left-[-5000px] top-auto w-px h-px overflow-hidden" aria-hidden="true">
+              <div className="sr-only" aria-hidden="true">
                 <label htmlFor="website">Website</label>
                 <input
                   id="website"
