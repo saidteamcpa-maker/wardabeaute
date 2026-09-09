@@ -159,6 +159,18 @@ export async function WardaPage({ slug, preview = false }: { slug: string; previ
         </div>
       </section>
 
+      {/* 09b Offers repeat below reviews — same cards, same synced state */}
+      <section dir={dir} className="pt-8 md:pt-10 pb-4 md:pb-6 bg-petal/30">
+        <div className="container-page">
+          <Reveal>
+            <p className="text-champagne text-sm font-body uppercase tracking-wide mb-2 text-center">{c.pricing.eyebrow}</p>
+            <h2 className={`text-3xl md:text-4xl leading-[1.15] text-profond mb-8 text-center text-balance ${lang === "ar" ? "font-arabic" : ""}`}>{c.pricing.h2}</h2>
+          </Reveal>
+          <LinkedPricingCards slug={slug} cards={c.pricing.cards as any} dir={dir} lang={lang} images={offerImages} />
+          <p className="font-body text-gris text-xs text-center mt-4 leading-relaxed">{c.pricing.trust}</p>
+        </div>
+      </section>
+
       {/* 10 CTA Mid #2 */}
       <CtaMidBlock ctaLabel={c.ctaMid2.cta} trust={c.ctaMid2.trust} lang={lang} />
 
