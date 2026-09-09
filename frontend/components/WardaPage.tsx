@@ -63,14 +63,14 @@ export async function WardaPage({ slug, preview = false }: { slug: string; previ
       />
 
       {/* 02 Offers / bundle selector — directly below the hero */}
-      <section dir={dir} className="section bg-petal/30 scroll-mt-6">
+      <section dir={dir} className="pt-12 md:pt-16 lg:pt-20 pb-4 md:pb-6 bg-petal/30 scroll-mt-6">
         <div className="container-page">
           <Reveal>
             <p className="text-champagne text-sm font-body uppercase tracking-wide mb-2 text-center">{c.pricing.eyebrow}</p>
             <h2 className={`text-3xl md:text-4xl leading-[1.15] text-profond mb-8 text-center text-balance ${lang === "ar" ? "font-arabic" : ""}`}>{c.pricing.h2}</h2>
           </Reveal>
           <LinkedPricingCards slug={slug} cards={c.pricing.cards as any} dir={dir} lang={lang} images={offerImages} />
-          <p className="font-body text-gris text-xs text-center mt-5 leading-relaxed">{c.pricing.trust}</p>
+          <p className="font-body text-gris text-xs text-center mt-4 leading-relaxed">{c.pricing.trust}</p>
         </div>
       </section>
 
