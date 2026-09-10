@@ -803,7 +803,7 @@ export const WARDAPages: WardaPages = {
           "Un sachet/une dose par jour, de préférence le matin à jeun.",
           "Diluez dans un verre d'eau ou un jus de votre choix.",
           "Mélangez bien et buvez immédiatement.",
-          "Poursuivez la cure sur 30 jours minimum pour de meilleurs résultats.",
+          "Poursuivez la cure sur 30 jours pour de meilleurs résultats.",
         ],
       },
       timeline: {
@@ -842,7 +842,7 @@ export const WARDAPages: WardaPages = {
         eyebrow: "Elles en parlent",
         h2: "Vos retours, notre fierté.",
         items: [
-          { quote: "Après un mois, mon teint est visiblement plus lumineux.", name: "Ghita", city: "Casablanca", stars: 5 },
+          { quote: "Après un mois, mon teint est plus lumineux et mes cheveux ne tombent plus.", name: "Ghita", city: "Casablanca", stars: 5 },
           { quote: "Facile à intégrer dans ma routine, et mes ongles cassent beaucoup moins.", name: "Loubna", city: "Salé", stars: 5 },
           { quote: "Le goût est neutre, se mélange bien à l'eau. Je continue la cure.", name: "Asmae", city: "Oujda", stars: 5 },
         ],
@@ -902,7 +902,7 @@ export const WARDAPages: WardaPages = {
       faq: [
         { q: "Comment fonctionne le paiement à la livraison ?", a: "Commande en 1 minute, appel de confirmation, paiement en espèces au livreur." },
         { q: "Délais de livraison ?", a: "24 à 72h selon votre ville." },
-        { q: "Quand voir les résultats ?", a: "Hydratation dès 1–2 semaines, éclat et fermeté plus visibles après 6–8 semaines." },
+        { q: "Quand voir les résultats ?", a: "Hydratation dès la première semaine, peau repulpée et ongles plus forts visibles après 4 semaines." },
         { q: "Comment consommer CollaGlow ?", a: "1 sachet/jour dilué dans de l'eau ou un jus, de préférence le matin." },
         { q: "Puis-je l'utiliser enceinte ou allaitante ?", a: "Par précaution, demandez l'avis de votre médecin avant toute cure de compléments." },
         { q: "Et si le produit ne me convient pas ?", a: "Vérifiez le colis devant le livreur, refusez-le si endommagé. 7 jours pour signaler un problème via WhatsApp — un sachet non ouvert peut être repris." },
@@ -940,7 +940,7 @@ export const WARDAPages: WardaPages = {
           "حبة وحدة ولذيذة من CollaGlow كل صباح (مضغ).",
           "طعم الرمان الطبيعي المنعش، سهلة وخفيفة بلا ما تحتاجي للماء.",
           "استمتعي بها يومياً كجزء من روتينك الصباحي للعناية بجمالك.",
-          "واظبي على الكورس لمدة شهر على الأقل باش تحصلي على أفضل وأوضح نتيجة.",
+          "واظبي على الكورس لمدة شهر باش تحصلي على أفضل وأوضح نتيجة.",
         ],
       },
       timeline: {
@@ -976,7 +976,7 @@ export const WARDAPages: WardaPages = {
         eyebrow: "شهادات حقيقية",
         h2: "آراء الزبونات ديالنا هي فخرنا.",
         items: [
-          { quote: "من بعد شهر ديال الاستعمال، وجهي رجعات فيه النضارة والإشراق وشعري نقص منو التساقط.", name: "غيثة", city: "الدار البيضاء", stars: 5 },
+          { quote: "من بعد شهر ديال الاستعمال، وجهي رجعات فيه النضارة والإشراق وشعري مبقاش كيطيح.", name: "غيثة", city: "الدار البيضاء", stars: 5 },
           { quote: "المذاق ديالو غزال بزاف وساهل تديريه فـ روتينك، والظفار ديالي مابقاوش كيتكسرو نهائياً.", name: "لبنى", city: "سلا", stars: 5 },
           { quote: "أحسن كولاجين جربتو، خفيف ولذيذ والنتيجة بانت ليا فـ بشرتي بعد 3 سيمانات.", name: "أسماء", city: "وجدة", stars: 5 },
         ],
@@ -1013,7 +1013,7 @@ export const WARDAPages: WardaPages = {
       faq: [
         { q: "كيفاش كيدوز الدفع عند الاستلام؟", a: "كتطلبي فدقيقة، كنتصلو بيك لتأكيد العنوان، وكتخلصي كاش للموزع ملي كيوصلك الكولي ليدك." },
         { q: "شحال هي مدة التوصيل؟", a: "من 24 إلى 48 ساعة حسب مدينتك فالمغرب." },
-        { q: "فوقاش كتبان النتيجة؟", a: "تحسن فالترطيب والنضارة من الأسبوع 1–2، وامتلاء البشرة وقوة الشعر والأظافر كتبان واضحة من بعد 4–6 أسابيع." },
+        { q: "فوقاش كتبان النتيجة؟", a: "تحسن فالترطيب والنضارة من الأسبوع الاول، وامتلاء البشرة وقوة الشعر والأظافر كتبان واضحة من بعد 4 أسابيع." },
         { q: "كيفاش كنستعمل CollaGlow؟", a: "حبة واحدة يومياً (مضغ) فـ الصباح، بمذاق الرمان اللذيذ وبلا ما تحتاجي للماء." },
         { q: "واش نقدر نستعملو وأنا حاملة أو كنرضع؟", a: "من باب الاحتياط، استشيري طبيبك قبل بداية أي مكمل غذائي." },
         { q: "واش المكونات حلال؟", a: "نعم، كولاجين بحري حلال 100% مع قاعدة بكتين نباتية بدون أي مشتقات خنزير أو جيلاتين حيواني." },
