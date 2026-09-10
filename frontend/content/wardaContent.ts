@@ -243,11 +243,11 @@ export const WARDAPages: WardaPages = {
       },
       timeline: {
         eyebrow: "Résultat progressif",
-        h2: "La régularité fait la différence.",
+        h2: "La régularité est le vrai secret pour voir les résultats.",
         milestones: [
-          { label: "Semaines 1–2", desc: "Peau plus souple, hydratée et confortable dès les premières applications." },
-          { label: "Semaines 4–8", desc: "Sensation de fermeté renforcée, tiraillements atténués." },
-          { label: "Après 3 mois", desc: "L'apparence des vergetures paraît visiblement réduite avec une utilisation quotidienne." },
+          { label: "Semaines 1–2", desc: "Une peau plus hydratée et plus souple, avec une sensation immédiate de confort et de douceur." },
+          { label: "Semaines 2–3", desc: "Avec une utilisation quotidienne, les vergetures commencent à s'atténuer et deviennent moins visibles qu'au début." },
+          { label: "Après 4 semaines", desc: "Une nette différence sur l'aspect et la fermeté de la peau, le teint s'unifie et les vergetures n'attirent plus le regard." },
         ],
         callouts: [
           "🧴 Avant la première utilisation, testez la crème 24h dans le pli du coude.",
@@ -414,11 +414,11 @@ export const WARDAPages: WardaPages = {
       },
       timeline: {
         eyebrow: "نتائج تدريجية ومضمونة",
-        h2: "المواظبة هي السر الحقيقي للنتيجة.",
+        h2: "المداومة هي السر الحقيقي باش تبان النتيجة.",
         milestones: [
-          { label: "الأسبوع 1–2", desc: "بشرة أكثر رطوبة ومرونة، وإحساس فوري بالراحة والنعومة." },
-          { label: "الأسبوع 4–8", desc: "تحسن واضح فالتماسك، وإحساس الشد كينقص بزاف." },
-          { label: "بعد 3 أشهر", desc: "علامات التمدد كتخف وكتولي باهتة وغير بارزة مع الاستعمال اليومي." },
+          { label: "السيمانة 1–2", desc: "بشرة رطبة ومرنة كثر، مع إحساس فوري بالراحة والنعومة." },
+          { label: "السيمانة 2–3", desc: "مع الاستعمال كل نهار، علامات التمدد (les vergetures) كيبداو ينقصو ومكيبقاوش باينين بحال الأول." },
+          { label: "من بعد 4 سيمانات", desc: "فرق واضح فمظهر البشرة والشدة ديالها، لون الجلد كيتوحد وعلامات التمدد مكيبقاوش." },
         ],
         callouts: ["🧴 قبل أول استعمال، جربي كمية صغيرة على ثنية الذراع للتأكد من عدم التحسس.", "☀️ فـ حالة التعرض للشمس، ديري واقي شمسي على المناطق المكشوفة."],
         disclaimer: "النتائج تدريجية وكتختلف حسب طبيعة كل بشرة. المواظبة صباحاً ومساءً هي مفتاح النجاح.",
@@ -554,11 +554,11 @@ export const WARDAPages: WardaPages = {
       },
       timeline: {
         eyebrow: "Résultat progressif",
-        h2: "La régularité fait la différence.",
+        h2: "C'est la régularité qui fait toute la différence.",
         milestones: [
-          { label: "Jours 1–3", desc: "Apaisement immédiat, moins de rougeurs après l'épilation." },
-          { label: "Semaines 1–2", desc: "Repousse visiblement ralentie, moins de poils incarnés." },
-          { label: "Après 4–6 semaines", desc: "Peau durablement plus douce, poils plus fins à la repousse." },
+          { label: "Jours 1–3", desc: "Soulagement immédiat, la peau est apaisée et les rougeurs ainsi que les irritations du rasage ou de la cire disparaissent." },
+          { label: "Semaines 1–2", desc: "Ralentit la repousse des poils, purifie la peau et élimine le problème des poils incarnés." },
+          { label: "Après 3 semaines", desc: "Une douceur et une netteté qui durent plus longtemps, le poil repousse plus lentement, plus fin et discret." },
         ],
         callouts: [
           "🧴 Avant la première utilisation, testez le sérum 24h dans le pli du coude.",
@@ -691,11 +691,11 @@ export const WARDAPages: WardaPages = {
       },
       timeline: {
         eyebrow: "نتائج تدريجية واضحة",
-        h2: "المواظبة هي اللي كتصنع الفرق.",
+        h2: "المداومة هي اللي كدير الفرق كامل.",
         milestones: [
-          { label: "الأيام 1–3", desc: "راحة فورية، هدوء تام للبشرة وبدون احمرار من بعد الحلاقة أو الإزالة." },
-          { label: "الأسبوع 1–2", desc: "الشعر كيتعطل فالنمو، ومشكل الشعر النابت تحت الجلد كيقل بزاف." },
-          { label: "بعد 4–6 أسابيع", desc: "بشرة ناعمة وصافية لمدة طويلة، والشعرة كتولي رقيقة وباهتة." },
+          { label: "الأيام 1–3", desc: "راحة فورية، البشرة كتهدن مكيبقاش داك الحمرار وتهييج الحلاقة ولا لاسير." },
+          { label: "السيمانة 1–2", desc: "كيعطل الخلف ديال الشعر، كينقي البشرة وكيتهنى جلدك من مشكل الشعر اللي كينبت تحت الجلد." },
+          { label: "من بعد 3 سيمانات", desc: "رطوبية ونقا كيدوم مدة أطول، والزغبة كتنبت معطلة، رقيقة وخفيفة مابايناش." },
         ],
         callouts: ["🧴 قبل أول استعمال، جربي كمية صغيرة على ثنية الذراع للتأكد من الملاءمة.", "☀️ تجنبي التعرض المباشر لأشعة الشمس القوية فوراً بعد إزالة الشعر."],
         disclaimer: "النتائج تدريجية وكتختلف حسب طبيعة وكثافة الشعر.",
@@ -808,11 +808,11 @@ export const WARDAPages: WardaPages = {
       },
       timeline: {
         eyebrow: "Résultat progressif",
-        h2: "La régularité fait la différence.",
+        h2: "La régularité est le vrai secret d'une beauté durable.",
         milestones: [
-          { label: "Semaines 1–2", desc: "Peau plus hydratée, sensation de confort." },
-          { label: "Semaines 3–4", desc: "Éclat plus visible, teint plus reposé." },
-          { label: "Après 8 semaines", desc: "Peau plus ferme, cheveux et ongles renforcés." },
+          { label: "Semaines 1–2", desc: "Une hydratation et une douceur visibles sur le visage et le corps, avec une sensation de confort et d'éclat." },
+          { label: "Semaines 2–3", desc: "Une peau plus lumineuse et éclatante, avec une amélioration visible de la force et de la brillance des cheveux et des ongles." },
+          { label: "Après 4 semaines", desc: "Une peau plus rebondie et raffermie, les ridules disparaissent et les ongles deviennent forts et ne se cassent plus facilement." },
         ],
         callouts: [
           "🥤 À associer à une bonne hydratation (eau) pour de meilleurs résultats.",
@@ -945,11 +945,11 @@ export const WARDAPages: WardaPages = {
       },
       timeline: {
         eyebrow: "نتائج تدريجية واضحة",
-        h2: "المواظبة هي السر الحقيقي للجمال الدائم.",
+        h2: "المداومة هي السر الحقيقي لجمال كيدوم.",
         milestones: [
-          { label: "الأسبوع 1–2", desc: "ترطيب ونعومة ملحوظة فالبشرة وإحساس بالراحة والنضارة." },
-          { label: "الأسبوع 3–4", desc: "إشراقة واضحة للبشرة، وقوة ولمعان ملحوظ فالشعر والأظافر." },
-          { label: "بعد 8 أسابيع", desc: "بشرة مشدودة وممتلئة، خطوط رقيقة باهتة، وأظافر قوية ما كيتكسروش." },
+          { label: "السيمانة 1–2", desc: "ترطيب ونعومة باينة فالوجه والجسم، مع إحساس بالراحة والنضارة." },
+          { label: "السيمانة 2–3", desc: "إشراقة ونور كثر فالبشرة، مع تحسن واضح فقوة ولمعان الشعر والظفار." },
+          { label: "من بعد 4 سيمانات", desc: "بشرة عامرة ومجبدة كثر، الخطوط الرقيقة مكيبقاوش، وظفار صحاح مكيتهرسوش بسهولة." },
         ],
         callouts: ["🥤 باش تحصلي على أقصى فائدة، شربي كمية كافية من الماء يومياً.", "💧 الترطيب الداخلي كيكمل مفعول الكولاجين."],
         disclaimer: "النتائج تدريجية وكتختلف حسب طبيعة كل جسم. المواظبة اليومية هي سر النتائج الرائعة.",
@@ -1067,11 +1067,11 @@ export const WARDAPages: WardaPages = {
       },
       timeline: {
         eyebrow: "Résultat progressif",
-        h2: "L'action combinée, la régularité fait la différence.",
+        h2: "La double action et la régularité sont le secret d'un résultat qui va vous surprendre.",
         milestones: [
-          { label: "Semaines 1–2", desc: "Peau hydratée en surface et en profondeur, confort immédiat." },
-          { label: "Semaines 4–6", desc: "Fermeté plus visible, tiraillements atténués, teint plus lumineux." },
-          { label: "Après 8–12 semaines", desc: "Apparence des vergetures réduite, peau visiblement plus ferme et repulpée." },
+          { label: "Semaines 1–2", desc: "Une hydratation profonde de l'intérieur et de l'extérieur, avec un confort total et une peau d'une douceur soyeuse." },
+          { label: "Semaines 2–3", desc: "Une peau raffermie et pleine d'éclat, avec une souplesse visible sur tout le corps." },
+          { label: "Après 4 semaines", desc: "Une peau détendue, rebondie et plus ferme, les vergetures ne sont plus visibles, avec des cheveux et des ongles visiblement forts et pleins de vitalité." },
         ],
         callouts: [
           "🧴 Testez VelvaStretch 24h dans le pli du coude avant la première utilisation.",
@@ -1199,11 +1199,11 @@ export const WARDAPages: WardaPages = {
       },
       timeline: {
         eyebrow: "نتائج تدريجية مضاعفة",
-        h2: "المفعول المزدوج والمواظبة هما سر النتيجة المبهرة.",
+        h2: "المفعول المزدوج والمداومة هوما السر ديال النتيجة اللي غادي تصدمك.",
         milestones: [
-          { label: "الأسبوع 1–2", desc: "بشرة مرطبة من السطح والعمق، راحة فورية ونعومة فائقة." },
-          { label: "الأسبوع 4–6", desc: "تماسك أوضح، الشد كينقص، والبشرة كتولي مشرقة ومشدودة." },
-          { label: "بعد 8–12 أسبوع", desc: "علامات التمدد كتخف بزاف، بشرة أكثر امتلاءً ومرونة وشعر وأظافر قوية." },
+          { label: "السيمانة 1–2", desc: "ترطيب عميق من الداخل وبرا، مع راحة تامة ونعومة حريرية للبشرة." },
+          { label: "السيمانة 2–3", desc: "لحم مشدود وفيه النضارة، مع مرونة واضحة فملمس الجلد كامل." },
+          { label: "من بعد 4 سيمانات", desc: "بشرة مرتاحة، عامرة ومجبدة، علامات التمدد مكاتبقاش، وشعر وظفار بصحة وحيوية باينة للعين." },
         ],
         callouts: ["🧴 جربي VelvaStretch على ثنية الذراع قبل أول استعمال.", "💧 شربي الماء بكمية كافية يومياً لدعم الترطيب الداخلي."],
         disclaimer: "النتائج تدريجية وكتختلف حسب طبيعة البشرة. المواظبة اليومية هي سر النجاح.",
