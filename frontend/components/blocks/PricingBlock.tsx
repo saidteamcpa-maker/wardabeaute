@@ -57,7 +57,7 @@ export function PricingBlock({ slug, offers: propOffers, lang: propLang, title, 
   const basePrice: number = raw.price;
 
   const qtyLabel = (qty: number) => {
-    if (lang === "ar") return qty === 1 ? "وحدة واحدة" : `${qty} قطع`;
+    if (lang === "ar") return qty === 1 ? "قطعة واحدة" : `${qty} قطع`;
     return qty === 1 ? "1 pièce" : `${qty} pièces`;
   };
 

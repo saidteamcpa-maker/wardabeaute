@@ -156,7 +156,7 @@ export function OrderFormBlock({
                       {isActive && <span className="w-2.5 h-2.5 rounded-full bg-profond" />}
                     </span>
                     <span className="flex-1 font-body text-sm">
-                      <span className="font-medium">{o.qty === 1 ? (lang === "ar" ? "وحدة واحدة" : "1 pièce") : lang === "ar" ? `${o.qty} قطع` : `${o.qty} pièces`}</span>
+                      <span className="font-medium">{o.qty === 1 ? (lang === "ar" ? "قطعة واحدة" : "1 pièce") : lang === "ar" ? `${o.qty} قطع` : `${o.qty} pièces`}</span>
                       {savings > 0 && <span className={`block text-xs ${isActive ? "text-white/80" : "text-champagne"}`}>{lang === "ar" ? `وفّري ${savings} درهم` : `-${savings} MAD`}</span>}
                     </span>
                     <span className="text-right">
