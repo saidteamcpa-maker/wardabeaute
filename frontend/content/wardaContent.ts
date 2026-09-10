@@ -648,7 +648,7 @@ export const WARDAPages: WardaPages = {
       faq: [
         { q: "Comment fonctionne le paiement à la livraison ?", a: "Commande en 1 minute, appel de confirmation, paiement en espèces au livreur." },
         { q: "Délais de livraison ?", a: "24 à 72h selon votre ville." },
-        { q: "Quand voir les résultats ?", a: "Apaisement immédiat, repousse ralentie visible dès 1–2 semaines." },
+        { q: "Quand voir les résultats ?", a: "Apaisement immédiat, repousse ralentie visible dès les 3 premiers jours." },
         { q: "Convient-il à toutes les zones ?", a: "Oui, visage (zones autorisées), jambes, aisselles, maillot — évitez les muqueuses." },
         { q: "Puis-je l'utiliser enceinte ou allaitante ?", a: "Par précaution, demandez l'avis de votre médecin ou pharmacien." },
         { q: "Et si le produit ne me convient pas ?", a: "Vérifiez le colis devant le livreur, refusez-le si endommagé. 7 jours pour signaler un problème via WhatsApp." },
@@ -759,7 +759,7 @@ export const WARDAPages: WardaPages = {
       faq: [
         { q: "كيفاش كيدوز الدفع عند الاستلام؟", a: "كتطلبي فدقيقة، كنتصلو بيك لتأكيد العنوان، وكتخلصي كاش للموزع ملي كتوصلك الطلبية." },
         { q: "شحال هي مدة التوصيل؟", a: "من 24 إلى 48 ساعة حسب مدينتك فالمغرب." },
-        { q: "فوقاش كتبان النتيجة؟", a: "راحة وتهدئة فورية للبشرة، ونمو الشعر كيبطئ بشكل ملحوظ ابتداءً من الأسبوع 1–2." },
+        { q: "فوقاش كتبان النتيجة؟", a: "راحة وتهدئة فورية للبشرة، ونمو الشعر كيبطئ بشكل ملحوظ ابتداءً من أول 3 أيام." },
         { q: "واش مناسب لجميع مناطق الجسم؟", a: "نعم، الوجه (المناطق المسموحة كالشوارب والذقن)، الساقين، الإبطين، ومنطقة البيكيني — مع تجنب الأغشية المخاطية." },
         { q: "واش نقدر نستعملو وأنا حاملة أو كنرضع؟", a: "من باب الاحتياط، استشيري الطبيب أو الصيدلي." },
         { q: "إيلا كان عندي أي استفسار؟", a: "خدمة الزبناء ديالنا متوفرة دائماً على الواتساب للمساعدة والمتابعة." },
