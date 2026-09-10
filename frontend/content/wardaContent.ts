@@ -1103,7 +1103,7 @@ export const WARDAPages: WardaPages = {
         items: [
           { quote: "J'utilise les deux produits ensemble depuis ma grossesse, je vois vraiment la différence.", name: "Zineb", city: "Casablanca", stars: 5 },
           { quote: "Le duo est plus simple que d'acheter deux produits à part, et l'économie est réelle.", name: "Karima", city: "Fès", stars: 5 },
-          { quote: "Ma peau est plus ferme et plus lumineuse en même temps.", name: "Rania", city: "Marrakech", stars: 5 },
+          { quote: "Ma peau est plus ferme et plus lumineuse, et les vergetures ne se voient plus du tout.", name: "Rania", city: "Marrakech", stars: 5 },
         ],
       },
       pricing: {
@@ -1232,7 +1232,7 @@ export const WARDAPages: WardaPages = {
         items: [
           { quote: "كنستعمل الباك بجوج من وقت الحمل، وفرق كبير حسيت بيه فـ مرونة ونضارة جلدي.", name: "زينب", city: "الدار البيضاء", stars: 5 },
           { quote: "الباك كامل اقتصادي بزاف ومريح، والنتيجة ديال الكولاجين من الداخل وبرا بانت ليا دغيا.", name: "كريمة", city: "فاس", stars: 5 },
-          { quote: "بشرتي ولات مشدودة ومشرقة فنفس الوقت، وعلامات التمدد مابقاوش كيبانو كاع كيف لول.", name: "رانيا", city: "مراكش", stars: 5 },
+          { quote: "بشرتي ولات مشدودة ومشرقة فنفس الوقت، وعلامات التمدد مابقاوش كاع فيا.", name: "رانيا", city: "مراكش", stars: 5 },
         ],
       },
       pricing: {
