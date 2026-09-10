@@ -206,7 +206,7 @@ export const WARDAPages: WardaPages = {
       hero: {
         label: "WARDA BEAUTÉ · Douceur & Élasticité",
         h1: "Redonnez à votre peau toute son élasticité, en douceur.",
-        sub: "VelvaStretch associe le collagène marin, le beurre de karité pur et la centella asiatica pour aider à prévenir et estomper l'apparence des vergetures, jour après jour.",
+        sub: "VelvaStretch associe le collagène marin, le beurre de karité pur et la centella asiatica pour stopper et masquer les vergetures.",
         pills: ["Collagène marin", "Beurre de karité", "Grossesse & silhouette"],
         cta: "Commander — payez à la livraison",
         trust: "✓ Paiement à la livraison · Livraison 24–72h selon votre ville.",
@@ -381,7 +381,7 @@ export const WARDAPages: WardaPages = {
       hero: {
         label: "WARDA BEAUTÉ · نعومة ومرونة طبيعية",
         h1: "رجعي لبشرتك المرونة والنعومة ديالها، بلا ما تقلقي.",
-        sub: "VelvaStretch كيجمع بين الكولاجين البحري، زبدة الكاريتي الطبيعية، والسنتيلا أسياتيكا باش يساعد يوقف ويخفف من ظهور علامات التمدد، نهار بعد نهار.",
+        sub: "VelvaStretch كيجمع بين الكولاجين البحري، زبدة الكاريتي الطبيعية، والسنتيلا أسياتيكا باش يوقف ويخفي علامات التمدد.",
         pills: ["كولاجين بحري", "زبدة الكاريتي", "الحمل وتغيير الوزن"],
         cta: "طلبي دابا — الدفع عند الاستلام",
         trust: "✓ الدفع عند الاستلام · التوصيل فـ 24 إلى 48 ساعة حسب مدينتك.",
