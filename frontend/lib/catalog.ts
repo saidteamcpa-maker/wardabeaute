@@ -20,21 +20,31 @@ function resolveImage(dbImage: string | null, staticImage: string): string {
   if (dbImage.startsWith("/")) {
     const disk = path.join(process.cwd(), "public", dbImage);
     if (fs.existsSync(disk)) return dbImage;
-    // Admin uploads live in /uploads/ which is ephemeral on Docker without a mounted volume — fall back to the
-    // baked-in static image (which has optimized WebP variants via image-loader) so the storefront never 404s.
     return staticImage;
   }
   return dbImage;
 }
 
+// In-memory cache: revalidate every 60s so storefront pages don't hit DB on every request.
+// Cart/checkout/orders remain dynamic and bypass this cache.
+let _cache: { data: Record<string, CatalogProduct>; ts: number } | null = null;
+const CACHE_TTL_MS = 60_000;
+
 export async function getCatalog(): Promise<Record<string, CatalogProduct>> {
-  const dbProducts = await prisma.product.findMany();
+  if (_cache && Date.now() - _cache.ts < CACHE_TTL_MS) return _cache.data;
+
+  let dbProducts: { slug: string; image: string | null; active: boolean; stockCount: number | null; badge: string | null; shortDescription: string | null; isBundle: boolean }[] = [];
+  try {
+    dbProducts = await prisma.product.findMany({
+      select: { slug: true, image: true, active: true, stockCount: true, badge: true, shortDescription: true, isBundle: true },
+    });
+  } catch {
+    // DB unavailable (e.g. at build time in Docker) — use static data only
+  }
   const map: Record<string, CatalogProduct> = {};
   for (const slug of Object.keys(STATIC_PRODUCTS)) {
     const base = STATIC_PRODUCTS[slug];
     const db = dbProducts.find((p) => p.slug === slug);
-    // Pricing is single source of truth in code (STATIC_PRODUCTS / content/products.ts).
-    // DB overrides are intentionally ignored for price/offers to prevent homepage/product page drift.
     const offers = base.offers as CatalogOffer[];
     map[slug] = {
       ...base,
@@ -49,6 +59,7 @@ export async function getCatalog(): Promise<Record<string, CatalogProduct>> {
       isBundle: db ? db.isBundle : Boolean((base as unknown as Record<string, unknown>).isBundle),
     };
   }
+  _cache = { data: map, ts: Date.now() };
   return map;
 }
 

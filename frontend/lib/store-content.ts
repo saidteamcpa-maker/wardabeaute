@@ -245,24 +245,28 @@ export async function getPageOverride(
   lang: Lang,
   preview: boolean
 ): Promise<LangContent | null> {
-  const row = await prisma.pageContent.findUnique({ where: { slug } });
-  if (!row) return null;
+  try {
+    const row = await prisma.pageContent.findUnique({ where: { slug } });
+    if (!row) return null;
 
-  if (preview) {
-    const session = await getAdminSessionFromCookies();
-    if (session) {
-      const data = parseJSON<PageContentData>(row.content, null);
-      return data ? data[lang] ?? {} : null;
+    if (preview) {
+      const session = await getAdminSessionFromCookies();
+      if (session) {
+        const data = parseJSON<PageContentData>(row.content, null);
+        return data ? data[lang] ?? {} : null;
+      }
     }
-  }
 
-  if (row.status === "disabled") return null;
-  const published = parseJSON<PageContentData>(row.publishedContent, null);
-  if (published && Object.keys(published).length) {
-    return published[lang] ?? {};
+    if (row.status === "disabled") return null;
+    const published = parseJSON<PageContentData>(row.publishedContent, null);
+    if (published && Object.keys(published).length) {
+      return published[lang] ?? {};
+    }
+    return null;
+  } catch {
+    // DB unavailable (build time) — no overrides
+    return null;
   }
-  // jamais publié : brouillon visible uniquement en preview (géré ci-dessus)
-  return null;
 }
 
 export async function createCustomPage(slug: string, title: string) {

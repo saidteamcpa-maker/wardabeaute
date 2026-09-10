@@ -21,8 +21,8 @@ const PixelDebug = dynamicImport(() => import("@/components/pixels/PixelDebug").
 const jost = Jost({ subsets: ["latin", "latin-ext"], weight: ["300", "400", "500", "600", "700"], display: "swap", variable: "--font-jost" });
 const elMessiri = El_Messiri({ subsets: ["arabic", "latin"], weight: ["400", "500", "600", "700"], display: "swap", variable: "--font-el-messiri" });
 
-// Render dynamically: catalog/pixels come from the live Postgres DB at request
-// time, so we must not statically prerender (which would query the DB at build).
+// Catalog comes from the live DB at request time (not available at build time).
+// getCatalog() has 60s in-memory cache so repeated requests are free.
 export const dynamic = "force-dynamic";
 
 const META = {

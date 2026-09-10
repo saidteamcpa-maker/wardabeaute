@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import { useLang } from "@/components/LangProvider";
 import { t } from "@/content/ui";
 import { useSiteContent, announcementOverride } from "@/lib/use-site-content";
@@ -21,18 +20,15 @@ export function AnnouncementBar() {
   const text = override ?? t(lang, KEYS[i]);
   return (
     <div className="bg-gradient-to-r from-profond via-warda to-champagne/80 text-petal text-center text-sm py-2.5 px-4 font-body overflow-hidden relative tracking-wide">
-      <AnimatePresence mode="wait">
-        <motion.p
-          key={override ? "override" : i}
-          initial={{ y: 10, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -10, opacity: 0 }}
-          transition={{ duration: 0.36, ease: [0.16, 1, 0.3, 1] }}
-          className="font-medium leading-relaxed"
-        >
-          {text}
-        </motion.p>
-      </AnimatePresence>
+      <p
+        key={override ? "override" : i}
+        className="font-medium leading-relaxed"
+        style={{
+          animation: "annFadeSlide 0.36s cubic-bezier(0.16, 1, 0.3, 1)",
+        }}
+      >
+        {text}
+      </p>
     </div>
   );
 }

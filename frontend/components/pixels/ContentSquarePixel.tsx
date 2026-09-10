@@ -14,7 +14,7 @@ export function ContentSquarePixel({
   return (
     <Script
       id={`cs-${finalId}`}
-      strategy="afterInteractive"
+      strategy="lazyOnload"
       dangerouslySetInnerHTML={{
         __html: `
 (function(c,s,q,u,a,r,e){

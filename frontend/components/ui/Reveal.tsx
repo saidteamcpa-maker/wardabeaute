@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 
 export function Reveal({
   children,
@@ -15,20 +15,42 @@ export function Reveal({
   className?: string;
   immediate?: boolean;
 }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(immediate);
+
+  useEffect(() => {
+    if (immediate) return;
+    const el = ref.current;
+    if (!el) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          io.disconnect();
+        }
+      },
+      { rootMargin: "-60px" }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [immediate]);
+
   if (immediate) {
-    // Render immediately (no opacity gate) so LCP/above-the-fold content is
-    // painted in the initial HTML without waiting for hydration/animation.
     return <div className={className}>{children}</div>;
   }
+
   return (
-    <motion.div
+    <div
+      ref={ref}
       className={className}
-      initial={{ opacity: 0, y }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
+      style={{
+        opacity: visible ? 1 : 0,
+        transform: visible ? "translateY(0)" : `translateY(${y}px)`,
+        transition: `opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1) ${delay}s, transform 0.5s cubic-bezier(0.22, 1, 0.36, 1) ${delay}s`,
+        willChange: visible ? undefined : "opacity, transform",
+      }}
     >
       {children}
-    </motion.div>
+    </div>
   );
 }

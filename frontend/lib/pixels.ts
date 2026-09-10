@@ -20,9 +20,9 @@ export type PixelType = "meta" | "tiktok" | "gtm";
 // ---------- Global enable/disable ----------
 
 async function getSitePixels(): Promise<{ enabled: boolean }> {
-  const row = await prisma.siteContent.findUnique({ where: { id: 1 } });
-  if (!row) return { enabled: true };
   try {
+    const row = await prisma.siteContent.findUnique({ where: { id: 1 } });
+    if (!row) return { enabled: true };
     const parsed = JSON.parse(row.pixels);
     return { enabled: parsed.enabled !== false };
   } catch {
@@ -55,9 +55,13 @@ export async function getPixels(): Promise<PixelsResponse> {
 }
 
 export async function getEnabledPixels(): Promise<Pixel[]> {
-  const enabled = await isPixelsEnabled();
-  if (!enabled) return [];
-  return prisma.pixel.findMany({ where: { enabled: true }, orderBy: { createdAt: "asc" } });
+  try {
+    const enabled = await isPixelsEnabled();
+    if (!enabled) return [];
+    return prisma.pixel.findMany({ where: { enabled: true }, orderBy: { createdAt: "asc" } });
+  } catch {
+    return [];
+  }
 }
 
 export async function createPixel(data: {
@@ -93,36 +97,39 @@ export async function deletePixel(id: string): Promise<void> {
 // ---------- Env seed (backward compatibility) ----------
 
 export async function seedPixelsFromEnv(): Promise<void> {
-  const existing = await prisma.pixel.findMany({ select: { pixelId: true, type: true } });
-  const existingKeys = new Set(existing.map((p) => `${p.type}:${p.pixelId}`));
+  try {
+    const existing = await prisma.pixel.findMany({ select: { pixelId: true, type: true } });
+    const existingKeys = new Set(existing.map((p) => `${p.type}:${p.pixelId}`));
 
-  const envPixels: { pixelId: string; type: PixelType; label: string }[] = [];
-  if (process.env.NEXT_PUBLIC_FB_PIXEL_ID) {
-    const key = `meta:${process.env.NEXT_PUBLIC_FB_PIXEL_ID.trim()}`;
-    if (!existingKeys.has(key)) envPixels.push({ pixelId: process.env.NEXT_PUBLIC_FB_PIXEL_ID.trim(), type: "meta", label: "Facebook Pixel" });
-  }
-  if (process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID) {
-    const key = `tiktok:${process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID.trim()}`;
-    if (!existingKeys.has(key)) envPixels.push({ pixelId: process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID.trim(), type: "tiktok", label: "TikTok Pixel" });
-  }
-  if (process.env.NEXT_PUBLIC_GTM_ID) {
-    const key = `gtm:${process.env.NEXT_PUBLIC_GTM_ID.trim()}`;
-    if (!existingKeys.has(key)) envPixels.push({ pixelId: process.env.NEXT_PUBLIC_GTM_ID.trim(), type: "gtm", label: "Google Tag Manager" });
-  }
+    const envPixels: { pixelId: string; type: PixelType; label: string }[] = [];
+    if (process.env.NEXT_PUBLIC_FB_PIXEL_ID) {
+      const key = `meta:${process.env.NEXT_PUBLIC_FB_PIXEL_ID.trim()}`;
+      if (!existingKeys.has(key)) envPixels.push({ pixelId: process.env.NEXT_PUBLIC_FB_PIXEL_ID.trim(), type: "meta", label: "Facebook Pixel" });
+    }
+    if (process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID) {
+      const key = `tiktok:${process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID.trim()}`;
+      if (!existingKeys.has(key)) envPixels.push({ pixelId: process.env.NEXT_PUBLIC_TIKTOK_PIXEL_ID.trim(), type: "tiktok", label: "TikTok Pixel" });
+    }
+    if (process.env.NEXT_PUBLIC_GTM_ID) {
+      const key = `gtm:${process.env.NEXT_PUBLIC_GTM_ID.trim()}`;
+      if (!existingKeys.has(key)) envPixels.push({ pixelId: process.env.NEXT_PUBLIC_GTM_ID.trim(), type: "gtm", label: "Google Tag Manager" });
+    }
 
-  for (const p of envPixels) {
-    await prisma.pixel.create({ data: p });
-  }
+    for (const p of envPixels) {
+      await prisma.pixel.create({ data: p });
+    }
 
-  // Also seed the global enabled flag
-  const site = await prisma.siteContent.findUnique({ where: { id: 1 } });
-  if (!site) {
-    const enabled = process.env.NEXT_PUBLIC_PIXELS_ENABLED !== "false";
-    await prisma.siteContent.upsert({
-      where: { id: 1 },
-      create: { id: 1, pixels: JSON.stringify({ enabled }) },
-      update: {},
-    });
+    const site = await prisma.siteContent.findUnique({ where: { id: 1 } });
+    if (!site) {
+      const enabled = process.env.NEXT_PUBLIC_PIXELS_ENABLED !== "false";
+      await prisma.siteContent.upsert({
+        where: { id: 1 },
+        create: { id: 1, pixels: JSON.stringify({ enabled }) },
+        update: {},
+      });
+    }
+  } catch {
+    // DB unavailable (build time) — skip seeding
   }
 }
 
