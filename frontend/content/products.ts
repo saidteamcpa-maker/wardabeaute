@@ -131,7 +131,7 @@ export const products: Record<string, Product> = {
     ],
     testimonials: [
       { text: "Je suis sortie de ma grossesse avec des vergetures rouges. Après un mois, mon ventre a commencé à revenir. VelvaStretch seul m'a fait voir la différence, et j'étais rassurée car il est sûr même en allaitement.", name: "Samira L. — Casablanca", stars: 5 },
-      { text: "J'avais des vergetures depuis mes 17 ans. Après 7 semaines elles sont beaucoup moins visibles. La texture pénètre vite, pas grasse.", name: "Hajar B. — Rabat", stars: 5 },
+      { text: "J'avais des vergetures depuis mes 17 ans. Après 4 semaines le teint est plus uniforme et les vergetures ne se voient plus. La texture pénètre vite, pas grasse.", name: "Hajar B. — Rabat", stars: 5 },
       { text: "J'ai la peau sensible et aucune réaction. Après 5 semaines la différence est visible, surtout sur les vergetures rouges.", name: "Nadia K. — Marrakech", stars: 5 },
       { text: "J'avais peur d'utiliser un produit pendant l'allaitement. Ce sérum contient de la Centella et pas de retinol — j'ai été rassurée et j'ai vu un résultat en 6 semaines.", name: "Salma R. — Agadir", stars: 5 },
     ],
